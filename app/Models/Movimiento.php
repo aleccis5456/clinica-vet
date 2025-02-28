@@ -18,4 +18,8 @@ class Movimiento extends Model
     public function cliente(){
         return $this->belongsTo(Dueno::class, 'cliente_id');
     }
+
+    public function productos(){
+        return $this->belongsToMany(Producto::class, 'movimiento_productos', 'movimiento_id', 'producto_id');
+    }    
 }

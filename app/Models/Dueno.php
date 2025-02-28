@@ -14,8 +14,11 @@ class dueno extends Model
         'email'
     ];
     
-
-    public function mascoteas(){
+    public function mascotas(){
         return $this->hasMany(Mascota::class);
+    }
+
+    public function compras(){
+        return $this->hasMany(Movimiento::class);
     }
 }

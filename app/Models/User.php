@@ -50,4 +50,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Equipo::class, 'equipo_veterinario', 'veterinario_id', 'equipo_id');
     }
     
+    public function roles(){
+        return $this->belongsTo(Rol::class, 'role_user', 'role_id', 'user_id');
+    }
 }
