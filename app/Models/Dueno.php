@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class dueno extends Model
+class Dueno extends Model
 {
     protected $table = 'duenos';
 

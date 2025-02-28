@@ -6,7 +6,8 @@
         @vite('resources/css/app.css')
         <title>{{ $title ?? 'Page Title' }}</title>
     </head>
-    <body>        
+    <body>
+        <x-alertas/>        
         {{ $slot }}
     </body>
 </html>
