@@ -34,6 +34,8 @@ class FormAddDueno extends Component
     public $duenoId = ''; 
     public $modalEliminar = false;
     public $duenoToDelete = '';
+    public $search = '';
+    public $modalAddDueno = false;
 
     /***
      * 
@@ -54,10 +56,9 @@ class FormAddDueno extends Component
      * 
      */
     public function mount(){
-        $this->duenos = Dueno::all();
+        $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
         $this->mascotas = Mascota::all();
     }
-
     /**
      * 
      */
@@ -114,8 +115,35 @@ class FormAddDueno extends Component
         $this->modalEliminar = false;
     }
 
+    /**
+     * 
+     */
+    public function filtrar(){
+        if(empty($this->search)){
+            $this->duenos = $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
+        }else{
+            $this->duenos = Dueno::whereLike('nombre', '%' . $this->search . '%')->get();                                  
+        }
+        
+        //
+    }  
+    public function flag(){
+        $this->search = '';
+        $this->duenos = $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
+    }
+
+    /**
+     *
+     */ 
+    public function openModalAddDueno(){
+        $this->modalAddDueno = true;
+    }
+    public function closeModalAddDueno(){
+        $this->modalAddDueno = false;
+    }
+
     public function render()
-    {
+    {                                    
         return view('livewire.form-add-dueno');
     }
 }

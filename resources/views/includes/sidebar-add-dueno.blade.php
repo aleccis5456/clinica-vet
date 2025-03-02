@@ -10,7 +10,7 @@
 
 <!-- Aside (barra lateral) -->
 <aside
-    class=" fixed top-0 left-0 w-3/4 md:w-80 h-full bg-gray-100  border border-gray-200 shadow-xl  roundend-lg p-4 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-20 overflow-y-auto"
+    class=" fixed top-0 left-0 w-3/4 md:w-80 h-full bg-gray-100  border border-gray-200  roundend-lg p-4 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-20 overflow-y-auto"
     id="sidebar">
 
     <p class="text-center pt-10 md:pt-4 text-xl font-semibold transition-all duration-300 hover:scale-105">
