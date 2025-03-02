@@ -142,9 +142,9 @@
                             <h3 class="mb-5 text-lg font-semibold text-gray-800">
                                 ¡Elemento eliminado!
                             </h3>
-                            {{-- <p class="mb-5 text-sm text-gray-600">
+                            <p class="mb-5 text-sm text-gray-600">
                                 {{ session('eliminado') }}
-                            </p> --}}
+                            </p> 
                             <button onclick="closeAlert()"
                                 class="text-white bg-gray-800 hover:bg-black focus:ring-4 focus:outline-none focus:ring-black font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                 Aceptar

@@ -1,5 +1,5 @@
 <div class="bg-hero bg-no-repeat bg-cover bg-center bg-fixed ">
-    <div class="bg-[url('../../public/images/tests/bg3-bw.jpg')]">
+    <div class="bg-[url('../../public/images/tests/bg3-bw.webp')]">
         <!-- Sidebar -->
         <div class="">
             @include('includes.sidebar-add-dueno')
@@ -14,7 +14,7 @@
                 <div class="mb-4">
                     <div class="overflow-x-auto rounded-lg">
                         <!-- Tabla -->
-                        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md hidden md:table">
+                        <table class="min-w-full bg-white rounded-xl shadow-md hidden md:table">
                             <thead class="bg-gray-800 text-white">
                                 <tr>
                                     <th class="py-3 px-4 text-left font-medium">Nombre</th>
@@ -42,9 +42,11 @@
                                                 class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                                 Editar
                                             </button>
-                                            <button wire:click='borrarDueno({{ $dueno->id }})' type="button"
+                                            <button 
+                                                wire:click='opneModalEliminar({{ $dueno->id }})'                                                
+                                                type="button"
                                                 class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm"
-                                                wire:confirm='Estas seguro?'>
+                                                >
                                                 Eliminar
                                             </button>
                                         </td>
@@ -80,14 +82,17 @@
                                             class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                             Editar
                                         </button>
-                                        <button wire:confirm="Estas seguro de borrar el dueno?"
-                                            wire:click='borrarDueno({{ $dueno->id }})' type="button"
+                                        <button
+                                            wire:click='opneModalEliminar'
+                                            wire:model='duenoToDelete={{ $dueno->id }}'
+                                            type="button"
                                             class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm"
-                                            wire:confirm='Estas seguro?'>
+                                            >
                                             Eliminar
                                         </button>
                                     </div>
                                 </div>
+                                {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
                             @endforeach
                         </div>
                     </div>
@@ -97,6 +102,11 @@
         <!-- modal edit -->
         @if ($modalEdit)
             @include('includes.formduenos.modalEdit')
+        @endif
+
+
+        @if ($modalEliminar)
+            @include('includes.formduenos.modalEliminar')
         @endif
     </div>
 </div>
