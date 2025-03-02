@@ -5,7 +5,7 @@
     </div>
     {{-- backdrop-blur-xs --}}
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-
+        <p class="pl-1 py-7 text-lg font-semibold">Gestion de Duenos</p>
         @if ($modalAddDueno)
             @include('includes.formduenos.formulario')
         @endif

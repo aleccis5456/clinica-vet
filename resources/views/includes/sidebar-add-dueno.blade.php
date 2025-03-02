@@ -33,8 +33,11 @@
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/gestion-pacientes.jpg') }}'); background-size: cover; background-position: center;">
                     <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
                         <h3 class=" text-md font-bold">Gestión de Pacientes</h3>
-                        <p class="hidden group-hover:block mt-2 text-xs text-center">Registro de mascotas
-                        </p>
+                        @if (Route::is('add.dueno'))
+                            <p class="hidden group-hover:block mt-2 text-xs text-center">Registro de mascotas</p>
+                        @elseif (Route::is('add.mascota'))
+                            <p class="hidden group-hover:block mt-2 text-xs text-center">Registro de dueno</p>
+                        @endif                        
                     </div>
                 </div>
             </a>
