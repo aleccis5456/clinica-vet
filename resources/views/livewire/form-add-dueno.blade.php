@@ -6,11 +6,10 @@
 
 
     <main class="ml-0 md:ml-64 md:pl-24 md:pt-2 pt-16 pl-2 pr-4">
-        <div class="grid grid-cols-1 gap-4">            
-            <div class="border border-black rounded-md ">                
-                @include('includes.formduenos.formulario')
-            </div>
-
+        <div class="grid grid-cols-1 gap-4">                        
+            <div class="">                               
+                @include('includes.formduenos.formulario')                
+            </div>            
             <div class="mb-4">
                 <div class="overflow-x-auto rounded-lg">
                     <!-- Tabla -->
@@ -39,7 +38,7 @@
                                     </td>
                                     <td class="py-3 px-4">
                                         <button
-                                            wire:click='openModalEdit({{ $dueno->id }})'                                                                                                                                                                          
+                                            wire:click="openModalEdit({{ $dueno->id }})"                                    
                                             class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                             Editar
                                         </button>

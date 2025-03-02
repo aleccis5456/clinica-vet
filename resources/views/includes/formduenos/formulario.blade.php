@@ -1,4 +1,4 @@
-<form wire:submit='crearDueno' class="bg-white p-6 max-w-md mx-auto">
+<form wire:submit='crearDueno' class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg">
     <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Dueño</p>
 
     <!-- Campo Nombre y Apellido -->
