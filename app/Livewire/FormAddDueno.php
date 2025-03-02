@@ -32,6 +32,7 @@ class FormAddDueno extends Component
     public $duenoToEdit;
     public $modalEdit = false;   
     public $duenoId = ''; 
+    public $modalEliminar = false;
 
     /***
      * 
@@ -65,7 +66,7 @@ class FormAddDueno extends Component
 
         $dueno->delete();
         
-        $this->redirect('/registrar/dueno');
+        return redirect('/registrar/dueno')->with('eliminado', '');
     }  
     /**
      * 
@@ -100,6 +101,16 @@ class FormAddDueno extends Component
         $dueno->save();
 
         return redirect('/registrar/dueno')->with('editado', ".");
+    }
+
+    /**
+     * 
+     */
+    public function opneModalEliminar(){
+        $this->modalEliminar = true;
+    }
+    public function closeModalEliminar(){
+        $this->modalEliminar = false;
     }
 
     public function render()

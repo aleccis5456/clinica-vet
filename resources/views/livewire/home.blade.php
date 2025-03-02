@@ -1,7 +1,7 @@
 <div class="p-2"> 
-    <nav class="p-4 text-black text-center border border-gray-100 rounded-lg bg-gray-100 shadow-sm">
+    <nav class=" p-4 text-black text-center border border-gray-100 rounded-lg bg-gray-100 shadow-sm">
         <div class="container mx-auto">
-            <h1  class="text-2xl font-bold tracking-wide">
+            <h1  class="text-2xl font-bold">
                 <a wire:navigate href="{{ route('index') }}">Clínica Veterinaria</a>
             </h1>
         </div>
