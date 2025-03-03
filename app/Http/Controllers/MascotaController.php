@@ -58,7 +58,6 @@ class MascotaController extends Controller
             throw new Exception($e->getMessage());
         }
         
-
         $mascota = Mascota::find($request->mascotaId);
         if(!$mascota){
             return back();

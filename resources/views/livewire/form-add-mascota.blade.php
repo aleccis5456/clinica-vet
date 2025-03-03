@@ -34,12 +34,12 @@
                             placeholder="Buscar por nombre">
 
                         <!-- Botón para limpiar el input -->
-                        {{-- @if ($search)
+                        @if ($search)
                             <button type="button" wire:click="flag"
                                 class="px-1.5 py-0.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200  transition">
                                 ✕
                             </button>
-                        @endif --}}
+                        @endif
 
                         <!-- Botón de búsqueda -->
 

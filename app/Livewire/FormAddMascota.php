@@ -41,6 +41,7 @@ class FormAddMascota extends Component
     public $mascotaId = '';
     public $mascotaToEdit;
     public $modalEdit = false;
+    public $search = '';    
     
     /***
      * LA CREACION Y EDICION ESTA EN EL CONTROLADOR
@@ -137,10 +138,20 @@ class FormAddMascota extends Component
      * 
      */
     public function mount(){
-        $this->mascotas = Mascota::all();
+        $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
         $this->duenos = Dueno::all();
         $this->especies = Especie::all();
     }
+
+    /**
+     * 
+     */
+    public function filtrar(){
+        if(empty($this->search)){
+            $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
+        }
+    }
+
     public function render()
     {
         return view('livewire.form-add-mascota');

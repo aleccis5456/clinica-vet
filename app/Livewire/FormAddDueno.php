@@ -120,7 +120,7 @@ class FormAddDueno extends Component
      */
     public function filtrar(){
         if(empty($this->search)){
-            $this->duenos = $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
+            $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
         }else{
             $this->duenos = Dueno::whereLike('nombre', '%' . $this->search . '%')->get();                                  
         }
