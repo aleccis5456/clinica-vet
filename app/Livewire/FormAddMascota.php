@@ -149,7 +149,14 @@ class FormAddMascota extends Component
     public function filtrar(){
         if(empty($this->search)){
             $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
+        }else{
+            $this->mascotas = Mascota::whereLike('nombre', "%$this->search%")->get();
         }
+    }
+
+    public function flag(){
+        $this->search = '';
+        $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
     }
 
     public function render()
