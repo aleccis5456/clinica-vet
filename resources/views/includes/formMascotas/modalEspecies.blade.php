@@ -46,8 +46,8 @@
 
 
         @if ($tableEspecies)        
-        <div x-data="{ showTable: false }" x-init="setTimeout(() => showTable = true, 100)">
-            <table x-show="showTable" x-transition.duration.500ms 
+        <div>
+            <table
                 class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
                 <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                     <tr>

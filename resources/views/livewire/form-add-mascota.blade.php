@@ -78,7 +78,7 @@
                                 <td class="py-3 px-4"> {{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }} </td>
                                 <td class="py-3 px-4"> {{ $mascota->dueno->nombre }} </td>
                                 <td class="py-3 px-4">
-                                    <button wire:click=""
+                                    <button wire:click="openModalEdit({{ $mascota->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
                                     </button>
@@ -142,6 +142,10 @@
 
     @if ($modalEliminar)
         @include('includes.formMascotas.modalEliminar')
+    @endif
+
+    @if ($modalEdit)
+        @include('includes.formMascotas.modalEdit')
     @endif
 
 </div>

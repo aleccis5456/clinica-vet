@@ -24,6 +24,8 @@ class FormAddMascota extends Component
     public $nacimiento;
     public $genero = '';
     public $historial_medico = '';
+    public $flagEliminarHM = '';
+    public $flagElimiarFoto = '';
 
     #[Rule('image', message: 'Usar un formato correcto')]
     #[Rule('nullable')]
@@ -39,6 +41,11 @@ class FormAddMascota extends Component
     public $mascotaId = '';
     public $mascotaToEdit;
     public $modalEdit = false;
+    
+    /***
+     * LA CREACION Y EDICION ESTA EN EL CONTROLADOR
+     */
+
     /**
      * 
      */
