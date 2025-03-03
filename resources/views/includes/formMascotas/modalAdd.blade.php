@@ -51,11 +51,11 @@
             <!-- Campo Especie -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Especie</label>
-                <select wire:model='dueno_id' name="dueno_id" name="" id="select2"
+                <select wire:model='especie' name="especie_id" name="" id="select2"
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <option value="">-Elegir-</option>
-                    @foreach ($duenos as $dueno)
-                        <option value="{{ $dueno->id }}">{{ $dueno->nombre }} | {{ $dueno->email }}</option>
+                    @foreach ($especies as $especie)
+                        <option value="{{ $especie->id }}">{{ $especie->nombre }}</option>
                     @endforeach
                 </select>                
                 <p>
@@ -109,7 +109,7 @@
             <!-- nacimiento -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Nacimiento</label>
-                <input wire:modal='nacimiento' name="nacimiento" type="date"
+                <input name="nacimiento" type="date"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
                     @error('telefono')

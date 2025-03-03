@@ -32,29 +32,30 @@
             </button>
 
             @if ($tableEspecies)
-            <button type="button" wire:click='closeTableEspecies'
-                class="mt-2 w-full font-medium py-2 rounded-md border border-gray-300 hover:border-gray-500 hover:bg-gray-200">
-                Ocultar Tabla
-            </button>
+                <button type="button" wire:click='closeTableEspecies'
+                    class="mt-2 w-full font-medium py-2 rounded-md border border-gray-300 hover:border-gray-500 hover:bg-gray-200">
+                    Ocultar Tabla
+                </button>
             @else
-            <button type="button" wire:click='openTableEspecies'
-                class="mt-2 w-full font-medium py-2 rounded-md border border-gray-300 hover:border-gray-500 hover:bg-gray-200">
-                Ver Especies
-            </button>
+                <button type="button" wire:click='openTableEspecies'
+                    class="mt-2 w-full font-medium py-2 rounded-md border border-gray-300 hover:border-gray-500 hover:bg-gray-200">
+                    Ver Especies
+                </button>
             @endif             
         </form>
 
 
-    @if ($tableEspecies)        
-        <div>
-            <table class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
+        @if ($tableEspecies)        
+        <div x-data="{ showTable: false }" x-init="setTimeout(() => showTable = true, 100)">
+            <table x-show="showTable" x-transition.duration.500ms 
+                class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
                 <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                     <tr>
                         <th class="py-3 px-4 text-left text-semibold">Especie</th>
-                        <th class="py-3 px-4 text-left text-semibold sr-only">Accion</th>
+                        <th class="py-3 px-4 text-left text-semibold sr-only">Acción</th>
                     </tr>
                 </thead>
-
+    
                 <tbody class="text-gray-800">
                     @foreach ($especies as $especie)
                         <tr wire:key='{{ $especie->id }}'
@@ -70,9 +71,8 @@
                     @endforeach
                 </tbody>
             </table>
-
         </div>
     @endif
-
+    
     </div>
 </div>

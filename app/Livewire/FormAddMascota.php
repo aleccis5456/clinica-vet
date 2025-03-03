@@ -5,11 +5,11 @@ namespace App\Livewire;
 use App\Models\Dueno;
 use App\Models\Especie;
 use App\Models\Mascota;
-use Illuminate\Support\Facades\Date;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Carbon\Carbon;
 
 #[Title('Gestion Mascotas')]
 class FormAddMascota extends Component
@@ -35,6 +35,50 @@ class FormAddMascota extends Component
     public $especies;
     public $modalEspecies = false;
     public $tableEspecies = false;
+    public $modalEliminar = false;
+    public $mascotaId = '';
+    public $mascotaToEdit;
+    public $modalEdit = false;
+    /**
+     * 
+     */
+    public function openModalEdit($mascotaId){
+        $mascotaToEdit = Mascota::find($mascotaId);
+        if(!$mascotaToEdit){
+            $this->redirect('/registrar/mascota');
+        }
+
+        $this->mascotaToEdit = $mascotaToEdit;
+        $this->modalEdit = true;
+    }
+    public function closeModalEdit(){
+        $this->modalEdit = false;
+    }
+
+    /**
+     * 
+     */
+    public function openModalEliminar($mascotaId){
+        $this->mascotaId = $mascotaId;
+        $this->modalEliminar = true;
+    }
+    public function closeModalEliminar(){
+        $this->modalEliminar = false;
+    }
+
+    /**
+     * 
+     */
+    public function eliminar($mascotaId){
+        $mascota = Mascota::find($mascotaId);
+        if(!$mascota){
+            $this->redirect('/registrar/mascota');
+        }
+        $mascota->delete();
+
+        return redirect('/registrar/mascota')->with('eliminado', 'Mascota eliminado');
+    }
+
 
     /**
      * 
@@ -46,7 +90,7 @@ class FormAddMascota extends Component
         $this->tableEspecies = false;
     }
 
-    public function eliminarEspecie(Especie $especie){
+    public function eliminarEspecie(Especie $especie){                 
         $especie->delete();
 
         return redirect('/registrar/mascota')->with('eliminado', "Especie borrado");
