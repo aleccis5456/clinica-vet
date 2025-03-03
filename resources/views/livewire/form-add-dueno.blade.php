@@ -68,9 +68,17 @@
                                 <td class="py-3 px-4">{{ $dueno->telefono }}</td>
                                 <td class="py-3 px-4">
                                     @foreach ($dueno->mascotas as $mascota)
-                                        {{ $mascota->nombre ?? 'sin mascota' }}
+                                        <div class="flex items-center space-x-2">
+                                            <span>- {{ $mascota->nombre ?? 'Sin mascota' }}</span>
+                                            @if ($mascota->foto)
+                                                <img class="w-12 h-12 rounded-full" src="{{ asset('uploads/mascotas/' . $mascota->foto) }}" alt="Foto de {{ $mascota->nombre }}">
+                                            @else
+                                                <span>Sin foto</span>
+                                            @endif
+                                        </div>
                                     @endforeach
                                 </td>
+                                
                                 <td class="py-3 px-4">
                                     <button wire:click="openModalEdit({{ $dueno->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">

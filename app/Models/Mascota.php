@@ -15,7 +15,8 @@ class Mascota extends Model
         'raza', 	
         'nacimiento', 	
         'genero', 	
-        'historial_medico'
+        'historial_medico',
+        'foto',
     ];
 
     public function dueno(){

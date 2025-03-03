@@ -28,7 +28,11 @@
     <div class="mt-10 space-y-0.5">
         <!-- Card 1 -->
         <div>
-            <a href="">
+            @if (Route::is('add.dueno'))
+            <a wire:navigate href="{{ route('add.mascota') }}">
+            @elseif (Route::is('add.mascota'))
+            <a wire:navigate href="{{ route('add.dueno') }}">        
+            @endif                        
                 <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24  md:w-full rounded-lg"
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/gestion-pacientes.jpg') }}'); background-size: cover; background-position: center;">
                     <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-4">

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Dueno;
+use App\Models\Especie;
 use App\Models\Mascota;
 use Illuminate\Support\Facades\Date;
 use Livewire\Attributes\Rule;
@@ -31,31 +32,46 @@ class FormAddMascota extends Component
     public $modalAdd = false;
     public $mascotas;
     public $duenos;
+    public $especies;
+    public $modalEspecies = false;
+    public $tableEspecies = false;
 
-    
-    // public function crearMascota(){
-    //     $this->validate();
-    //     $imageName = null;
-    //     if ($this->foto) {
-    //         $imageName = time() . '_' . $this->nombre . '.' . $this->foto->getClientOriginalExtension();
-    //         $this->foto->storeAs('uploads/mascotas', $imageName, 'public');
-    //     }
+    /**
+     * 
+     */
+    public function openTableEspecies(){
+        $this->tableEspecies = true;
+    }
+    public function closeTableEspecies(){
+        $this->tableEspecies = false;
+    }
 
-    //     // Guardar la mascota en la BD
-    //     Mascota::create([
-    //         'dueno_id' => $this->dueno_id,
-    //         'nombre' => $this->nombre,
-    //         'especie' => $this->especie,
-    //         'raza' => $this->raza,
-    //         'nacimiento' => $this->nacimiento,
-    //         'genero' => $this->genero,
-    //         'historial_medico' => $this->historial_medico,
-    //         'foto' => $imageName // Aquí se guarda el nombre del archivo correctamente
-    //     ]);
+    public function eliminarEspecie(Especie $especie){
+        $especie->delete();
 
+        return redirect('/registrar/mascota')->with('eliminado', "Especie borrado");
+    }
+    /**
+     * 
+     */
+    public function crearEspecie(){
+        $this->validate([
+            'especie' => 'required'            
+        ]);
 
-    //     return redirect('/')->with('agregado', "$this->nombre, se agrego correctamente");
-    // }
+        Especie::create([
+            'nombre' => $this->especie
+        ]);
+
+        return redirect('/registrar/mascota')->with('agregado', "$this->especie, se agrego correctamente");
+    }
+
+    public function openModalEspecies(){
+        $this->modalEspecies = true;
+    }
+    public function closeModalEspecies(){
+        $this->modalEspecies = false;
+    }
     /**
      * 
      */
@@ -72,6 +88,7 @@ class FormAddMascota extends Component
     public function mount(){
         $this->mascotas = Mascota::all();
         $this->duenos = Dueno::all();
+        $this->especies = Especie::all();
     }
     public function render()
     {

@@ -1,5 +1,5 @@
 <div id="confirmarModal" tabindex="-1"
-    class=" fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black/50">
+    class=" fixed top-0 right-0 left-0 z-40 flex justify-center items-center w-full h-full bg-black/50">
     <div class="relative p-4 w-full max-w-md">
 
         <button type="button"
@@ -12,16 +12,16 @@
             <span class="sr-only">Cerrar</span>
         </button>
 
-        <form wire:submit='crearMascota' enctype="multipart/form-data"
+        <form action="{{ route('mascota.crear') }}" method="POST" enctype="multipart/form-data"
             class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
+            @csrf
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Mascota</p>
 
 
             <!--  Campo para relacionar don una persona -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Seleccionar Dueño</label>
-                <select wire:model='dueno_id'
-                    name="" id="select2"
+                <select wire:model='dueno_id' name="dueno_id" name="" id="select2"
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <option value="">-Elegir-</option>
                     @foreach ($duenos as $dueno)
@@ -38,7 +38,7 @@
             <!-- Campo Nombre -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Nombre</label>
-                <input wire:model="nombre" type="text"
+                <input wire:model="nombre" name="nombre" type="text"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
                     id="nombre">
                 <p>
@@ -51,8 +51,13 @@
             <!-- Campo Especie -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Especie</label>
-                <input wire:model='especie' type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                <select wire:model='dueno_id' name="dueno_id" name="" id="select2"
+                    class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                    <option value="">-Elegir-</option>
+                    @foreach ($duenos as $dueno)
+                        <option value="{{ $dueno->id }}">{{ $dueno->nombre }} | {{ $dueno->email }}</option>
+                    @endforeach
+                </select>                
                 <p>
                     @error('telefono')
                         <span class="text-red-700 underline">{{ $message }}</span>
@@ -63,8 +68,7 @@
             <!-- Campo genero -->
             <div class="mb-6">
                 <label for="especie" class="block text-gray-800 font-medium mb-2">Genero</label>
-                <select wire:model='genero'
-                    name="" id="select2"
+                <select wire:model='genero' name="genero" id="select2"
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <option value="">-Elegir-</option>
                     <option value="Macho">Macho</option>
@@ -81,7 +85,7 @@
             <!-- RAZA -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Raza</label>
-                <input wire:model='raza' type="text"
+                <input wire:model='raza' name="raza" type="text"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
                     @error('telefono')
@@ -93,7 +97,7 @@
             <!-- historial medico -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Historial Medico</label>
-                <textarea wire:model='historial_medico' type="text"
+                <textarea wire:model='historial_medico' name="historial_medico" type="text"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"></textarea>
                 <p>
                     @error('telefono')
@@ -105,8 +109,8 @@
             <!-- nacimiento -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Nacimiento</label>
-                <input  wire:modal='nacimiento'
-                    type="date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                <input wire:modal='nacimiento' name="nacimiento" type="date"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
                     @error('telefono')
                         <span class="text-red-700 underline">{{ $message }}</span>
@@ -116,7 +120,7 @@
 
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Subir Foto</label>
-                <input wire:model='foto' type="file" name="" id=""
+                <input wire:model='foto' type="file" name="foto" id=""
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
                     @error('telefono')

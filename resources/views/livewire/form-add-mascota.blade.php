@@ -4,9 +4,6 @@
         @include('includes.sidebar-add-dueno')
     </div>
 
-
-
-
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
         <p class="pl-1 py-7 text-lg font-semibold">Gestion de Mascotas</p>
         @if ($modalAdd)
@@ -17,10 +14,16 @@
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
                     <button wire:click='openModalAdd'
-                            class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
+                            class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:bg-black">
                         Agregar Mascota <span class="">+</span>
                     </button>
-                </div>                
+                    <span wire:click='openModalEspecies' class="cursor-pointer p-3  bg-gray-400  rounded-lg font-semibold  hover:bg-gray-800 hover:text-gray-100">
+                        Agregar Especie +
+                    </span>
+                </div>     
+                @if ($modalEspecies)
+                    @include('includes.formMascotas.modalEspecies')           
+                @endif                
                 <div class="p-3">
                     <!-- Buscador -->
                     <form wire:submit.prevent='filtrar'
@@ -54,23 +57,26 @@
                 <table class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
                     <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                         <tr>
+                            <th class="py-3 px-4 text-left text-semibold sr-only">foto</th>
                             <th class="py-3 px-4 text-left text-semibold">Nombre</th>
-                            <th class="py-3 px-4 text-left text-semibold">Email</th>
-                            <th class="py-3 px-4 text-left text-semibold">Telefono</th>
-                            <th class="py-3 px-4 text-left text-semibold">Mascota</th>
+                            <th class="py-3 px-4 text-left text-semibold">Especie</th>
+                            <th class="py-3 px-4 text-left text-semibold">Raza</th>
+                            <th class="py-3 px-4 text-left text-semibold">Cumpleaños</th>
+                            <th class="py-3 px-4 text-left text-semibold">Humano</th>
                             <th class="py-3 px-4 text-left text-semibold">Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody class="text-gray-800">
-                      
-                            <tr wire:key=''
+                      @foreach ($mascotas as $mascota)                                              
+                            <tr wire:key='{{ $mascota->id }}'
                                 class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                                <td class="py-3 px-4"></td>
-                                <td class="py-3 px-4"></td>
-                                <td class="py-3 px-4"></td>
-                                <td class="py-3 px-4">                                    
-                                </td>
+                                <td class="py-3 px-4"><img class="w-12 h-12 rounded-full" src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt=""></td>
+                                <td class="py-3 px-4">{{ $mascota->nombre }} ({{ $mascota->genero }})</td>
+                                <td class="py-3 px-4"> {{ $mascota->especie }} </td>
+                                <td class="py-3 px-4"> {{ $mascota->raza }} </td>
+                                <td class="py-3 px-4"> {{ $mascota->nacimiento }} </td>
+                                <td class="py-3 px-4"> {{ $mascota->dueno->nombre }} </td>
                                 <td class="py-3 px-4">
                                     <button wire:click=""
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
@@ -81,7 +87,8 @@
                                         Eliminar
                                     </button>
                                 </td>
-                            </tr>                        
+                            </tr>  
+                        @endforeach                      
                     </tbody>
                 </table>
 
