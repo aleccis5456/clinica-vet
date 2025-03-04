@@ -27,12 +27,12 @@
                             placeholder="Buscar por nombre">
 
                         <!-- Botón para limpiar el input -->
-                        {{-- @if ($search)
+                        @if ($search)
                             <button type="button" wire:click="flag"
                                 class="px-1.5 py-0.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200  transition">
                                 ✕
                             </button>
-                        @endif --}}
+                        @endif
 
                         <!-- Botón de búsqueda -->
 
@@ -53,20 +53,27 @@
                         <tr>
                             <th class="py-3 px-4 text-left text-semibold">Nombre</th>
                             <th class="py-3 px-4 text-left text-semibold">Email</th>
-                            <th class="py-3 px-4 text-left text-semibold">Telefono</th>
-                            <th class="py-3 px-4 text-left text-semibold">Mascota</th>
+                            <th class="py-3 px-4 text-left text-semibold">Rol</th>
+                            <th class="py-3 px-4 text-left text-semibold">Permisos</th>
                             <th class="py-3 px-4 text-left text-semibold">Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody class="text-gray-800">
-                        
-                            <tr wire:key=''
+                        @foreach ($users as $user)                                                    
+                            <tr wire:key='{{ $user->id }}'
                                 class="hover:bg-gray-100 transition duration-300">
-                                <td class="py-3 px-4"></td>
-                                <td class="py-3 px-4"></td>
-                                <td class="py-3 px-4"></td>
-                                <td class="py-3 px-4"></td>
+                                <td class="py-3 px-4">{{ $user->name }}</td>
+                                <td class="py-3 px-4">{{ $user->email }}</td>
+                                <td class="py-3 px-4">                                    
+                                    @foreach ($roles as $rol)
+                                        @if ($rol->id == $user->rol_id)
+                                            {{ $rol->name }}
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td class="py-3 px-4">                                    
+                                </td>
                                 
                                 <td class="py-3 px-4 font-semibold">
                                     <button wire:click=""
@@ -78,7 +85,8 @@
                                         Eliminar
                                     </button>
                                 </td>
-                            </tr>                        
+                            </tr>  
+                        @endforeach                      
                     </tbody>
                 </table>
             </div>

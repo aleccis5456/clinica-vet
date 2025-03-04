@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 class GestionRoles extends Component
 {
 
-    public $seach = '';
+    public $search = '';
     public $rolName = '';    
     public $name = '';
     public $email = '';
@@ -22,7 +22,8 @@ class GestionRoles extends Component
 
     public $roles;
     public $users;
-    public $rolUser;    
+    public $rolUser;   
+    public $rolesUsers;
 
     public $modalRol = false;
     public $modalRegistro = false;
@@ -63,7 +64,7 @@ class GestionRoles extends Component
      */
     public function mount(){
         $this->roles = Rol::all();
-        $this->users = User::all();
+        $this->users = User::all();        
     }
 
     public function crearRol(){
@@ -96,19 +97,21 @@ class GestionRoles extends Component
             $this->validate([
                 'name' => 'required',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6'
+                'password' => 'required|min:6',
+                'rol' => 'required|exists:roles,id'
             ]);
     
             $user = User::create([
                 'name' => $this->name,
                 'email' => $this->email,
-                'password' => Hash::make($this->password)
+                'password' => Hash::make($this->password),
+                'rol_id' => $this->rol
             ]);
     
-            RolUser::create([
-                'user_id' => $user->id,
-                'role_id' => $this->rol
-            ]);
+            // RolUser::create([
+            //     'user_id' => $user->id,
+            //     'role_id' => $this->rol
+            // ]);
         }catch(\Exception $e){
             return redirect('/Gestion/usuario')->with('error', $e->getMessage());
         }          

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'rol_id'
     ];
 
     /**
@@ -51,9 +52,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Equipo::class, 'equipo_veterinario', 'veterinario_id', 'equipo_id');
     }
     
-    public function roles(){
-        return $this->belongsTo(Rol::class, 'role_user', 'role_id', 'user_id');
-    }
+    // public function roles(){
+    //     return $this->belongsTo(Rol::class, 'role_user', 'role_id', 'user_id');
+    // }
 
+    public function rol(){
+        return $this->belongsTo(Rol::class, 'rol_id');
+    }
     
 }
