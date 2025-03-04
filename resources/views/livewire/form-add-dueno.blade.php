@@ -5,7 +5,7 @@
     </div>
     {{-- backdrop-blur-xs --}}
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-        <p class="pl-1 py-7 text-lg font-semibold">Gestion de Duenos</p>
+        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Duenos</p>
         @if ($modalAddDueno)
             @include('includes.formduenos.formulario')
         @endif
@@ -79,9 +79,9 @@
                                     @endforeach
                                 </td>
                                 
-                                <td class="py-3 px-4">
+                                <td class="py-3 px-4 font-semibold">
                                     <button wire:click="openModalEdit({{ $dueno->id }})"
-                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
                                     </button>
                                     <button wire:click='opneModalEliminar({{ $dueno->id }})' type="button"

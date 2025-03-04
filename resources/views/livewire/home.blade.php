@@ -1,11 +1,18 @@
 <div class="p-2"> 
-    <nav class=" p-4 text-black text-center border border-gray-100 rounded-lg bg-gray-100 shadow-sm">
-        <div class="container mx-auto">
-            <h1  class="text-2xl font-bold">
-                <a wire:navigate href="{{ route('index') }}">Clínica Veterinaria</a>
-            </h1>
+    <nav class="p-4 text-black border border-gray-100 rounded-lg bg-gray-100 shadow-sm relative">
+        <div class="container mx-auto flex justify-center items-center relative">
+            <h1 class="text-2xl font-bold">
+                <a wire:navigate href="{{ route('index') }}">Clínica Veterinaria</a>                
+            </h1>            
+            <button wire:confirm='estas seguro?' wire:click='logout' class="absolute right-0 cursor-pointer">
+                <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
+                  </svg>  
+            </button>
         </div>
     </nav>
+    
+    
    <!-- Contenedor principal -->
     <div class="container mx-auto p-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -52,7 +59,7 @@
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900/80"></div>
 
                 <div class="relative z-10 p-4 md:p-6">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Historial Clínica</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Consultas</h2>
 
                     <div class="space-y-4 mb-8">
                         <div class="flex items-center text-white/80">
@@ -61,12 +68,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <span>Registro de consultas, diagnósticos y tratamientos</span>
+                            <span>Registro e historial de consultas</span>
                         </div>
 
                     </div>
 
-                    <a href="#"
+                    <a wire:navigate href="{{ route('consultas') }}"
                     class="cursor-pointer inline-flex items-center px-6 py-3 bg-gray-300 hover:bg-gray-800 text-black hover:text-gray-100 font-medium rounded-lg transition duration-300 group">
                         Acceder
                         <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1"
@@ -319,7 +326,7 @@
                       </svg>                      
                 </button>
         
-                <h3 class="text-2xl font-bold text-center text-gray-800">¿Qué deseas registrar?</h3>
+                <h3 class="text-2xl font-bold text-center text-gray-800">¿Qué deseas gestionar?</h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Opción Dueño -->
@@ -340,6 +347,10 @@
         </div>    
         @endif
     </div>
+
+    @if (!Auth::check())
+        @include('login')        
+    @endif
 
     @livewireScripts
 </div>

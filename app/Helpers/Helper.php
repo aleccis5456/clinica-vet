@@ -13,4 +13,8 @@ class Helper{
         return number_format(round($monto, -2), 0, ',', '.');
     }
 
+    public static function edad($fecha){
+        return Carbon::parse($fecha)->age;        
+    }
+
 }
