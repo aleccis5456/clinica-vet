@@ -49,8 +49,8 @@
                 <!-- Card 1 -->
                 @foreach ($mascotas as $mascota)
                 <div
-                class="bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200">
-                <div class="relative">
+                class="max-w-[250px] bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200">
+                <div class="relative ">
                     <img class="rounded-t-lg w-full h-48 object-cover"
                         src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="Grisho" />
                     <div class="absolute bottom-0 left-0 p-2 bg-gray-900/50 text-white text-xs rounded-br-lg">

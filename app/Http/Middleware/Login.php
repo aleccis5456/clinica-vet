@@ -17,7 +17,7 @@ class Login
     public function handle(Request $request, Closure $next): Response
     {
         if(!Auth::check()){
-            return redirect('/iniciar-sesion');
+            return redirect('/');
         }
         return $next($request);
     }
