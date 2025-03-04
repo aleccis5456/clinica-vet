@@ -2,12 +2,20 @@
 
 namespace App\Livewire;
 
+use App\Models\Rol;
+use App\Models\User;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Title('Gestion de usuarios')]
 class GestionRoles extends Component
 {
+
+    public $rolName = '';
+
+    public $roles;
+    public $users;
+
     public $modalRol = false;
     public $modalRegistro = false;
     public $tablaRoles = false;
@@ -42,6 +50,24 @@ class GestionRoles extends Component
         $this->modalRegistro = false;
     }
 
+    public function mount(){
+        $this->roles = Rol::all();
+        $this->users = User::all();
+    }
+
+    public function crearRol(){
+        $this->validate([
+            'rolName' => 'required'
+        ]);
+
+        Rol::create([
+            'name' => $this->rolName
+        ]);
+       
+        $this->rolName = '';
+        $this->closeModalRol();
+        return redirect('/Gestion/usuario')->with('agregado', 'Rol creado con éxito');
+    }
 
     public function render()
     {

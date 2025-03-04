@@ -9,11 +9,11 @@
         <div class="mb-4 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
-                    <button wire:click='openModalAddDueno'
+                    <button wire:click=''
                         class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
                         Registrar Usuario <span class="">+</span>
                     </button>
-                    <button wire:click='openModalAddDueno'
+                    <button wire:click='openModalRol'
                         class="p-2 border text-white border-gray-800 rounded-lg bg-gray-700 cursor-pointer font-semibold hover:font-bold">
                         Registrar Rol <span class="">+</span>
                     </button>
@@ -83,4 +83,7 @@
                 </table>
             </div>
     </main>
+    @if ($modalRol)
+        @include('includes.gestion-roles.modalRoles')
+    @endif
 </div>
