@@ -9,7 +9,7 @@
         <div class="mb-4 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
-                    <button wire:click=''
+                    <button wire:click='openModalRegistro'
                         class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
                         Registrar Usuario <span class="">+</span>
                     </button>
@@ -85,5 +85,9 @@
     </main>
     @if ($modalRol)
         @include('includes.gestion-roles.modalRoles')
+    @endif
+
+    @if ($modalRegistro)
+        @include('includes.gestion-roles.modalRegistro')        
     @endif
 </div>

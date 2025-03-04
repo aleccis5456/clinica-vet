@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    //protected $table = 'users';
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -53,4 +54,6 @@ class User extends Authenticatable
     public function roles(){
         return $this->belongsTo(Rol::class, 'role_user', 'role_id', 'user_id');
     }
+
+    
 }

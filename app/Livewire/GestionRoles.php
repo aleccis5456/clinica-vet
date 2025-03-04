@@ -2,19 +2,27 @@
 
 namespace App\Livewire;
 
+use App\Models\RolUser;
 use App\Models\Rol;
 use App\Models\User;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Illuminate\Support\Facades\Hash;
 
 #[Title('Gestion de usuarios')]
 class GestionRoles extends Component
 {
 
-    public $rolName = '';
+    public $seach = '';
+    public $rolName = '';    
+    public $name = '';
+    public $email = '';
+    public $password = '';
+    public $rol = '';
 
     public $roles;
     public $users;
+    public $rolUser;    
 
     public $modalRol = false;
     public $modalRegistro = false;
@@ -50,12 +58,16 @@ class GestionRoles extends Component
         $this->modalRegistro = false;
     }
 
+    /**
+     * 
+     */
     public function mount(){
         $this->roles = Rol::all();
         $this->users = User::all();
     }
 
     public function crearRol(){
+        
         $this->validate([
             'rolName' => 'required'
         ]);
@@ -75,7 +87,40 @@ class GestionRoles extends Component
         $rol->delete();
         return redirect('/Gestion/usuario')->with('eliminado', 'Rol eliminado con éxito');
     }
+
+    /**
+     * 
+     */
+    public function crearUsuario(){        
+        try{
+            $this->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6'
+            ]);
     
+            $user = User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => Hash::make($this->password)
+            ]);
+    
+            RolUser::create([
+                'user_id' => $user->id,
+                'role_id' => $this->rol
+            ]);
+        }catch(\Exception $e){
+            return redirect('/Gestion/usuario')->with('error', $e->getMessage());
+        }          
+        
+       
+        $this->name = '';
+        $this->email = '';
+        $this->password = '';
+        $this->rol = '';
+        $this->closeModalRegistro();
+        return redirect('/Gestion/usuario')->with('agregado', 'Usuario creado con éxito');
+    }
     public function render()
     {
         return view('livewire.gestion-roles');
