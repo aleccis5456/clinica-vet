@@ -10,14 +10,14 @@
             @include('includes.formduenos.formulario')
         @endif
 
-        <div class="mb-4 border border-gray-100 rounded-lg">
+        <div class="mb-4  rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
                     <button wire:click='openModalAddDueno'
-                            class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
+                        class="p-2  text-white  rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
                         Agregar Dueno <span class="">+</span>
                     </button>
-                </div>                
+                </div>
                 <div class="p-3">
                     <!-- Buscador -->
                     <form wire:submit.prevent='filtrar'
@@ -46,10 +46,12 @@
                         </button>
                     </form>
                 </div>
+            </div>
 
-                <!-- Tabla -->
-                <table class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
-                    <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
+            <!--  Tabla -->
+            <div class="mt-2 rounded-lg overflow-hidden shadow-md ">
+                <table class="min-w-full bg-white rounded-lg hidden md:table">            
+                    <thead class="bg-gray-200 text-gray-800 ">
                         <tr>
                             <th class="py-3 px-4 text-left text-semibold">Nombre</th>
                             <th class="py-3 px-4 text-left text-semibold">Email</th>
@@ -71,14 +73,16 @@
                                         <div class="flex items-center space-x-2">
                                             <span>- {{ $mascota->nombre ?? 'Sin mascota' }}</span>
                                             @if ($mascota->foto)
-                                                <img class="w-12 h-12 rounded-full" src="{{ asset('uploads/mascotas/' . $mascota->foto) }}" alt="Foto de {{ $mascota->nombre }}">
+                                                <img class="w-12 h-12 rounded-full"
+                                                    src="{{ asset('uploads/mascotas/' . $mascota->foto) }}"
+                                                    alt="Foto de {{ $mascota->nombre }}">
                                             @else
                                                 <span>Sin foto</span>
                                             @endif
                                         </div>
                                     @endforeach
                                 </td>
-                                
+
                                 <td class="py-3 px-4 font-semibold">
                                     <button wire:click="openModalEdit({{ $dueno->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
@@ -93,45 +97,46 @@
                         @endforeach
                     </tbody>
                 </table>
-
-                <!-- Versión móvil -->
-                <div class="md:hidden">
-                    @foreach ($duenos as $dueno)
-                        <div class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
-                            <div class="flex justify-between mb-2 bg-white p-1">
-                                <span class="font-medium text-gray-800">Nombre:</span>
-                                <span class="text-gray-600">{{ $dueno->nombre }}</span>
-                            </div>
-                            <div class="flex justify-between mb-2 bg-gray-200 p-1">
-                                <span class="font-medium text-gray-800">Email:</span>
-                                <span class="text-gray-600">{{ $dueno->email }}</span>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <span class="font-medium text-gray-800">Telefono:</span>
-                                <span class="text-gray-600">{{ $dueno->telefono }}</span>
-                            </div>
-                            <div class="flex justify-between mb-2 bg-gray-200 p-1">
-                                <span class="font-medium text-gray-800">Mascota:</span>
-                                @foreach ($dueno->mascotas as $mascota)
-                                    <span class="text-gray-600">{{ $mascota->nombre }}</span>
-                                @endforeach
-                            </div>
-                            <div class="flex justify-end space-x-2 ">
-                                <button wire:click="openModalEdit({{ $dueno->id }})"
-                                    class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                    Editar
-                                </button>
-                                <button wire:click='opneModalEliminar' wire:model='duenoToDelete={{ $dueno->id }}'
-                                    type="button"
-                                    class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
-                                    Eliminar
-                                </button>
-                            </div>
-                        </div>
-                        {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
-                    @endforeach
-                </div>
             </div>
+
+            <!-- Versión móvil -->
+            <div class="md:hidden">
+                @foreach ($duenos as $dueno)
+                    <div class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
+                        <div class="flex justify-between mb-2 bg-white p-1">
+                            <span class="font-medium text-gray-800">Nombre:</span>
+                            <span class="text-gray-600">{{ $dueno->nombre }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Email:</span>
+                            <span class="text-gray-600">{{ $dueno->email }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium text-gray-800">Telefono:</span>
+                            <span class="text-gray-600">{{ $dueno->telefono }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Mascota:</span>
+                            @foreach ($dueno->mascotas as $mascota)
+                                <span class="text-gray-600">{{ $mascota->nombre }}</span>
+                            @endforeach
+                        </div>
+                        <div class="flex justify-end space-x-2 ">
+                            <button wire:click="openModalEdit({{ $dueno->id }})"
+                                class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                Editar
+                            </button>
+                            <button wire:click='opneModalEliminar' wire:model='duenoToDelete={{ $dueno->id }}'
+                                type="button"
+                                class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                    {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
+                @endforeach
+            </div>
+
         </div>
     </main>
 

@@ -16,7 +16,8 @@
 
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
+    
+    <link type="image/png" sizes="16x16" rel="icon" href="{{ asset('images/icons8-dog-16.png') }}">
 
     @vite('resources/css/app.css')
     <title>{{ $title ?? 'Page Title' }}</title>

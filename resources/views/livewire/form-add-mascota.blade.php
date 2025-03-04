@@ -1,6 +1,6 @@
-<div>    
-     <!-- Sidebar -->
-     <div class="">             
+<div>
+    <!-- Sidebar -->
+    <div class="">
         @include('includes.sidebar-add-dueno')
     </div>
 
@@ -14,16 +14,17 @@
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
                     <button wire:click='openModalAdd'
-                            class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:bg-black">
+                        class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:bg-black">
                         Agregar Mascota <span class="">+</span>
                     </button>
-                    <span wire:click='openModalEspecies' class="cursor-pointer p-3  bg-gray-400  rounded-lg font-semibold  hover:bg-gray-800 hover:text-gray-100">
+                    <span wire:click='openModalEspecies'
+                        class="cursor-pointer p-3  bg-gray-400  rounded-lg font-semibold  hover:bg-gray-800 hover:text-gray-100">
                         Agregar Especie +
                     </span>
-                </div>     
+                </div>
                 @if ($modalEspecies)
-                    @include('includes.formMascotas.modalEspecies')           
-                @endif                
+                    @include('includes.formMascotas.modalEspecies')
+                @endif
                 <div class="p-3">
                     <!-- Buscador -->
                     <form wire:submit.prevent='filtrar'
@@ -52,9 +53,11 @@
                         </button>
                     </form>
                 </div>
+            </div>
+            <!-- Tabla -->
 
-                <!-- Tabla -->
-                <table class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
+            <div class="mt-2 rounded-lg overflow-hidden shadow-md ">
+                <table class="min-w-full bg-white rounded-lg hidden md:table">
                     <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                         <tr>
                             <th class="py-3 px-4 text-left text-semibold sr-only">foto</th>
@@ -68,14 +71,16 @@
                     </thead>
 
                     <tbody class="text-gray-800">
-                      @foreach ($mascotas as $mascota)                                              
+                        @foreach ($mascotas as $mascota)
                             <tr wire:key='{{ $mascota->id }}'
                                 class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                                <td class="py-3 px-4"><img class="w-12 h-12 rounded-full" src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt=""></td>
+                                <td class="py-3 px-4"><img class="w-12 h-12 rounded-full"
+                                        src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt=""></td>
                                 <td class="py-3 px-4">{{ $mascota->nombre }} ({{ $mascota->genero }})</td>
                                 <td class="py-3 px-4"> {{ $mascota->especieN->nombre }} </td>
                                 <td class="py-3 px-4"> {{ $mascota->raza }} </td>
-                                <td class="py-3 px-4"> {{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }} </td>
+                                <td class="py-3 px-4"> {{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }}
+                                </td>
                                 <td class="py-3 px-4"> {{ $mascota->dueno->nombre }} </td>
                                 <td class="py-3 px-4 font-semibold">
                                     <button wire:click="openModalEdit({{ $mascota->id }})"
@@ -87,56 +92,58 @@
                                         Eliminar
                                     </button>
                                 </td>
-                            </tr>  
-                        @endforeach                      
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
-
-                <!-- Versión móvil -->
-                <div class="md:hidden">                    
-                    @foreach ($mascotas as $mascota)
-                        <div class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">                            
-                            <div class="flex justify-between mb-2 bg-gray-200 p-1">
-                                <span class="font-medium text-gray-800 sr-only">Foto:</span>
-                                <span class="text-gray-600"><img class="w-12 h-12 rounded-full" src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="" srcset=""></span>
-                            </div>
-                            <div class="flex justify-between mb-2 bg-white p-1">
-                                <span class="font-medium text-gray-800">Nombre:</span>
-                                <span class="text-gray-600">{{ $mascota->nombre }}</span>
-                            </div>
-                            <div class="flex justify-between mb-2 bg-gray-200 p-1">
-                                <span class="font-medium text-gray-800">Especie:</span>
-                                <span class="text-gray-600">{{ $mascota->especieN->nombre }}</span>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <span class="font-medium text-gray-800">Raza:</span>
-                                <span class="text-gray-600">{{ $mascota->raza }}</span>
-                            </div>
-                            <div class="flex justify-between mb-2 bg-gray-200 p-1">
-                                <span class="font-medium text-gray-800">Cumpleaños:</span>                                
-                                    <span class="text-gray-600">{{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }}</span>                                
-                            </div>
-                            <div class="flex justify-between mb-2 bg-gray-200 p-1">
-                                <span class="font-medium text-gray-800">Humano:</span>                                
-                                    <span class="text-gray-600">{{ $mascota->dueno->nombre }}</span>                                
-                            </div>
-                            <div class="flex justify-end space-x-2 ">
-                                <button wire:click=""
-                                    class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                    Editar
-                                </button>
-                                <button 
-                                    type="button"
-                                    class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
-                                    Eliminar
-                                </button>
-                            </div>
-                                                    
-                        </div>
-                        @endforeach    
-                        {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}                    
-                </div>
             </div>
+            <!-- Versión móvil -->
+            <div class="md:hidden">
+                @foreach ($mascotas as $mascota)
+                    <div class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800 sr-only">Foto:</span>
+                            <span class="text-gray-600"><img class="w-12 h-12 rounded-full"
+                                    src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt=""
+                                    srcset=""></span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-white p-1">
+                            <span class="font-medium text-gray-800">Nombre:</span>
+                            <span class="text-gray-600">{{ $mascota->nombre }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Especie:</span>
+                            <span class="text-gray-600">{{ $mascota->especieN->nombre }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium text-gray-800">Raza:</span>
+                            <span class="text-gray-600">{{ $mascota->raza }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Cumpleaños:</span>
+                            <span
+                                class="text-gray-600">{{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Humano:</span>
+                            <span class="text-gray-600">{{ $mascota->dueno->nombre }}</span>
+                        </div>
+                        <div class="flex justify-end space-x-2 ">
+                            <button wire:click=""
+                                class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                Editar
+                            </button>
+                            <button type="button"
+                                class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                Eliminar
+                            </button>
+                        </div>
+
+                    </div>
+                @endforeach
+                {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
+            </div>
+
         </div>
     </main>
 

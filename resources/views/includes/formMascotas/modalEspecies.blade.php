@@ -47,7 +47,7 @@
 
         @if ($tableEspecies)        
         <div>
-            <table
+            <tables
                 class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
                 <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                     <tr>
