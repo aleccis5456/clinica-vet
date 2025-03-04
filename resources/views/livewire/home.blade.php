@@ -18,7 +18,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
             <!-- Gestión de pacientes -->
-            <div class="bg-cover bg-center rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 relative"
+            
+            <div id="gestion-pacientes" class="bg-cover bg-center rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 relative"
                 style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/gestion-pacientes.jpg') }}');">
 
                 <!-- Overlay con efecto de degradado -->
@@ -52,7 +53,7 @@
 
 
             <!-- Historia clínica -->
-            <div class="bg-cover bg-center rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 relative"
+            <div id="consultas" class="bg-cover bg-center rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 relative"
                 style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/historial.jpeg') }}');">
 
                 <!-- Overlay con efecto de degradado -->
@@ -187,7 +188,7 @@
 
                     </div>
 
-                    <a href="#"
+                    <a href=""
                         class="cursor-pointer inline-flex items-center px-6 py-3 bg-gray-300 hover:bg-gray-800 text-black hover:text-gray-100 font-medium rounded-lg transition duration-300 group">
                         Acceder
                         <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1"
@@ -348,9 +349,6 @@
         @endif
     </div>
 
-    @if (!Auth::check())
-        @include('login')        
-    @endif
-
+    
     @livewireScripts
 </div>

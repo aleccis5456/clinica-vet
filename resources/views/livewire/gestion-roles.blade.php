@@ -90,6 +90,44 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Muestra los datos en dispositivos móviles -->
+            <div class="md:hidden">
+                @foreach ($users as $user)
+                    <div class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
+                        <div class="flex justify-between mb-2 bg-white p-1">
+                            <span class="font-medium text-gray-800">Nombre:</span>
+                            <span class="text-gray-600">{{ $user->nombre }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Email:</span>
+                            <span class="text-gray-600">{{ $user->email }}</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="font-medium text-gray-800">Telefono:</span>
+                            <span class="text-gray-600"></span>
+                        </div>
+                        <div class="flex justify-between mb-2 bg-gray-200 p-1">
+                            <span class="font-medium text-gray-800">Mascota:</span>
+                            
+                                <span class="text-gray-600"></span>
+                            
+                        </div>
+                        <div class="flex justify-end space-x-2 ">
+                            <button wire:click="openModalEdit({{ $user->id }})"
+                                class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                Editar
+                            </button>
+                            <button wire:click='opneModalEliminar' wire:model='userToDelete={{ $user->id }}'
+                                type="button"
+                                class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                    {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
+                @endforeach
+            </div>
     </main>
     @if ($modalRol)
         @include('includes.gestion-roles.modalRoles')

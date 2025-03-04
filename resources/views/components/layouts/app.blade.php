@@ -26,6 +26,11 @@
 <body>
     <x-alertas />
     {{ $slot }}
+
+    @if (!Auth::check())
+        @include('login')        
+    @endif
+
 </body>
 
 </html>

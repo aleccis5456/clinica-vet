@@ -23,6 +23,7 @@ Route::get('/registrar/mascota', FormAddMascota::class)->name('add.mascota');
 Route::get('/consultas', Consultas::class)->name('consultas');
 Route::get('/Gestion/usuario', GestionRoles::class)->name('gestion.roles');
 
+
 // Route::middleware(Login::class)->group(function () {
 //     Route::get('/', Home::class)->name('index');
 //     Route::get('/registrar/dueno', FormAddDueno::class)->name('add.dueno');

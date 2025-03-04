@@ -11,6 +11,6 @@ class Permiso extends Model
     protected $fillable = ['name'];
 
     public function roles(){
-        return $this->belongsTo(Rol::class, 'permisos_rol', 'permisi_id', 'rol_id');
+        return $this->belongsTo(Rol::class, 'permisos_rol', 'permiso_id', 'rol_id');
     }
 }

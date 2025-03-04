@@ -59,7 +59,7 @@ class AuthController extends Controller
 
         if (!$user) {
             return back()->with('warning', 'El correo electrónico no está registrado.');
-            // return redirect()->route('login')->with('warning', 'El correo electrónico no está registrado.');
+
         }
 
         if (!Hash::check($request->password, $user->password)) {
@@ -67,9 +67,8 @@ class AuthController extends Controller
         }
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            return redirect()->intended('/');
-            //return back();
+            Auth::user();
+            return redirect()->intended('/');            
         } else {
             Auth::logout();
             Session::flush();

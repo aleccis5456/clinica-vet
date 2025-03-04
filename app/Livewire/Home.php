@@ -10,7 +10,7 @@ use Livewire\Component;
 class Home extends Component
 {
     public $modal = false;
-    public $register = false;
+    public $register = false;    
 
     public function openRegister(){
         $this->register = true;
@@ -30,6 +30,7 @@ class Home extends Component
 
     public function logout(){
         Auth::logout();
+        $this->redirect('/');
     }
 
     public function render()

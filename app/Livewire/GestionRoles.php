@@ -20,15 +20,28 @@ class GestionRoles extends Component
     public $password = '';
     public $rol = '';
 
+    public $permisos;
     public $roles;
     public $users;
     public $rolUser;   
     public $rolesUsers;
+    public $rolToConf;
 
+    public $modelPermisos = false;
     public $modalRol = false;
     public $modalRegistro = false;
     public $tablaRoles = false;
 
+    /**
+     * 
+     */
+    public function openModelPermisos($rolToConf){
+        $this->rolToConf = $rolToConf;
+        $this->modelPermisos = true;
+    }
+    public function closeModelPermisos(){
+        $this->modelPermisos = false;
+    }
     /**
      * 
      */

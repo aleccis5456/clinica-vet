@@ -1,6 +1,6 @@
 <div id="" tabindex="-1"
-    class=" fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black/50">
-    <div class="relative p-4 w-full max-w-md">
+    class="outline-none overflow-x-hidden overflow-y-auto fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black/50 ">
+    <div class="relative p-4 w-full max-w-md max-h-[650px]">
         <button type="button"
             class="m-2 absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             wire:click="closeModalRol">
@@ -12,7 +12,7 @@
         </button>
 
         <form wire:submit='crearRol'
-            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg  {{ $tablaRoles == true ? 'rounded-t-lg' : 'rounded-lg' }} max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
+            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg  {{ $tablaRoles == true ? 'rounded-t-lg' : 'rounded-lg' }} outline-none overflow-x-hidden overflow-y-auto">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Rol</p>
             <!--  Campo para relacionar don una persona -->
             <div class="mb-4">
@@ -46,12 +46,12 @@
 
 
         @if ($tablaRoles)
-            <div>
-                <table class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
-                    <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
+            <div class="max-h-[300px] overflow-y-auto rounded-b-lg">
+                <table class="min-w-full bg-white rounded-b-lg shadow-md ">
+                    <thead class="bg-gray-200 text-gray-800 border-t border-gray-300 sticky top-0">
                         <tr>
                             <th class="py-3 px-4 text-left text-semibold">Roles</th>
-                            <th class="py-3 px-4 text-left text-semibold sr-only">Acción</th>
+                            <th class="py-3 px-4 text-left text-semibold sr-only">Acción</th>                            
                         </tr>
                     </thead>
 
@@ -59,11 +59,15 @@
                         @foreach ($roles as $rol)
                         <tr wire:key='{{ $rol->id }}' class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
                             <td class="py-3 px-4">{{ $rol->name }}</td>
-                            <td class="py-3 px-4">
-                                <button wire:click='eliminarRol({{ $rol->id }})' type="button"
-                                    class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
-                                    Eliminar
+                            <td class="py-3 px-4 font-semibold">
+                                <button type="button"
+                                    class="text-xs cursor-pointer ml-2 text-gray-800 bg-gray-300 hover:bg-gray-500 focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1">
+                                      Conf. <p>permisos</p>
                                 </button>
+                                <button wire:click='eliminarRol({{ $rol->id }})' type="button"
+                                    class="cursor-pointer ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                    Eliminar
+                                </button >                                
                             </td>
                         </tr>
                         @endforeach                        
