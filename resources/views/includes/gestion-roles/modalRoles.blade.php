@@ -60,7 +60,7 @@
                         <tr wire:key='{{ $rol->id }}' class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
                             <td class="py-3 px-4">{{ $rol->name }}</td>
                             <td class="py-3 px-4">
-                                <button wire:click='' type="button"
+                                <button wire:click='eliminarRol({{ $rol->id }})' type="button"
                                     class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                     Eliminar
                                 </button>

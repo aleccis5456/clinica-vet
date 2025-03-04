@@ -98,7 +98,16 @@ class FormAddMascota extends Component
         $this->tableEspecies = false;
     }
 
-    public function eliminarEspecie(Especie $especie){                 
+    public function eliminarEspecie($especie){                 
+        $especie = Especie::find($especie);
+        if(!$especie){
+            $this->redirect('/registrar/mascota');
+        }
+
+        if($especie->mascotas->count() > 0){
+            return redirect('/registrar/mascota')->with('error', 'No se puede eliminar la especie, tiene mascotas asociadas');
+
+        }
         $especie->delete();
 
         return redirect('/registrar/mascota')->with('eliminado', "Especie borrado");

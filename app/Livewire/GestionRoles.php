@@ -69,6 +69,13 @@ class GestionRoles extends Component
         return redirect('/Gestion/usuario')->with('agregado', 'Rol creado con éxito');
     }
 
+
+    public function eliminarRol($id){
+        $rol = Rol::find($id);
+        $rol->delete();
+        return redirect('/Gestion/usuario')->with('eliminado', 'Rol eliminado con éxito');
+    }
+    
     public function render()
     {
         return view('livewire.gestion-roles');
