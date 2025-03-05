@@ -5,12 +5,16 @@
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
         <p class="pl-1 py-7 text-4xl font-semibold">Inventario </p>
-        <div class="mb-4 rounded-lg">
-            <div class="bg-gray-200 rounded-lg ">
+        <div class="mb-4">
+            <div class="bg-gray-200 rounded-t-lg">
                 <div class="p-4">
-                    <button wire:click='openModalAddDueno'
-                        class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
+                    <button wire:click='openModalAgregar'
+                        class="p-2 text-gray-200 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:bg-gray-700 hover:text-white">
                         Agregar Producto <span class="">+</span>
+                    </button>
+                    <button wire:click='openModalCategoria'
+                        class="p-2 text-gray-900 rounded-lg bg-gray-400 cursor-pointer font-semibold hover:bg-gray-500 hover:text-gray-100">
+                        Agregar Categoria <span class="">+</span>
                     </button>
                 </div>
                 <div class="p-3">
@@ -22,12 +26,12 @@
                             placeholder="Buscar por nombre">
 
                         <!-- Botón para limpiar el input -->
-                        {{-- @if ($search)
+                        @if ($search)
                             <button type="button" wire:click="flag"
                                 class="px-1.5 py-0.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200  transition">
                                 ✕
                             </button>
-                        @endif --}}
+                        @endif
 
                         <!-- Botón de búsqueda -->
 
@@ -41,6 +45,55 @@
                     </form>
                 </div>
             </div>
+
+
+            <div class="pt-2 ">
+                <table class="min-w-full bg-white rounded-lg shadow-md hidden md:table">
+                    <thead class="bg-gray-200 text-gray-800 rounded-lg">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-semibold sr-only">foto</th>
+                            <th class="py-3 px-4 text-left text-semibold">Producto</th>
+                            <th class="py-3 px-4 text-left text-semibold">Descripcion</th>
+                            <th class="py-3 px-4 text-left text-semibold">Categoria</th>
+                            <th class="py-3 px-4 text-left text-semibold">Precio</th>
+                            <th class="py-3 px-4 text-left text-semibold">Accions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-gray-800 z-50">
+                        @foreach ($productos as $producto)                                                    
+                            <tr wire:key=''
+                                class="hover:bg-gray-100 transition duration-300">
+                                <td class="py-3 px-4 overflow-visible"><img class="w-12 h-12  rounded-md hover:scale-[500%] hover:translate-x-16 transition-transform duration-200 ease-in-out" src="{{ asset("uploads/productos/$producto->foto") }}" alt="" srcset=""></td>
+                                <td class="py-3 px-4">{{ $producto->nombre }}</td>
+                                <td class="py-3 px-4 max-w-[300px]">{{ Str::words($producto->descripcion, 9, ' ') }} <span class=" underline text-blue-600">ver mas</span></td>
+                                <td class="py-3 px-4">                                    
+                                    {{ $producto->categoria }}    
+                                </td>
+                                <td class="py-3 px-4">{{  App\Helpers\Helper::formatearMonto($producto->precio) }} Gs.</td>
+                                <td class="py-3 px-4 font-semibold">
+                                    <button wire:click=""
+                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        Editar
+                                    </button>
+                                    <button wire:click='' type="button"
+                                        class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>  
+                        @endforeach           
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
+
+    @if ($modalAgregar)
+        @include('includes.inventario.modalAddProductos')        
+    @endif
+
+    @if ($modalCategoria)
+        @include('includes.inventario.modalAddCategoria')        
+    @endif
 </div>

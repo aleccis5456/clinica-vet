@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MascotaController;
+use App\Http\Controllers\InventarioController;
 use App\Livewire\Consultas;
 use App\Livewire\FormAddDueno;
 use App\Livewire\FormAddMascota;
@@ -16,8 +17,7 @@ Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('ma
 Route::get('/registro', [AuthController::class, 'registerForm'])->name('auth.registerform');
 Route::post('/registro/save', [AuthController::class, 'register'])->name('auth.register');
 Route::post('/iniciar-sesion', [AuthController::class, 'login'])->name('auth.login');
-
-
+Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
 
 Route::get('/', Home::class)->name('index');
 Route::middleware(Login::class)->group(function () {    

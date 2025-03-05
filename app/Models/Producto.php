@@ -13,11 +13,17 @@ class Producto extends Model
         'descripcion', 	
         'categoria', 	
         'precio', 	
-        'stock_actual'
+        'precio_compra', 	
+        'stock_actual', 	
+        'foto'
     ];
 
     public function movimientos(){
         return $this->belongsToMany(Movimiento::class, 'movimiento_productos', 'producto_id', 'movimiento_id');
+    }
+
+    public function categoria(){
+        return $this->belongsTo(Categoria::class, 'categoria');
     }
     
     
