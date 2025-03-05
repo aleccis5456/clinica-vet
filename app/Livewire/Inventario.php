@@ -22,6 +22,18 @@ class Inventario extends Component
     public $modalCategoria = false;
     public $modalEditar = false;
     public $modalEliminar = false;
+    public $tableCategoria = false;
+
+    /**
+     * 
+     */
+    public function opneTableCategoria()
+    {
+        $this->tableCategoria = true;
+    }   
+    public function closeTableCategoria(){
+        $this->tableCategoria = false;
+    }
 
     /**
      * 
