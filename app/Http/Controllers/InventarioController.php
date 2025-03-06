@@ -11,17 +11,15 @@ class InventarioController extends Controller
     public function store(Request $request)
     {        
 
-        try{
-
-        
+        try{        
             $request->validate([
                 'nombre' => 'required',
-                'descripcion' => 'required',            
+                'descripcion' => 'nullable',            
                 'categoria' => 'required|exists:categorias,id',            
                 'precio' => 'required',            
-                'precio_compra' => 'required',
+                'precio_compra' => 'nullable',
                 'stock_actual' => 'required',
-                'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',            
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',            
             ]);
 
             if ($request->hasFile('foto')) {
@@ -38,11 +36,11 @@ class InventarioController extends Controller
                 'precio' => $request->precio,
                 'precio_compra' => $request->precio_compra,
                 'stock_actual' => $request->stock_actual,
-                'foto' => $imageName
+                'foto' => $imageName ?? null,
             ]);
             
         }catch(\Exception $e){
-            throw new Exception($e->getMessage());
+            return redirect()->route('inventario')->with('error', $e->getMessage());
         }
 
         return back()->with('agregado', 'Producto Agregado');

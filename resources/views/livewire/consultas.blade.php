@@ -46,27 +46,46 @@
             <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
 
                 <!-- Card 1 -->
-                @foreach ($mascotas as $mascota)
-                    <div
-                        class="max-w-[250px] bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200">
+                @foreach ($consultas as $consulta)
+                <div class="max-w-[250px] bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
+                    <!-- Tag de estado -->
+                    <div class="absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white">
+                       {{$consulta->estado}}
+                    </div>
+                
+                    <!-- Botón de configuración -->
+                    <button wire:click="openModalConfig({{ $consulta->id }})"
+                        class="cursor-pointer absolute top-2 right-2 z-10 p-1 bg-white bg-opacity-20 rounded-full 
+                                hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
+                                <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
+                                  </svg>
+                                  
+                          
+                    </button>
+
                         <div class="relative ">
-                            <img class="rounded-t-lg w-full h-48 object-cover"
-                                src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="Grisho" />
+                            @foreach ($mascotas as $mascota)
+                                @if ($mascota->id == $consulta->mascota_id)
+                                    <img class="rounded-t-lg w-full h-48 object-cover"
+                                    src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="Grisho" />
+                                @endif                            
+                            @endforeach                            
                             <div class="absolute bottom-0 left-0 p-2 bg-gray-900/50 text-white text-xs rounded-br-lg">
-                                {{ $mascota->especieN->nombre }} | {{ $mascota->raza }} |
-                                {{ App\Helpers\Helper::edad($mascota->nacimiento) }} años
+                                {{ $consulta->mascota->especieN->nombre }} | {{ $consulta->mascota->raza }} |
+                                {{ App\Helpers\Helper::edad($consulta->mascota->nacimiento) }} años
                             </div>
                         </div>
                         <div class="p-4 flex flex-col gap-2">
                             <div class="flex justify-between items-center">
-                                <h2 class="text-lg font-semibold">{{ $mascota->nombre }} <span
-                                        class="text-xs text-gray-600 font-normal">| {{ $mascota->genero }}</span></h2>
+                                <h2 class="text-lg font-semibold">{{ $consulta->mascota->nombre }} <span
+                                        class="text-xs text-gray-600 font-normal">| {{ $consulta->mascota->genero }}</span></h2>
                                 <span class="text-xs text-gray-500 flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
-                                    {{ $mascota->dueno->nombre }}
+                                    {{ $consulta->mascota->dueno->nombre }}
                                 </span>
                             </div>
                             <div class="flex gap-4 text-gray-600 text-sm">
@@ -83,7 +102,7 @@
                                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                     </svg>
                                     <span>Registro:
-                                        {{ App\Helpers\Helper::formatearFecha($mascota->created_at) }}</span>
+                                        {{ App\Helpers\Helper::formatearFecha($consulta->mascota->created_at) }}</span>
                                 </div>
                             </div>
                             <div class="flex justify-end">
@@ -98,5 +117,10 @@
 
     @if ($addConsulta)
         @include('includes.consultas.modalAdd')
+    @endif
+
+    @if ($modalConfig)
+        @include('includes.consultas.modalConfig')
+        
     @endif
 </div>

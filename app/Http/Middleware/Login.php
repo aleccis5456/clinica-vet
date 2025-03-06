@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,8 +17,14 @@ class Login
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!Auth::check()){
-            return redirect('/');
+        if (Auth::check()) {
+            $lastActivity = session('lastActivityTime', now());
+            if (now()->diffInMinutes($lastActivity) > config('session.lifetime')) {
+                Auth::logout();
+                Session::flush();
+                return redirect('/login')->with('message', 'Tu sesión ha expirado por inactividad.');
+            }
+            session(['lastActivityTime' => now()]);
         }
         return $next($request);
     }

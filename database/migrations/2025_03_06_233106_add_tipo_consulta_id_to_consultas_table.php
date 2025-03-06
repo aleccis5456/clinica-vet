@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('consultas', function (Blueprint $table) {
-            $table->string('estado')->after('notas')->default('Pendiente');
+            //
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('consultas', function (Blueprint $table) {
-            $table->dropColumn('estado');
+            //
         });
     }
 };

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('consultas', function (Blueprint $table) {
-            $table->string('estado')->after('notas')->default('Pendiente');
+        Schema::create('tipo_consultas', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('consultas', function (Blueprint $table) {
-            $table->dropColumn('estado');
-        });
+        Schema::dropIfExists('tipo_consultas');
     }
 };

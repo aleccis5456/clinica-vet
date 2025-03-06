@@ -87,10 +87,6 @@
                 </div>
             </div>
 
-
-
-
-
             <!-- Agenda de citas -->
             <div class="bg-cover bg-center rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 relative"
                 style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/agenda.webp') }}');">
@@ -99,7 +95,7 @@
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900/80"></div>
 
                 <div class="relative z-10 p-4 md:p-6">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Agenda de Citas</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Agenda</h2>
 
                     <div class="space-y-4 mb-8">
                         <div class="flex items-center text-white/80">

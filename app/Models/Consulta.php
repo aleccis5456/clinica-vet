@@ -25,6 +25,6 @@ class Consulta extends Model
     }
 
     public function veterinario(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'veterinario_id');
     }
 }
