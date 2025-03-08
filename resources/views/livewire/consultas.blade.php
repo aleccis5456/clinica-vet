@@ -6,13 +6,20 @@
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
         <p class="pl-1 py-7 text-4xl font-semibold">Consultas <span class="text-lg"> | Historial clinico</span></p>
-        <div class="mb-4 rounded-lg">
+        <div class="mb-4 rounded-lg">            
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
                     <button wire:click='opneAddConsulta'
-                        class="p-2 border text-white border-gray-900 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:font-bold">
-                        Registrar Consulta <span class="">+</span>
+                        class="p-2 border border-gray-900 text-white rounded-lg bg-gray-800 cursor-pointer font-semibold hover:bg-gray-700 hover:font-bold">
+                        Registrar Consulta <span>+</span>
                     </button>
+
+                    <button wire:click='openTipoConsulta'
+                        class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold hover:bg-gray-300 hover:font-bold">
+
+                        Agregar Tipo de Consulta <span>+</span>
+                    </button>
+
                 </div>
                 <div class="p-3">
                     <form wire:submit.prevent=''
@@ -44,33 +51,57 @@
             </div>
 
             <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+                @php
+                    $estados = [
+                        'Agendado' => 'bg-[#007bff]',
+                        'Reprogramado' => 'bg-[#6f42c1]',
+                        'Pendiente' => 'bg-[#fd7e14]',
+                        'En Espera' => 'bg-[#ffc107]',
+                        'En consultorio' => 'bg-[#28a745]',
+                        'Finalizado' => 'bg-[#155724]',
+                        'No asistió' => 'bg-[#6c757d]',
+                        'Cancelado' => 'bg-[#dc3545]',
+                    ];
+                @endphp
 
                 <!-- Card 1 -->
                 @foreach ($consultas as $consulta)
-                <div class="max-w-[250px] bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
-                    <!-- Tag de estado -->
-                    <div class="absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-xs font-semibold bg-green-500 text-white">
-                       {{$consulta->estado}}
-                    </div>
-                
-                    <!-- Botón de configuración -->
-                    <button wire:click="openModalConfig({{ $consulta->id }})"
-                        class="cursor-pointer absolute top-2 right-2 z-10 p-1 bg-white bg-opacity-20 rounded-full 
+                    <div
+                        class="max-w-[250px] bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
+                        <!-- Tag de estado -->
+                        <select name="" id="" wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
+                            class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-xs text-white font-semibold
+                        {{ $estados[$consulta->estado] ?? 'bg-gray-300' }}"
+                            onchange="cambiarColor(this)">
+                            @foreach ($estados as $estado => $color)
+                                <option value="{{ $estado }}" 
+                                    {{ $estado == $consulta->estado ? 'selected' : '' }}>
+                                    {{ $estado }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <!-- Botón de configuración -->
+                        <button wire:click="openModalConfig({{ $consulta->id }})"
+                            class="cursor-pointer absolute top-2 right-2 z-10 p-1 bg-white bg-opacity-20 rounded-full 
                                 hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                                <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"/>
-                                  </svg>
-                                  
-                          
-                    </button>
+                            <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4" />
+                            </svg>
+
+
+                        </button>
 
                         <div class="relative ">
                             @foreach ($mascotas as $mascota)
                                 @if ($mascota->id == $consulta->mascota_id)
                                     <img class="rounded-t-lg w-full h-48 object-cover"
-                                    src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="Grisho" />
-                                @endif                            
-                            @endforeach                            
+                                        src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="Grisho" />
+                                @endif
+                            @endforeach
                             <div class="absolute bottom-0 left-0 p-2 bg-gray-900/50 text-white text-xs rounded-br-lg">
                                 {{ $consulta->mascota->especieN->nombre }} | {{ $consulta->mascota->raza }} |
                                 {{ App\Helpers\Helper::edad($consulta->mascota->nacimiento) }} años
@@ -79,7 +110,8 @@
                         <div class="p-4 flex flex-col gap-2">
                             <div class="flex justify-between items-center">
                                 <h2 class="text-lg font-semibold">{{ $consulta->mascota->nombre }} <span
-                                        class="text-xs text-gray-600 font-normal">| {{ $consulta->mascota->genero }}</span></h2>
+                                        class="text-xs text-gray-600 font-normal">|
+                                        {{ $consulta->mascota->genero }}</span></h2>
                                 <span class="text-xs text-gray-500 flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -121,6 +153,19 @@
 
     @if ($modalConfig)
         @include('includes.consultas.modalConfig')
-        
     @endif
+
+    @if ($tipoConsulta)
+        @include('includes.consultas.modalTipoConsulta')
+    @endif
+
+
+    <script>
+        function cambiarColor(select) {
+            let colores = @json($estados); // Pasamos los colores de Blade a JavaScript
+            select.className = "estado-select absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-xs text-white " +
+                (colores[select.value] || "bg-gray-300");
+        }
+    </script>
+
 </div>

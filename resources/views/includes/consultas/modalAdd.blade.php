@@ -12,7 +12,7 @@
             <span class="sr-only">Cerrar</span>
         </button>
         <form wire:submit.prevent="crearConsulta"
-            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">            
+            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
             <!-- Título -->
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Consulta</p>
 
@@ -32,6 +32,22 @@
                 @enderror
             </div>
 
+            <!-- Tipo -->
+            <div class="mb-4">
+                <label class="block text-gray-800 font-medium mb-2">Tipo de Consulta</label>
+                <select wire:model="tipo"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                    <option value="">Selecciona un tipo</option>
+                    @foreach ($tipoConsultas as $tipoConsulta)
+                        <option value="{{ $tipoConsulta->id }}">{{ $tipoConsulta->nombre }} |
+                            {{ App\Helpers\Helper::formatearMonto($tipoConsulta->precio) }}Gs.</option>
+                    @endforeach
+                </select>
+                @error('tipo')
+                    <span class="text-red-700 underline">{{ $message }}</span>
+                @enderror
+            </div>
+
             <!-- Veterinario -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Veterinario</label>
@@ -47,7 +63,7 @@
                         @foreach ($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
-                    </optgroup>                    
+                    </optgroup>
                 </select>
                 @error('veterinario_id')
                     <span class="text-red-700 underline">{{ $message }}</span>
@@ -57,27 +73,18 @@
             <!-- Fecha -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Fecha</label>
-                <input type="date" wire:model="fecha" 
-
+                <input type="date" wire:model="fecha"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 @error('fecha')
                     <span class="text-red-700 underline">{{ $message }}</span>
                 @enderror
             </div>
 
-            <!-- Tipo -->
             <div class="mb-4">
-                <label class="block text-gray-800 font-medium mb-2">Tipo de Consulta</label>
-                <select wire:model="tipo"
+                <label class="block text-gray-800 font-medium mb-2">Hora</label>
+                <input type="time" wire:model="hora"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                    <option value="">Selecciona un tipo</option>
-                    <option value="Consulta general">Consulta general</option>
-                    <option value="Consulta general">Estetica (Baño y peluqueria)</option>
-                    <option value="Vacunación">Vacunación</option>
-                    <option value="Cirugía">Cirugía</option>
-                    <option value="Emergencia">Emergencia</option>
-                </select>
-                @error('tipo')
+                @error('fecha')
                     <span class="text-red-700 underline">{{ $message }}</span>
                 @enderror
             </div>

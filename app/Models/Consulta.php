@@ -17,7 +17,10 @@ class Consulta extends Model
         'sintomas', 	
         'diagnostico', 	
         'tratamiento', 	
-        'notas'
+        'notas',
+        'estado',
+        'tipo_consulta_id',
+        'hora'
     ];
 
     public function mascota(){
@@ -26,5 +29,9 @@ class Consulta extends Model
 
     public function veterinario(){
         return $this->belongsTo(User::class, 'veterinario_id');
+    }
+
+    public function tipoConsulta(){
+        return $this->belongsTo(TipoConsulta::class, 'tipo_consulta_id');
     }
 }
