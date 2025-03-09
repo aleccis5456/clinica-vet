@@ -32,7 +32,9 @@
                     </div>
                 </div>
             @endif
-            <form wire:submit.prevent='update'>
+
+            <!-- FORMULARIO PARA CAMBIAR DE VETERINARIO -->
+            <form wire:submit.prevent='updateVet'>
                 <div class="shadow-lg rounded-lg p-2 bg-gray-100 mt-3">
                     <div class="grid grid-cols-2 rounded-lg gap-4 mt-2 hover:bg-gray-100">
                         <!-- grid de foto -->

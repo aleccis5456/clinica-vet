@@ -41,6 +41,27 @@ class Consultas extends Component
     public $productoConsumido;  
     public $q;  
     public $cantidad = 1;
+    public $x = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+
+
+    /**
+     * comprueba que hay ningun array vacio 
+     */
+    public function comprobarSession(){
+        $sessionConProductos = [];
+        $sessionVacia = [];
+        foreach($this->x as $x){
+            if(empty(session('consumo')[$x]) == true){
+                $sessionVacia[] = empty(session('consumo')[$x]);
+            }else{
+                $sessionConProductos[] = empty(session('consumo')[$x]);
+            }            
+        }
+
+        if(count($sessionVacia) == 20){            
+            Session::forget('consumo');
+        }                
+    }
 
     /**
      * 
@@ -81,11 +102,9 @@ class Consultas extends Component
         if (!$producto) {
             return redirect()->route('consultas')->with('error', 'Hubo un error al procesar el producto');
         }
-    
-        // Obtener la sesión de consumo
+
         $consumo = session('consumo', []);
-    
-        // Si la consulta aún no tiene productos, inicializarla
+            
         if (!isset($consumo[$consultaId])) {
             $consumo[$consultaId] = [];
         }
@@ -95,16 +114,14 @@ class Consultas extends Component
         foreach ($consumo[$consultaId] as &$item) {
             if ($item['productoId'] == $producto->id) {
                 if ($item['productoCompleto']['precio'] == $item['precio']) {
-                    $item['cantidad']++; // Incrementa la cantidad
+                    $item['cantidad']++;
                     $contador++;
-                    break; // Sale del bucle porque ya se encontró el producto
+                    break;
                 } else {
                     return back();
                 }
             }
-        }
-    
-        // Si no se encontró el producto en la sesión, lo agrega como nuevo
+        }            
         if ($contador == 0) {
             $consumo[$consultaId][] = [   
                 'productoId' => $producto->id,
@@ -134,12 +151,11 @@ class Consultas extends Component
             $consumo[$consultaId][$index]['cantidad']--;
         } else {
             unset($consumo[$consultaId][$index]);
-            session(['consumo' => $consumo]); // Guardar la sesión solo cuando se elimina
-         //   return redirect()->route('consultas'); // Redirigir solo cuando se borra el índice            
+            session(['consumo' => $consumo]);
+         //   return redirect()->route('consultas');
         }
     
         session(['consumo' => $consumo]); // Guardar la sesión después de modificar
-
     }
     
     
@@ -316,12 +332,13 @@ class Consultas extends Component
 
 
     /**
-     * 
+     * funciton para cambiar veterinario
      */
-    public function update(){        
+    public function updateVet(){        
         $this->validate([
             'cambiarVetId' => 'sometimes',            
         ]);
+
         
         try{
             $consulta = Consulta::find($this->consultaToEdit->id);
@@ -369,13 +386,12 @@ class Consultas extends Component
 
         $this->consultas = Consulta::all();        
         $this->tipoConsultas = TipoConsulta::all();
-        
+        $this->comprobarSession();
     }   
 
 
     public function render()
-    {          
-
+    {                           
         return view('livewire.consultas');
     }
 }
