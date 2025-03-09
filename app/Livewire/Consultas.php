@@ -40,28 +40,26 @@ class Consultas extends Component
     public $tablaDeProductos = false;
     public $productoConsumido;  
     public $q;  
-    public $cantidad = 1;
-    public $x = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-
+    public $cantidad = 1;    
 
     /**
      * comprueba que hay ningun array vacio 
      */
-    public function comprobarSession(){
-        $sessionConProductos = [];
-        $sessionVacia = [];
-        foreach($this->x as $x){
-            if(empty(session('consumo')[$x]) == true){
-                $sessionVacia[] = empty(session('consumo')[$x]);
-            }else{
-                $sessionConProductos[] = empty(session('consumo')[$x]);
-            }            
-        }
-
-        if(count($sessionVacia) == 20){            
+    public function comprobarSession() {
+        $sessionConsumo = session('consumo', []);
+    
+        // Filtrar los valores vacíos
+        $sessionConsumo = array_filter($sessionConsumo, function ($productos) {
+            return !empty($productos);
+        });
+    
+        if (empty($sessionConsumo)) {
             Session::forget('consumo');
-        }                
+        } else {
+            session(['consumo' => $sessionConsumo]);
+        }
     }
+    
 
     /**
      * 
@@ -316,7 +314,7 @@ class Consultas extends Component
     }
 
     /**
-     * 
+     * funcion que actualiza el estado desde la vista principal de las consultas, <select>
      */
     public function updateEstado($consultaID, $estadoNuevo){        
         try{
@@ -357,6 +355,13 @@ class Consultas extends Component
         }
 
     }
+    /**
+     * formulario para editar la consulta
+     */
+    public function updateConsulta(){
+           
+    }
+
     /**
      * 
      */

@@ -34,4 +34,10 @@ class Consulta extends Model
     public function tipoConsulta(){
         return $this->belongsTo(TipoConsulta::class, 'tipo_consulta_id');
     }
+
+    public function productos()
+{
+    return $this->belongsToMany(Producto::class, 'consulta_productos', 'consulta_id', 'producto_id');
+}
+
 }

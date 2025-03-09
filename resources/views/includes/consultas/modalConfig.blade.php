@@ -101,6 +101,7 @@
                 </div>
             </form>
 
+            <!-- MUESTRA LOS PRODUCTOS -->
             @php
                 $consumo = session('consumo')[$consultaToEdit->id] ?? [];
             @endphp
@@ -210,7 +211,7 @@
             </form>
 
             <!-- FORMULARIO -->
-            <form action="">
+            <form >
                 <!-- CAMBIAR ESTADO -->
                 <div class="mb-5 mt-5">
                     <label class="block text-gray-800 font-medium mb-2">Cambiar Estado</label>
