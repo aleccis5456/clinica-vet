@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Login;
 use App\Livewire\GestionRoles;
 use App\Livewire\Inventario;
+use Illuminate\Support\Facades\Session;
+
 
 Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
 Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
@@ -28,3 +30,12 @@ Route::middleware(Login::class)->group(function () {
     Route::get('/Inventario', Inventario::class)->name('inventario');
 });
 
+
+Route::get('borrar-session', function(){
+    Session::forget('consumo');
+    return back();
+});
+
+Route::get('ver-sessiones', function(){
+    dd(session('consumo'));
+});

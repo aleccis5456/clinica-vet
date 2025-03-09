@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Mascota;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Illuminate\Support\Facades\Session;
 
 #[Title('Consultas')]
 class Consultas extends Component
@@ -60,7 +61,9 @@ class Consultas extends Component
             $this->productos = Producto::take(0)->get();
         }else{
             $this->openProductoConsumido();
-            $this->productos = Producto::whereLike('nombre', "%$this->q%")->get();
+            $this->productos = Producto::whereLike('nombre', "%$this->q%")
+                                        ->where('stock_actual', '>', 1)
+                                        ->get();
         }
     }
 
@@ -68,7 +71,10 @@ class Consultas extends Component
         $this->q = '';        
     }
 
-    public function addProducto($productoId)
+    /**
+     * creacion de la sesion de productos
+     */
+    public function addProducto($productoId, $consultaId)
     {        
         $producto = Producto::find($productoId);
         
@@ -76,10 +82,17 @@ class Consultas extends Component
             return redirect()->route('consultas')->with('error', 'Hubo un error al procesar el producto');
         }
     
+        // Obtener la sesión de consumo
         $consumo = session('consumo', []);
+    
+        // Si la consulta aún no tiene productos, inicializarla
+        if (!isset($consumo[$consultaId])) {
+            $consumo[$consultaId] = [];
+        }
+    
         $contador = 0;
     
-        foreach ($consumo as &$item) {
+        foreach ($consumo[$consultaId] as &$item) {
             if ($item['productoId'] == $producto->id) {
                 if ($item['productoCompleto']['precio'] == $item['precio']) {
                     $item['cantidad']++; // Incrementa la cantidad
@@ -93,18 +106,42 @@ class Consultas extends Component
     
         // Si no se encontró el producto en la sesión, lo agrega como nuevo
         if ($contador == 0) {
-            $consumo[] = [
+            $consumo[$consultaId][] = [   
                 'productoId' => $producto->id,
                 'precio' => $producto->precio,
                 'nombre' => $producto->nombre,
+                'foto' => $producto->foto,
                 'productoCompleto' => $producto,
                 'cantidad' => 1 // Agregar clave 'cantidad'
             ];
         }
     
         // Guarda la sesión actualizada
-        session(['consumo' => $consumo]);            
+        session(['consumo' => $consumo]);
     }
+    
+    /**
+     * function que quita una unidad de la session consumos
+     */
+    public function quitarProducto($index, $consultaId){                
+        $consumo = session('consumo', []); 
+        
+        if (!isset($consumo[$consultaId][$index])) {
+            return redirect()->route('consultas')->with('error', 'El producto no existe en la sesión');
+        }
+    
+        if ($consumo[$consultaId][$index]['cantidad'] > 1) {            
+            $consumo[$consultaId][$index]['cantidad']--;
+        } else {
+            unset($consumo[$consultaId][$index]);
+            session(['consumo' => $consumo]); // Guardar la sesión solo cuando se elimina
+         //   return redirect()->route('consultas'); // Redirigir solo cuando se borra el índice            
+        }
+    
+        session(['consumo' => $consumo]); // Guardar la sesión después de modificar
+
+    }
+    
     
     /**
      * 
@@ -186,6 +223,8 @@ class Consultas extends Component
         $this->modalConfig = true;
     }
     public function closeModalConfig(){
+        Session::forget('consumo');
+        $this->flag();
         $this->vetChanged = '';
         $this->consultaToEdit = null;
         $this->modalConfig = false;

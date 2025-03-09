@@ -12,7 +12,6 @@
             <span class="sr-only">Cerrar</span>
         </button>
 
-        <!-- FORMULARIO -->
         {{-- wire:submit.prevent="update" --}}
         <div
             class="bg-white border border-gray-100 p-6 min-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
@@ -54,6 +53,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Atendido por -->
                     <div class="p-2 border-gray-400">
                         <div class="p-2">
@@ -76,6 +76,7 @@
                             @endif
                         </div>
 
+                        <!-- SELECT DE CAMBIO DE VETERINARIO -->
                         @if ($cambiarVet)
                             <div class="mb-5">
                                 <label class="block text-gray-800 font-medium mb-2">Seleccionar nuevo
@@ -84,7 +85,7 @@
                                     class="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                                     <option value="">-Seleccionar-</option>
                                     @foreach ($veterinarios as $veterinario)
-                                        @if ($veterinario->id != $consulta->veterinario_id)
+                                        @if ($veterinario->id != $consultaToEdit->veterinario_id)
                                             <option wire:click='setVetChanged({{ $veterinario->id }})'
                                                 value="{{ $veterinario->id }}">
                                                 {{ $veterinario->name }}</option>
@@ -98,12 +99,57 @@
                 </div>
             </form>
 
+            @php
+                $consumo = session('consumo')[$consultaToEdit->id] ?? [];
+            @endphp
+
+            @if (!empty($consumo))
+                <div class="mt-4">
+                    <p class="text-gray-700 font-medium text-sm mb-2">Insumos</p>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        @foreach ($consumo as $index => $item)
+                            <div
+                                class="relative group bg-gray-100 shadow-lg rounded-md border border-gray-100 hover:border-red-400 transition-all">
+                                <!-- Botón de eliminación -->
+                                <button wire:click='quitarProducto({{ $index }}, {{ $consultaToEdit->id }})'
+                                    class="absolute hidden group-hover:flex items-center justify-center inset-0 bg-white/50 cursor-pointer">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+
+                                <!-- Contenido del producto -->
+                                <div class="flex flex-col items-center p-2">
+                                    <img class="w-12 h-12 object-cover rounded-md mb-1"
+                                        src="{{ asset('uploads/productos/' . $item['foto']) }}"
+                                        alt="{{ $item['nombre'] }}">
+                                    <div class="text-center">
+                                        <p class="text-xs font-medium text-gray-700 leading-tight mb-0.5 line-clamp-2">
+                                            {{ $item['nombre'] }}
+                                        </p>
+                                        <p class="text-[10px] text-gray-500 font-medium">
+                                            {{ number_format($item['precio'], 0, ',', '.') }} Gs
+                                        </p>
+                                        <p class="text-[10px] text-gray-500 font-medium">
+                                            Cantidad: {{ $item['cantidad'] }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- FORMULARIO DE BUSCA DE PRODUCTOS -->
             <form wire:click.prevent='filtrarProductos'>
                 <div class="mb-5 mt-5">
                     <label class="block text-gray-800 font-medium mb-2">Agregar consumo de insumos</label>
                     <div class="relative w-4/7 max-w-md">
                         <input type="text" wire:model='q'
-                            class="h-8 w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 outline-none"
+                            class="h-8 w-full pl-4 pr-10 py-2 border border-gray-600 rounded-lg shadow-lg bg-gray-100 focus:ring focus:gray-600 focus:gray-600 outline-none"
                             placeholder="Buscar insumos...">
 
                         @if ($q)
@@ -115,14 +161,15 @@
 
                         <button type="submit"
                             class="border-l border-gray-400 pl-2 cursor-pointer absolute inset-y-0 right-3 flex items-center">
-                            <svg class="w-5 h-5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="w-5 h-5 text-gray-700 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
                                     d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                             </svg>
                         </button>
                     </div>
-                    
+
+                    <!-- TABLA DE RESULTADOS DE LA BUSQUEDA -->
                     @if ($q)
                         <table class="min-w-full bg-white rounded-lg shadow-md text-xs mt-2">
                             <thead class="bg-gray-200 text-gray-800 rounded-lg">
@@ -146,12 +193,11 @@
                                             {{ App\Helpers\Helper::formatearMonto($producto->precio) }}
                                             Gs.</td>
                                         <td class="py-1 px-2">
-                                            <input wire:model='cantidad'
-                                                    class="w-10 border border-gray-200" type="number">
-                                                <span wire:click='addProducto({{ $producto->id }})'
-                                                    class="bg-gray-800 p-0.5 text-white cursor-pointer hover:bg-gray-500">
-                                                    ADD
-                                                </span>
+                                            <span
+                                                wire:click='addProducto({{ $producto->id }}, {{ $consultaToEdit->id }})'
+                                                class="bg-gray-800 p-0.5 text-white cursor-pointer hover:bg-gray-500">
+                                                ADD
+                                            </span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -161,6 +207,7 @@
                 </div>
             </form>
 
+            <!-- FORMULARIO -->
             <form action="">
                 <!-- CAMBIAR ESTADO -->
                 <div class="mb-5 mt-5">
@@ -178,9 +225,6 @@
                         <option value="Cancelado">Cancelado</option>
                     </select>
                 </div>
-
-                <!-- consumo de productos -->
-
 
                 <!-- Veterinario -->
                 <div class="mb-4 mt-5">
