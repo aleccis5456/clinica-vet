@@ -3,7 +3,7 @@
     <div class="relative p-4 w-full max-w-md">
 
         <button type="button"
-            class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent {{ $consultaToEdit->estado == 'Finalizado' ? 'hover:bg-green-400' : 'hover:bg-gray-200'}}  hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent {{ $consultaToEdit->estado == 'Finalizado' ? 'hover:bg-green-400' : 'hover:bg-gray-200' }}  hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             wire:click="closeModalConfig">
             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -75,8 +75,14 @@
                                 @endif
                             @endif
                             <!-- grupo de veterinarios -->
+                            @php
+                            $veterinariosEnConsulta = App\Models\ConsultaVeterinario::where('consulta_id', $consultaToEdit->id) 
+                                                                                    ->pluck('veterinario_id')
+                                                                                    ->toArray();                            
+                            @endphp
+                            
                             @foreach ($grupoVet as $vet)
-                                @if ($vet->consulta_id == $consultaToEdit->id)
+                                @if (in_array($vet->veterinario_id, $veterinariosEnConsulta))
                                     <div>
                                         <p class="text-xs underline">atendido tambien por:</p>
                                         <span class="text-xs">{{ $vet->veterinario->name }}
@@ -100,15 +106,15 @@
                                 <select name="" id="" wire:model='cambiarVetId'
                                     class="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                                     <option value="">-Seleccionar-</option>
+                                    @php
+                                        $veterinariosEnConsulta = App\Models\ConsultaVeterinario::where('consulta_id', $consultaToEdit->id) 
+                                                                                                ->pluck('veterinario_id')
+                                                                                                ->toArray();
+                                        $veterinariosEnConsulta[] = $consultaToEdit->veterinario_id; // Agregar el principal
+                                    @endphp
+
                                     @foreach ($veterinarios as $veterinario)
-                                        @php
-                                            $vetEnGrupo = App\Models\ConsultaVeterinario::where(
-                                                'veterinario_id',
-                                                $veterinario->id,
-                                            )->first();
-                                            $vetId = $vetEnGrupo->veterinario_id ?? 0;
-                                        @endphp
-                                        @if ($veterinario->id != $consultaToEdit->veterinario_id and $vetId != $veterinario->id)
+                                        @if (!in_array($veterinario->id, $veterinariosEnConsulta))
                                             <option wire:click='setVetChanged({{ $veterinario->id }})'
                                                 value="{{ $veterinario->id }}">
                                                 {{ $veterinario->name }}
@@ -118,7 +124,6 @@
                                 </select>
                             </div>
                         @endif
-
                     </div>
                 </div>
             </form>
@@ -300,28 +305,29 @@
                             </option>
                         @endforeach
                     </select>
-                </div>
+                </div>             
 
                 <!-- AGREGAR MAS VETERINARIOS A LA CONSULTA -->
                 <div class="mb-4 mt-5">
                     <label class="block text-gray-800 font-medium mb-2">Agregar Veterinario</label>
+                    @php
+                        $veterinariosEnConsulta = App\Models\ConsultaVeterinario::where('consulta_id',$consultaToEdit->id)
+                                                                            ->pluck('veterinario_id')
+                                                                            ->toArray();
+                        $veterinariosEnConsulta[] = $consultaToEdit->veterinario_id;
+                    @endphp
                     @foreach ($veterinarios as $veterinario)
-                        @php
-                            $vetEnGrupo = App\Models\ConsultaVeterinario::where('veterinario_id',$veterinario->id,)->first();
-                            $vetId = $vetEnGrupo->veterinario_id ?? 0;
-                        @endphp
-                        @if ($veterinario->id != $consultaToEdit->veterinario_id and $vetId != $veterinario->id)
+                        @if (!in_array($veterinario->id, $veterinariosEnConsulta))
                             <input wire:model='veterinariosAgg' type="checkbox" name="vet_id" id=""
                                 value="{{ $veterinario->id }}">
                             {{ $veterinario->name }} <br>
                         @endif
-                        {{-- <input type="radio" name="" id="" value="{{ $veterinario->id }}"> {{ $veterinario->name }} <br> --}}
                     @endforeach
                     @error('veterinario_id')
                         <span class="text-red-700 underline">{{ $message }}</span>
                     @enderror
                 </div>
-
+              
                 <!-- Fecha -->
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Fecha De consulta:</label>

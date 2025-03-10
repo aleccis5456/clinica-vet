@@ -10,6 +10,7 @@ use App\Livewire\Home;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Login;
 use App\Livewire\GestionRoles;
+use App\Livewire\HistorialCompleto;
 use App\Livewire\Inventario;
 use Illuminate\Support\Facades\Session;
 
@@ -28,6 +29,8 @@ Route::middleware(Login::class)->group(function () {
     Route::get('/consultas', Consultas::class)->name('consultas');
     Route::get('/Gestion/usuario', GestionRoles::class)->name('gestion.roles');
     Route::get('/Inventario', Inventario::class)->name('inventario');
+    Route::get('/Historial-completo/{id}', HistorialCompleto::class)->name('historial.completo');
+
 });
 
 

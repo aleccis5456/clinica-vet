@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Consulta extends Model
 {
     protected $table = 'consultas';
-    protected $with = ['mascota'];    
+    //protected $with = ['mascota'];    
 
     protected $fillable = [
         'mascota_id', 	

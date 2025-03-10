@@ -138,8 +138,10 @@
                                 </div>
                             </div> --}}
                             <div class="flex justify-end">
-                                <a href="#" class="text-blue-500 text-sm hover:underline">Ver historial
-                                    completo</a>
+                                <a href="{{ route('historial.completo', ['id' => $consulta->id]) }}" class="text-blue-500 text-sm hover:underline">
+                                    Ver historial completo
+                                </a>
+
                             </div>
                         </div>
                     </div>
