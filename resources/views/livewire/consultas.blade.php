@@ -120,7 +120,7 @@
                                     {{ $consulta->mascota->dueno->nombre }}
                                 </span>
                             </div>
-                            <div class="flex gap-4 text-gray-600 text-sm">
+                            {{-- <div class="flex gap-4 text-gray-600 text-sm">
                                 <div class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -136,7 +136,7 @@
                                     <span>Registro:
                                         {{ App\Helpers\Helper::formatearFecha($consulta->mascota->created_at) }}</span>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="flex justify-end">
                                 <a href="#" class="text-blue-500 text-sm hover:underline">Ver historial
                                     completo</a>

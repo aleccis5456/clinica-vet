@@ -80,6 +80,7 @@
                 @enderror
             </div>
 
+            <!-- hora-->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Hora</label>
                 <input type="time" wire:model="hora"

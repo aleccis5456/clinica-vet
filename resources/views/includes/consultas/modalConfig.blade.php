@@ -3,7 +3,7 @@
     <div class="relative p-4 w-full max-w-md">
 
         <button type="button"
-            class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent {{ $consultaToEdit->estado == 'Finalizado' ? 'hover:bg-green-400' : 'hover:bg-gray-200'}}  hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             wire:click="closeModalConfig">
             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -12,10 +12,8 @@
             <span class="sr-only">Cerrar</span>
         </button>
 
-        {{-- wire:submit.prevent="update" --}}
         <div
-            class="bg-white border border-gray-100 p-6 min-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
-            <!-- Título -->
+            class="{{ $consultaToEdit->estado == 'Finalizado' ? 'bg-green-100 border-2 border-green-700' : 'bg-white border border-gray-100' }}  p-6 min-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Actualizar Consulta</p>
 
             <!-- NOTAS -->
@@ -76,6 +74,22 @@
                                         class="text-xs cursor-pointer p-1 rounded-lg text-white font-semibold bg-gray-800">aceptar</button>
                                 @endif
                             @endif
+                            <!-- grupo de veterinarios -->
+                            @foreach ($grupoVet as $vet)
+                                @if ($vet->consulta_id == $consultaToEdit->id)
+                                    <div>
+                                        <p class="text-xs underline">atendido tambien por:</p>
+                                        <span class="text-xs">{{ $vet->veterinario->name }}
+                                            <span wire:click='eliminarVetGrupo({{ $vet->id }})'
+                                                wire:confirm='Estas seguro/a de eliminar del grupo?'
+                                                class="px-1.5 py-0.5 cursor-pointer bg-gray-200 rounded-md font-semibold hover:bg-red-300 hover:text-black">
+                                                x
+                                            </span>
+                                        </span>
+                                    </div>
+                                @endif
+                            @endforeach
+
                         </div>
 
                         <!-- SELECT DE CAMBIO DE VETERINARIO -->
@@ -87,10 +101,18 @@
                                     class="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                                     <option value="">-Seleccionar-</option>
                                     @foreach ($veterinarios as $veterinario)
-                                        @if ($veterinario->id != $consultaToEdit->veterinario_id)
+                                        @php
+                                            $vetEnGrupo = App\Models\ConsultaVeterinario::where(
+                                                'veterinario_id',
+                                                $veterinario->id,
+                                            )->first();
+                                            $vetId = $vetEnGrupo->veterinario_id ?? 0;
+                                        @endphp
+                                        @if ($veterinario->id != $consultaToEdit->veterinario_id and $vetId != $veterinario->id)
                                             <option wire:click='setVetChanged({{ $veterinario->id }})'
                                                 value="{{ $veterinario->id }}">
-                                                {{ $veterinario->name }}</option>
+                                                {{ $veterinario->name }}
+                                            </option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -101,7 +123,48 @@
                 </div>
             </form>
 
-            <!-- MUESTRA LOS PRODUCTOS -->
+            <!-- MUESTRA LOS PRODUCTOS QUE SE CONSUMIO EN LA CONSULTA -->
+            @if (count($consultasProductos) > 0)
+                <div class="mt-4">
+                    <p class="text-gray-700 font-medium text-sm mb-2">Insumos Consumido</p>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        @foreach ($consultasProductos as $cproducto)
+                            <div
+                                class="relative group bg-gray-100 shadow-lg rounded-md border border-gray-100 hover:border-red-400 transition-all">
+                                <!-- Botón de eliminación -->
+                                <button wire:click='openProductoConsulta({{ $cproducto->id }})'
+                                    class="absolute hidden group-hover:flex items-center justify-center inset-0 bg-white/50 cursor-pointer">
+                                    <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+
+                                <!-- Contenido del producto -->
+                                <div class="flex flex-col items-center p-2">
+                                    <img class="w-12 h-12 object-cover rounded-md mb-1"
+                                        src="{{ asset('uploads/productos/' . $cproducto->producto->foto) }}"
+                                        alt="">
+                                    <div class="text-center">
+                                        <p class="text-xs font-medium text-gray-700 leading-tight mb-0.5 line-clamp-2">
+                                            {{ $cproducto->producto->nombre }}
+                                        </p>
+                                        <p class="text-[10px] text-gray-500 font-medium">
+                                            {{ $cproducto->producto->precio }} Gs.
+                                        </p>
+                                        <p class="text-[10px] text-gray-500 font-medium">
+                                            Cantidad: {{ $cproducto->cantidad }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <!-- MUESTRA LOS PRODUCTOS DE LA SESSION('CONSUMO')-->
             @php
                 $consumo = session('consumo')[$consultaToEdit->id] ?? [];
             @endphp
@@ -210,31 +273,46 @@
                 </div>
             </form>
 
-            <!-- FORMULARIO -->
-            <form >
+            <!-- FORMULARIO PARA ACTUALIZAR LA CONSULTA COMPLETA-->
+            <form wire:submit.prevent='updateConsulta'>
+                @php
+                    $estados = [
+                        'Agendado' => 'bg-[#007bff]',
+                        'Reprogramado' => 'bg-[#6f42c1]',
+                        'Pendiente' => 'bg-[#fd7e14]',
+                        'En Espera' => 'bg-[#ffc107]',
+                        'En consultorio' => 'bg-[#28a745]',
+                        'Finalizado' => 'bg-[#155724]',
+                        'No asistió' => 'bg-[#6c757d]',
+                        'Cancelado' => 'bg-[#dc3545]',
+                    ];
+                @endphp
+
                 <!-- CAMBIAR ESTADO -->
                 <div class="mb-5 mt-5">
                     <label class="block text-gray-800 font-medium mb-2">Cambiar Estado</label>
                     <select name="" id=""
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                         <option value="">-Seleccionar-</option>
-                        <option value="Agendado">Agendado</option>
-                        <option value="Reprogramado">Reprogramado</option>
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="En Espera">En Espera</option>
-                        <option value="En consultorio">En consultorio</option>
-                        <option value="Finalizado">Finalizado</option>
-                        <option value="No asistió">No asistió</option>
-                        <option value="Cancelado">Cancelado</option>
+                        @foreach ($estados as $estado => $color)
+                            <option value="{{ $estado }}"
+                                {{ $estado == $consultaToEdit->estado ? 'selected' : '' }}>{{ $estado }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
-                <!-- Veterinario -->
+                <!-- AGREGAR MAS VETERINARIOS A LA CONSULTA -->
                 <div class="mb-4 mt-5">
                     <label class="block text-gray-800 font-medium mb-2">Agregar Veterinario</label>
                     @foreach ($veterinarios as $veterinario)
-                        @if ($veterinario->id != $consultaToEdit->veterinario_id)
-                            <input type="checkbox" name="vet_id" id="" value="{{ $veterinario->id }}">
+                        @php
+                            $vetEnGrupo = App\Models\ConsultaVeterinario::where('veterinario_id',$veterinario->id,)->first();
+                            $vetId = $vetEnGrupo->veterinario_id ?? 0;
+                        @endphp
+                        @if ($veterinario->id != $consultaToEdit->veterinario_id and $vetId != $veterinario->id)
+                            <input wire:model='veterinariosAgg' type="checkbox" name="vet_id" id=""
+                                value="{{ $veterinario->id }}">
                             {{ $veterinario->name }} <br>
                         @endif
                         {{-- <input type="radio" name="" id="" value="{{ $veterinario->id }}"> {{ $veterinario->name }} <br> --}}
@@ -246,8 +324,17 @@
 
                 <!-- Fecha -->
                 <div class="mb-4">
-                    <label class="block text-gray-800 font-medium mb-2">Fecha</label>
-                    <input type="date" wire:model="fecha"
+                    <label class="block text-gray-800 font-medium mb-2">Fecha De consulta:</label>
+                    <input type="date" wire:model="fechaN"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                    @error('fecha')
+                        <span class="text-red-700 underline">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-800 font-medium mb-2">Hora de la consulta</label>
+                    <input type="time" wire:model="horaN"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     @error('fecha')
                         <span class="text-red-700 underline">{{ $message }}</span>
@@ -255,15 +342,16 @@
                 </div>
 
                 <!-- Tipo -->
+                <p>consulta: {{ $consultaToEdit->tipo_id }}</p>
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Tipo de Consulta</label>
                     <select wire:model="tipo"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                        <option value="">Selecciona un tipo</option>
-                        <option value="Consulta general">Consulta general</option>
-                        <option value="Vacunación">Vacunación</option>
-                        <option value="Cirugía">Cirugía</option>
-                        <option value="Emergencia">Emergencia</option>
+                        @foreach ($tipoConsultas as $tipoC)
+                            <option value="{{ $tipoC->id }}"
+                                {{ $tipoC->id == $consultaToEdit->tipo_id ? 'selected' : '' }}>{{ $tipoC->nombre }}
+                            </option>
+                        @endforeach
                     </select>
                     @error('tipo')
                         <span class="text-red-700 underline">{{ $message }}</span>
@@ -273,9 +361,12 @@
                 <!-- Síntomas -->
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Síntomas</label>
+                    @if (!empty($sintomas))
+                        <input type="checkbox" wire:model='flagSintomas'> <span class="text-xs">Eliminar?</span>
+                    @endif
                     <textarea wire:model="sintomas"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        rows="3" placeholder="Describe los síntomas"></textarea>
+                        rows="3" placeholder="Describe los síntomas">{{ $consultaToEdit->sintomas }}</textarea>
                     @error('sintomas')
                         <span class="text-red-700 underline">{{ $message }}</span>
                     @enderror
@@ -284,9 +375,12 @@
                 <!-- Diagnóstico -->
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Diagnóstico</label>
+                    @if (!empty($diagnostico))
+                        <input type="checkbox" wire:model='flagDiagnostico'> <span class="text-xs">Eliminar?</span>
+                    @endif
                     <textarea wire:model="diagnostico"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        rows="3" placeholder="Describe el diagnóstico"></textarea>
+                        rows="3">{{ $consultaToEdit->diagnostico }}</textarea>
                     @error('diagnostico')
                         <span class="text-red-700 underline">{{ $message }}</span>
                     @enderror
@@ -295,9 +389,12 @@
                 <!-- Tratamiento -->
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Tratamiento</label>
+                    @if (!empty($tratamiento))
+                        <input type="checkbox" wire:model='flagTratamiento'> <span class="text-xs">Eliminar?</span>
+                    @endif
                     <textarea wire:model="tratamiento"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        rows="3" placeholder="Describe el tratamiento"></textarea>
+                        rows="3" placeholder="Describe el tratamiento">{{ $consultaToEdit->tratamiento }}</textarea>
                     @error('tratamiento')
                         <span class="text-red-700 underline">{{ $message }}</span>
                     @enderror
@@ -306,9 +403,12 @@
                 <!-- Notas -->
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Notas adicionales</label>
+                    @if (!empty($notas))
+                        <input type="checkbox" wire:model='flagNotas'> <span class="text-xs">Eliminar?</span>
+                    @endif
                     <textarea wire:model="notas"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        rows="3" placeholder="Añade notas adicionales"></textarea>
+                        rows="3" placeholder="Añade notas adicionales">{{ $consultaToEdit->notas }}</textarea>
                     @error('notas')
                         <span class="text-red-700 underline">{{ $message }}</span>
                     @enderror
@@ -324,4 +424,7 @@
             </form>
         </div>
     </div>
+    @if ($modalProductoConsulta)
+        @include('includes.consultas.modalEliminar')
+    @endif
 </div>

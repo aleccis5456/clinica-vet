@@ -7,19 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Consulta extends Model
 {
     protected $table = 'consultas';
-    protected $with = ['mascota'];
+    protected $with = ['mascota'];    
 
     protected $fillable = [
         'mascota_id', 	
         'veterinario_id', 	
         'fecha', 	
-        'tipo', 	
+        'tipo_id', 	
         'sintomas', 	
         'diagnostico', 	
         'tratamiento', 	
         'notas',
-        'estado',
-        'tipo_consulta_id',
+        'estado',        
         'hora'
     ];
 
@@ -32,7 +31,7 @@ class Consulta extends Model
     }
 
     public function tipoConsulta(){
-        return $this->belongsTo(TipoConsulta::class, 'tipo_consulta_id');
+        return $this->belongsTo(TipoConsulta::class, 'tipo');
     }
 
     public function productos()

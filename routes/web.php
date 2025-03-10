@@ -37,5 +37,5 @@ Route::get('borrar-session', function(){
 });
 
 Route::get('ver-sessiones', function(){
-    dd(session('consumo'));
+    dd(session('vetGrupos'));
 });
