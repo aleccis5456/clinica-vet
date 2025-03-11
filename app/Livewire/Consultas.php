@@ -49,6 +49,22 @@ class Consultas extends Component
 
 
     /**
+     * funciton para la busqueda
+     */
+    public function busqueda(){        
+        if(empty($this->search)){
+            $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+        }else{
+            $mascotas = Mascota::whereLike('nombre', "%$this->search%")->pluck('id');
+            $this->consultas = Consulta::whereIn('mascota_id', $mascotas)->get();
+        }
+    }    
+    public function flagC(){
+        $this->search = '';
+        $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+    }
+
+    /**
      * function para elimiar un veterinario del grupo
      */
     public function eliminarVetGrupo($vetId){
@@ -60,7 +76,6 @@ class Consultas extends Component
 
         return redirect()->route('consultas')->with('eliminado', 'Veterinario eliminado del grupo');
     }
-
 
     /**
      * 
@@ -142,7 +157,7 @@ class Consultas extends Component
 
     public function flag()
     {
-        $this->q = '';
+        $this->q = '';        
     }
 
     /**
@@ -533,7 +548,7 @@ class Consultas extends Component
         $this->hora = now()->format('H:i');
 
         $this->mascotas = Mascota::all();
-        $this->consultas = Consulta::orderByDesc('created_at')->get();
+        $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
         $this->tipoConsultas = TipoConsulta::all();
         $this->grupoVet = ConsultaVeterinario::all();
 

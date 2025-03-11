@@ -22,7 +22,7 @@
 
                 </div>
                 <div class="p-3">
-                    <form wire:submit.prevent=''
+                    <form wire:submit.prevent='busqueda'
                         class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
                         <!-- Input de búsqueda -->
                         <input wire:model='search' type="text"
@@ -31,7 +31,7 @@
 
                         <!-- Botón para limpiar el input -->
                         @if ($search)
-                            <button type="button" wire:click="flag"
+                            <button type="button" wire:click="flagC"
                                 class="px-1.5 py-0.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200  transition">
                                 ✕
                             </button>
@@ -52,40 +52,38 @@
 
             <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
                 @php
-                    $estados = [
-                        'Agendado' => 'bg-[#007bff]',
-                        'Reprogramado' => 'bg-[#6f42c1]',
-                        'Pendiente' => 'bg-[#fd7e14]',
-                        'En Espera' => 'bg-[#ffc107]',
-                        'En consultorio' => 'bg-[#28a745]',
-                        'Finalizado' => 'bg-[#155724]',
-                        'No asistió' => 'bg-[#6c757d]',
-                        'Cancelado' => 'bg-[#dc3545]',
-                    ];
-                @endphp
+                $estados = [
+                    'Agendado' => 'from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700',
+                    'Reprogramado' => 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800',
+                    'Pendiente' => 'from-orange-400 to-orange-500 hover:from-orange-600 hover:to-orange-700',
+                    'En Espera' => 'from-yellow-400 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700',
+                    'En consultorio' => 'from-green-400 to-green-500 hover:from-green-600 hover:to-green-700',
+                    'Finalizado' => 'from-green-800 to-green-900 hover:from-green-900 hover:to-green-950',
+                    'No asistió' => 'from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800',
+                    'Cancelado' => 'from-red-500 to-red-700 hover:from-red-600 hover:to-red-800',
+                ];
+            @endphp
 
                 <!-- Card 1 -->
                 @foreach ($consultas as $consulta)
-                    <div
-                        class="max-w-[250px] bg-gray-100 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
-                        <!-- Tag de estado -->
-                        <select name="" id="" wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
-                            class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-xs text-white font-semibold
-                        {{ $estados[$consulta->estado] ?? 'bg-gray-300' }}"
-                            onchange="cambiarColor(this)">
-                            @foreach ($estados as $estado => $color)
-                                <option value="{{ $estado }}" 
-                                    {{ $estado == $consulta->estado ? 'selected' : '' }}>
-                                    {{ $estado }}
-                                </option>
-                            @endforeach
-                        </select>
+                <div class="max-w-[270px] bg-gray-200 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
+                    <!-- Tag de estado con degradado -->
+                    <select name="" id="" wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
+                        class=" cursor-pointer estado-select absolute top-2 left-2 z-10 px-2 py-0.5 text-xs font-semibold text-white rounded-lg
+                        bg-gradient-to-r {{ $estados[$consulta->estado] ?? 'from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500' }}"
+                        onchange="cambiarColor(this)">
+                        @foreach ($estados as $estado => $color)
+                            <option value="{{ $estado }}" {{ $estado == $consulta->estado ? 'selected' : '' }}>
+                                {{ $estado }}
+                            </option>
+                        @endforeach
+                    </select>
 
                         <!-- Botón de configuración -->
                         <button wire:click="openModalConfig({{ $consulta->id }})"
-                            class="cursor-pointer absolute top-2 right-2 z-10 p-1 bg-white bg-opacity-20 rounded-full 
+                            class="backdrop-blur-xs bg-black/50 cursor-pointer absolute top-2 right-2 z-10 p-1  rounded-full 
                                 hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                            <svg class="w-6 h-6 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="w-6 h-6 text-gray-200 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2"
@@ -130,19 +128,19 @@
                                       </svg>
                                     <!-- Texto -->
                                     <p class="font-semibold text-gray-700">{{ Str::upper($consulta->tipoConsulta->nombre) }}</p>
-                                </div>
-                                {{-- <div class="flex items-center gap-1">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                    <span>Registro:
-                                        {{ App\Helpers\Helper::formatearFecha($consulta->mascota->created_at) }}</span>
-                                </div> --}}
+                                </div>                                
                             </div>
-                            <div class="flex justify-end">
-                                <a href="{{ route('historial.completo', ['id' => $consulta->id]) }}" class="text-blue-500 text-sm hover:underline">
-                                    Ver historial completo
+                            <div class="flex justify-center">
+                                <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->id]) }}" 
+                                    class="flex items-center gap-5 text-sm font-semibold px-4 py-2 
+                                           bg-gradient-to-r from-blue-400 to-blue-500 
+                                           hover:from-blue-600 hover:to-blue-700 
+                                           text-white rounded-lg "
+                                >                                    
+                                    <span>Historial completo</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
                                 </a>
 
                             </div>
@@ -164,13 +162,15 @@
         @include('includes.consultas.modalTipoConsulta')
     @endif
 
-
+    {{-- class="flex items-center gap-5 text-sm font-semibold px-4 py-2 
+    bg-gradient-to-r from-blue-400 to-blue-500 
+    hover:from-blue-600 hover:to-blue-700 
+    text-white rounded-lg " --}}
     <script>
         function cambiarColor(select) {
-            let colores = @json($estados); // Pasamos los colores de Blade a JavaScript
-            select.className = "estado-select absolute top-2 left-2 z-10 px-3 py-1 rounded-full text-xs text-white " +
-                (colores[select.value] || "bg-gray-300");
+            let colores = @json($estados);
+            select.className = "estado-select absolute top-2 left-2 z-10 px-4 py-2 text-xs font-semibold text-white rounded-lg bg-gradient-to-r " +
+                (colores[select.value] || "from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500");
         }
     </script>
-
 </div>

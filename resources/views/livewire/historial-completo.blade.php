@@ -70,7 +70,7 @@
                             @foreach ($consultas as $consultaf)
                                 <tr wire:key='{{ $consultaf->id }}'
                                     class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                                    <td class="py-3 px-4">{{ $consultaf->fecha }}</td>
+                                    <td class="py-3 px-4">{{ \Carbon\Carbon::parse($consultaf->fecha)->format('d/m/Y') }}</td>
                                     <td class="py-3 px-4">{{ $consultaf->tipoConsulta->nombre }}</td>
                                     <td class="py-3 px-4 hover:underline cursor-pointer">
                                         <button wire:click='' type="button"
