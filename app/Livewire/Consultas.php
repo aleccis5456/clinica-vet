@@ -22,7 +22,7 @@ class Consultas extends Component
     public $mascotas;
     public $veterinarios;
     public $users;
-    public $mascota_id,    $veterinario_id, $fecha, $tipo, $sintomas, $diagnostico, $tratamiento, $notas, $hora, $estado;
+    public $mascota_id, $veterinario_id, $fecha, $tipo, $sintomas, $diagnostico, $tratamiento, $notas, $hora, $estado;
     public $fechaN, $horaN;
     public $consultas;
     public $cambiarVet = false;

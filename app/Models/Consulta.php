@@ -31,7 +31,7 @@ class Consulta extends Model
     }
 
     public function tipoConsulta(){
-        return $this->belongsTo(TipoConsulta::class, 'tipo');
+        return $this->belongsTo(TipoConsulta::class, 'tipo_id');
     }
 
     public function productos()

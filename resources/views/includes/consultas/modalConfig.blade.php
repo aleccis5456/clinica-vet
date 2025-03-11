@@ -347,8 +347,7 @@
                     @enderror
                 </div>
 
-                <!-- Tipo -->
-                <p>consulta: {{ $consultaToEdit->tipo_id }}</p>
+                <!-- Tipo -->                
                 <div class="mb-4">
                     <label class="block text-gray-800 font-medium mb-2">Tipo de Consulta</label>
                     <select wire:model="tipo"

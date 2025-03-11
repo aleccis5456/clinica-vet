@@ -45,7 +45,7 @@
         </div>        
 
         <div>
-            <a href="">
+            <a wire:navigate href="{{ route('consultas') }}">
                 <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg"
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/historial.jpeg') }}'); background-size: cover; background-position: center;">
                     <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
@@ -84,7 +84,7 @@
         </div>  
 
         <div>
-            <a href="">
+            <a wire:navigate href="{{ route('inventario') }}">
                 <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg"
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/inventario.jpg') }}'); background-size: cover; background-position: center;">
                     <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
@@ -97,7 +97,7 @@
         </div>  
 
         <div>
-            <a href="">
+            <a wire:navigate href="{{ route('gestion.roles') }}">
                 <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg"
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/gestion.png') }}'); background-size: cover; background-position: center;">
                     <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
