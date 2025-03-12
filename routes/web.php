@@ -32,16 +32,16 @@ Route::middleware(Login::class)->group(function () {
     Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
     Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
     Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
-    Route::get('/crear-caja/{$consultaId}', [CajaController::class, 'store'])->name('caja.store');    
+    Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');    
 
 });
 
 
 Route::get('borrar-session', function(){
-    Session::forget('consumo');
+    Session::forget('caja');
     return back();
 });
 
 Route::get('ver-sessiones', function(){
-    dd(session('vetGrupos'));
+    dd(session('caja'));
 });

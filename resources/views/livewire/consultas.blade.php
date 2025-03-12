@@ -6,7 +6,7 @@
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
         <p class="pl-1 py-7 text-4xl font-semibold">Consultas <span class="text-lg"> | Historial clinico</span></p>
-        <div class="mb-4 rounded-lg">            
+        <div class="mb-4 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
                     <button wire:click='opneAddConsulta'
@@ -19,8 +19,8 @@
 
                         Agregar Tipo de Consulta <span>+</span>
                     </button>
-
                 </div>
+
                 <div class="p-3">
                     <form wire:submit.prevent='busqueda'
                         class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
@@ -52,62 +52,99 @@
 
             <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
                 @php
-                $estados = [
-                    'Agendado' => 'from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700',
-                    'Reprogramado' => 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800',
-                    'Pendiente' => 'from-orange-400 to-orange-500 hover:from-orange-600 hover:to-orange-700',
-                    'En Espera' => 'from-yellow-400 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700',
-                    'En consultorio' => 'from-green-400 to-green-500 hover:from-green-600 hover:to-green-700',
-                    'Finalizado' => 'from-green-800 to-green-900 hover:from-green-900 hover:to-green-950',
-                    'No asistió' => 'from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800',
-                    'Cancelado' => 'from-red-500 to-red-700 hover:from-red-600 hover:to-red-800',
-                ];
-            @endphp
+                    $estados = [
+                        'Agendado' => 'from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700',
+                        'Reprogramado' => 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800',
+                        'Pendiente' => 'from-orange-400 to-orange-500 hover:from-orange-600 hover:to-orange-700',
+                        'En Espera' => 'from-yellow-400 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700',
+                        'En consultorio' => 'from-green-400 to-green-500 hover:from-green-600 hover:to-green-700',
+                        'Finalizado' => 'from-green-800 to-green-900 hover:from-green-900 hover:to-green-950',
+                        'No asistió' => 'from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800',
+                        'Cancelado' => 'from-red-500 to-red-700 hover:from-red-600 hover:to-red-800',
+                    ];
+                @endphp
 
                 <!-- Card 1 -->
                 @foreach ($consultas as $consulta)
-                <div class="max-w-[270px] bg-gray-200 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
-                    <!-- Tag de estado con degradado -->
-                    <select name="" id="" wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
-                        class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-2 py-0.5 text-xs font-semibold text-white rounded-lg
+                    <div
+                        class="max-w-[270px] bg-gray-200 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
+                        <!-- Tag de estado con degradado -->
+                        <select name="" id=""
+                            wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
+                            class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-2 py-0.5 text-xs font-semibold text-white rounded-lg
                         bg-gradient-to-r {{ $estados[$consulta->estado] ?? 'from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500' }}"
-                        onchange="cambiarColor(this)">
-                        @foreach ($estados as $estado => $color)
-                            <option value="{{ $estado }}" {{ $estado == $consulta->estado ? 'selected' : '' }}>
-                                {{ $estado }}
-                            </option>
-                        @endforeach
-                    </select>
+                            onchange="cambiarColor(this)">
+                            @foreach ($estados as $estado => $color)
+                                <option value="{{ $estado }}"
+                                    {{ $estado == $consulta->estado ? 'selected' : '' }}>
+                                    {{ $estado }}
+                                </option>
+                            @endforeach
+                        </select>
 
                         <!-- Botón de configuración -->
                         <div class="flex flex-col">
                             <div class="">
                                 <button wire:click="openModalConfig({{ $consulta->id }})"
-                                    class=" backdrop-blur-xs bg-black/50 cursor-pointer absolute top-2 right-2 z-10 p-1  rounded-full 
+                                    class="bg-gray-200 cursor-pointer absolute top-2 right-2 z-10 p-1  rounded-full 
                                         hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                                    <svg class="w-6 h-6 text-gray-100 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-gray-600 " aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                        viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"
                                             d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4" />
                                     </svg>
                                 </button>
-                            </div>                            
-                            
+                            </div>
+
                             <!-- icono para enviar a caja-->
-                            <div class="">   
-                                <button wire:click=""
-                                    class="backdrop-blur-xs bg-black/50 cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full 
+                            @php
+                                $pagoEstados = [
+                                    'pendiente' => 'bg-orange-400',
+                                    'parcial' => 'bg-yellow-400',
+                                    'pagado' => 'bg-green-500',
+                                    'cancelado' => 'bg-red-500',
+                                ];
+
+                                $pago = $pagos->where('consulta_id', $consulta->id)->first();
+                            @endphp
+                            @if ($pago)
+                                @foreach ($pagoEstados as $estado => $bg)
+                                    <div class="">
+                                        <a href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}"
+                                            class="{{ $estado == $pago->estado ? "$bg" : '' }} cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full 
+                                                \[]hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
+                                            <svg class="w-6 h-6 text-gray-600" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="none" viewBox="0 0 24 24">
+                                                <path fill="currentColor"
+                                                    d="M4 19v2c0 .5523.44772 1 1 1h14c.5523 0 1-.4477 1-1v-2H4Z" />
+                                                <path fill="currentColor" fill-rule="evenodd"
+                                                    d="M9 3c0-.55228.44772-1 1-1h8c.5523 0 1 .44772 1 1v3c0 .55228-.4477 1-1 1h-2v1h2c.5096 0 .9376.38314.9939.88957L19.8951 17H4.10498l.90116-8.11043C5.06241 8.38314 5.49047 8 6.00002 8H12V7h-2c-.55228 0-1-.44772-1-1V3Zm1.01 8H8.00002v2.01H10.01V11Zm.99 0h2.01v2.01H11V11Zm5.01 0H14v2.01h2.01V11Zm-8.00998 3H10.01v2.01H8.00002V14ZM13.01 14H11v2.01h2.01V14Zm.99 0h2.01v2.01H14V14ZM11 4h6v1h-6V4Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="">
+                                    <a href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}"
+                                        class="bg-gray-200 cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full 
                                         hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                                        <svg class="w-6 h-6 text-gray-100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                            <path fill="currentColor" d="M4 19v2c0 .5523.44772 1 1 1h14c.5523 0 1-.4477 1-1v-2H4Z"/>
-                                            <path fill="currentColor" fill-rule="evenodd" d="M9 3c0-.55228.44772-1 1-1h8c.5523 0 1 .44772 1 1v3c0 .55228-.4477 1-1 1h-2v1h2c.5096 0 .9376.38314.9939.88957L19.8951 17H4.10498l.90116-8.11043C5.06241 8.38314 5.49047 8 6.00002 8H12V7h-2c-.55228 0-1-.44772-1-1V3Zm1.01 8H8.00002v2.01H10.01V11Zm.99 0h2.01v2.01H11V11Zm5.01 0H14v2.01h2.01V11Zm-8.00998 3H10.01v2.01H8.00002V14ZM13.01 14H11v2.01h2.01V14Zm.99 0h2.01v2.01H14V14ZM11 4h6v1h-6V4Z" clip-rule="evenodd"/>
-                                          </svg>
-                                          
-                                </button>
-                            </div>                              
+                                        <svg class="w-6 h-6 text-gray-600" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                d="M4 19v2c0 .5523.44772 1 1 1h14c.5523 0 1-.4477 1-1v-2H4Z" />
+                                            <path fill="currentColor" fill-rule="evenodd"
+                                                d="M9 3c0-.55228.44772-1 1-1h8c.5523 0 1 .44772 1 1v3c0 .55228-.4477 1-1 1h-2v1h2c.5096 0 .9376.38314.9939.88957L19.8951 17H4.10498l.90116-8.11043C5.06241 8.38314 5.49047 8 6.00002 8H12V7h-2c-.55228 0-1-.44772-1-1V3Zm1.01 8H8.00002v2.01H10.01V11Zm.99 0h2.01v2.01H11V11Zm5.01 0H14v2.01h2.01V11Zm-8.00998 3H10.01v2.01H8.00002V14ZM13.01 14H11v2.01h2.01V14Zm.99 0h2.01v2.01H14V14ZM11 4h6v1h-6V4Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            @endif
                         </div>
-                        
 
                         <div class="relative ">
                             @foreach ($mascotas as $mascota)
@@ -137,25 +174,32 @@
                             <div class="gap-4 text-gray-600 text-sm">
                                 <div class="flex items-center gap-2">
                                     <!-- Icono -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-x" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708"/>
-                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-                                      </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" class="bi bi-clipboard-x" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                            d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708" />
+                                        <path
+                                            d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+                                        <path
+                                            d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+                                    </svg>
                                     <!-- Texto -->
-                                    <p class="font-semibold text-gray-700">{{ Str::upper($consulta->tipoConsulta->nombre) }}</p>
-                                </div>                                
+                                    <p class="font-semibold text-gray-700">
+                                        {{ Str::upper($consulta->tipoConsulta->nombre) }}</p>
+                                </div>
                             </div>
                             <div class="flex justify-center">
-                                <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->id]) }}" 
+                                <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->id]) }}"
                                     class="flex items-center gap-5 text-sm font-semibold px-4 py-2 
                                            bg-gradient-to-r from-blue-400 to-blue-500 
                                            hover:from-blue-600 hover:to-blue-700 
-                                           text-white rounded-lg "
-                                >                                    
+                                           text-white rounded-lg ">
                                     <span>Historial completo</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </a>
 
@@ -185,7 +229,8 @@
     <script>
         function cambiarColor(select) {
             let colores = @json($estados);
-            select.className = "estado-select absolute top-2 left-2 z-10 px-4 py-2 text-xs font-semibold text-white rounded-lg bg-gradient-to-r " +
+            select.className =
+                "estado-select absolute top-2 left-2 z-10 px-4 py-2 text-xs font-semibold text-white rounded-lg bg-gradient-to-r " +
                 (colores[select.value] || "from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500");
         }
     </script>

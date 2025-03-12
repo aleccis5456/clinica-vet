@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Pago;
 use App\Models\ConsultaProducto;
 use Carbon\Carbon;
 use App\Models\TipoConsulta;
@@ -46,6 +47,7 @@ class Consultas extends Component
     public $cpId;
     public $flagDiagnostico, $flagSintomas, $flagTratamiento, $flagNotas;
     public $grupoVet;
+    public $pagos;
 
 
     /**
@@ -551,6 +553,7 @@ class Consultas extends Component
         $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
         $this->tipoConsultas = TipoConsulta::all();
         $this->grupoVet = ConsultaVeterinario::all();
+        $this->pagos = Pago::all();
 
         $this->comprobarSession();
     }

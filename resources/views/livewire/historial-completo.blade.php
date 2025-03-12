@@ -180,17 +180,21 @@
                             @php
                                 $precioProducto = [];
                                 $precioConsulta = $consulta->tipoConsulta->precio;
-
+                                $totalProducto = 0;
                                 foreach ($productos as $producto) {
-                                    $precioProducto[] = $producto->producto->precio;
+                                    $precioProducto[] = [
+                                        'precio' => $producto->producto->precio,
+                                        'cantidad' => $producto->cantidad
+                                    ];
                                 }
-                                $total = 0;
-                                foreach ($precioProducto as $precio) {
-                                    $total += $precio;
+                                
+                                foreach($precioProducto as $pProducto){
+                                    $totalProducto += (int)$pProducto['cantidad']*(int)$pProducto['precio'];
                                 }
-                                $total += $precioConsulta;
-                            @endphp
-
+                                
+                                $total = $totalProducto+$precioConsulta;
+                                
+                            @endphp                                
                             <!-- Total -->
                             <div class="bg-white p-4 rounded-lg shadow-xs">
                                 <div class="flex justify-between items-center border-t border-gray-100 pt-3 mt-3">

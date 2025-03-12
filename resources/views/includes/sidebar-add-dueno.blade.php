@@ -72,10 +72,17 @@
 
         <div>
             <a href="">
-                <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg"
-                    style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/pago.jpg') }}'); background-size: cover; background-position: center;">
-                    <div class="absolute inset-0 flex flex-col justify-center items-center text-white p-4">
-                        <h3 class=" text-md font-bold">Caja</h3>
+                <div class=" relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg "
+                    style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/pago.jpg') }}'); background-size: cover; background-position: center; ">
+                    <div class="{{ session('caja') ? 'backdrop-blur-xs' : '' }} absolute inset-0 flex flex-col justify-center items-center text-white p-4">
+                        <h3 class=" text-md font-bold">
+                            Caja
+                            @if (session('caja'))
+                            <span class=" px-3 py-1.5 rounded-full bg-gradient-to-r from-red-500 gap-1 to-red-600 shadow-lg">
+                                {{ count(session('caja')) }}
+                            </span>
+                            @endif                            
+                        </h3>
                         <p class="hidden group-hover:block mt-2 text-xs text-center">
                         </p>
                     </div>
