@@ -79,7 +79,7 @@
                         <p class="hidden group-hover:block mt-2 text-xs text-center">
                         </p>
                     </div>
-                </div>
+                </div>                
             </a>
         </div>  
 

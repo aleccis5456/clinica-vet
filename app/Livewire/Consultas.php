@@ -49,7 +49,7 @@ class Consultas extends Component
 
 
     /**
-     * funciton para la busqueda
+     * function para la busqueda
      */
     public function busqueda(){        
         if(empty($this->search)){
@@ -554,8 +554,6 @@ class Consultas extends Component
 
         $this->comprobarSession();
     }
-
-
 
     public function render()
     {

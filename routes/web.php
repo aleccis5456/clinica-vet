@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CajaController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\InventarioController;
 use App\Livewire\Consultas;
@@ -15,12 +16,10 @@ use App\Livewire\Inventario;
 use Illuminate\Support\Facades\Session;
 
 
-Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
-Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
 Route::get('/registro', [AuthController::class, 'registerForm'])->name('auth.registerform');
 Route::post('/registro/save', [AuthController::class, 'register'])->name('auth.register');
 Route::post('/iniciar-sesion', [AuthController::class, 'login'])->name('auth.login');
-Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
+
 
 Route::get('/', Home::class)->name('index');
 Route::middleware(Login::class)->group(function () {    
@@ -30,6 +29,10 @@ Route::middleware(Login::class)->group(function () {
     Route::get('/Gestion/usuario', GestionRoles::class)->name('gestion.roles');
     Route::get('/Inventario', Inventario::class)->name('inventario');
     Route::get('/Historial-completo/{id}', HistorialCompleto::class)->name('historial.completo');
+    Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
+    Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
+    Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
+    Route::get('/crear-caja/{$consultaId}', [CajaController::class, 'store'])->name('caja.store');    
 
 });
 
