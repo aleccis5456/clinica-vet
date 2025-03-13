@@ -47,7 +47,7 @@
             </div>
 
             <div class=" w-3/4 p-2">
-                <div class="min-h-[400px] border border-gray-100 shadow-lg rounded-lg">
+                <div class="min-h-[400px] border border-gray-100 shadow-sm rounded-lg">
                     <table class="min-w-full bg-white rounded-lg hidden md:table">
                         <thead class="bg-gray-200 text-gray-800 ">
                             <tr>

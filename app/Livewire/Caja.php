@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\TipoConsulta;
 use App\Models\Producto;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -10,8 +11,19 @@ use Livewire\Component;
 class Caja extends Component
 {    
     public $search = '';
-    public $productos;
+    public $producto;
     public $tablaProductos = false;
+    public $tiposConsultas;
+    public $productos;
+    public $alertas = true;
+    public $opcion = "1";
+
+    public function alertaTrue(){
+        $this->alertas = true;
+    }
+    public function alertaFalse(){
+        $this->alertas = false;
+    }
 
     public function tablaTrue(){
         $this->tablaProductos = true;
@@ -30,15 +42,23 @@ class Caja extends Component
     public function filtrar(){
         if(empty($this->search)){
             $this->productos;
+            $this->tiposConsultas;
             $this->tablaFalse();
-        }else{
-            $this->tablaTrue();
-            $this->productos = Producto::whereLike('nombre', "%$this->search%")->get();
+        }else{            
+            $this->alertaFalse();
+            $this->tablaTrue();                        
+            if($this->opcion == '1'){                
+                $this->productos = Producto::whereLike('nombre', "%$this->search%")->get();                        
+            }else{                
+                $this->productos = TipoConsulta::whereLike('nombre', "%$this->search%")->get();
+            }
         }
+        
     }
 
     public function flag(){
         $this->search = '';
+        $this->alertaTrue();
         $this->tablaFalse();
     }
 
