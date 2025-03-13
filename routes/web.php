@@ -10,6 +10,7 @@ use App\Livewire\FormAddMascota;
 use App\Livewire\Home;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Login;
+use App\Livewire\Caja;
 use App\Livewire\GestionRoles;
 use App\Livewire\HistorialCompleto;
 use App\Livewire\Inventario;
@@ -33,6 +34,7 @@ Route::middleware(Login::class)->group(function () {
     Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
     Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
     Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');    
+    Route::get('/caja', Caja::class)->name('caja');
 
 });
 

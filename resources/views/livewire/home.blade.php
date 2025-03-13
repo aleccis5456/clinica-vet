@@ -129,9 +129,14 @@
 
                 <!-- Overlay con efecto de degradado -->
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900/80"></div>
-
+                
                 <div class="relative z-10 p-4 md:p-6">
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Caja</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+                        Caja
+                        @if (session('caja'))                        
+                            <span class="text-[25px] bg-gradient-to-r gap-2 from-red-400 to-red-500 px-3 py-1 rounded-full">{{ count(session('caja')) }}</span>
+                        @endif                        
+                    </h2>
 
                     <div class="space-y-4 mb-8">
                         <div class="flex items-center text-white/80">
@@ -146,7 +151,7 @@
 
                     </div>
 
-                    <a href="#"
+                    <a href="{{ route('caja') }}"
                         class="cursor-pointer inline-flex items-center px-6 py-3 bg-gray-300 hover:bg-gray-800 text-black hover:text-gray-100 font-medium rounded-lg transition duration-300 group">
                         Acceder
                         <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1"

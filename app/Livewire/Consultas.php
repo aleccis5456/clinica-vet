@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Pago;
 use App\Models\ConsultaProducto;
-use Carbon\Carbon;
 use App\Models\TipoConsulta;
 use App\Models\Producto;
 use App\Models\ConsultaVeterinario;

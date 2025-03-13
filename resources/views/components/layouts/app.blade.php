@@ -17,7 +17,7 @@
 
     @if (!Auth::check())
         @include('login')        
-    @endif    
+    @endif        
 </body>
 
 </html>

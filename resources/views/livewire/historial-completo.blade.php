@@ -4,9 +4,9 @@
     </div>
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
         <p class="pl-1 py-7 text-4xl font-semibold">Historial</p>
-        <div class="mb-4 border-t border-gray-400 flex p-4">
+        <div class="mb-4 border-t border-gray-400 p-4 flex flex-col md:flex-row ">
 
-            <div class="bg-white rounded-lg shadow-sm p-4 flex flex-col h-full">
+            <div class="bg-white rounded-lg shadow-sm p-4  h-full">
                 <!-- Sección de imagen -->
                 <div class="mb-5 rounded-lg overflow-hidden bg-gray-100">
                     <img 
@@ -43,16 +43,7 @@
                         </p>
                     </div>
                 </div>
-            
-                <!-- Footer con estadísticas -->
-                {{-- <div class="mt-6 pt-4 border-t border-gray-100">
-                    <div class="flex justify-between text-xs text-gray-500">
-                        <div class="flex items-center gap-1">
-                            <svg class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3H7a1 1 0 100 2h3v3a1 1 0 102 0v-3h3a1 1 0 100-2h-3V7z" clip-rule="evenodd"></path></svg>
-                            Actualizado {{ \Carbon\Carbon::parse($mascota->updated_at)->diffForHumans() }}
-                        </div>
-                    </div>
-                </div> --}}
+                            
             </div>
 
             <div class=" w-3/4 p-2">
