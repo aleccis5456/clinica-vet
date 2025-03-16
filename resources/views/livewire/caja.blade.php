@@ -10,12 +10,35 @@
                 <p class="pl-1 py-7 text-4xl font-semibold">Caja</p>
                 <div class="mb-4  rounded-lg">
                     <div class="bg-gray-200 rounded-lg ">
-                        <p class="pl-4 pt-2 font-semibold text-lg">
+                        <p class="pl-4 pt-2 font-semibold text-lg flex">
                             Consultas Pendientes
-                            <span  @if($alertas) wire:click="alertaFalse" @else wire:click="alertaTrue" @endif                        
-                                class="cursor-pointer text-sm px-2 py-1 bg-orange-200 rounded-full text-orange-600">{{ count(session('caja')) }}</span>
-                        </p>                    
-                        @if ($alertas)                            
+                            <button
+                                @if ($alertas) wire:click="alertaFalse" @else wire:click="alertaTrue" @endif
+                                class="ml-2 flex cursor-pointer text-sm px-2 py-1 bg-orange-200 rounded-full text-orange-600">
+                                {{ count(session('caja')) }}
+                                <span>
+                                    @if ($alertas)
+                                        <svg class="w-5 h-5 text-orange-600" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="m5 15 7-7 7 7" />
+                                        </svg>
+                                    @else
+                                        <svg class="w-5 h-5 text-orange-600" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="2" d="m19 9-7 7-7-7" />
+                                        </svg>
+                                    @endif
+
+                                </span>
+
+
+                            </button>
+                        </p>
+                        @if ($alertas)
                             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 @if (session('caja'))
                                     @foreach (session('caja') as $caja)
@@ -79,16 +102,16 @@
                                         </div>
                                     @endforeach
                                 @endif
-
                             </div>
                         @endif
+
                         <div class="p-3 flex">
-                            <!-- Buscador -->                            
+                            <!-- Buscador -->
                             <form wire:submit.prevent='filtrar'
                                 class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
                                 <!-- Input de búsqueda -->
                                 <div>
-                                    
+
                                 </div>
                                 <input wire:model='search' type="text"
                                     class="w-full bg-transparent text-sm px-3 py-2 outline-none focus:ring-2 focus:ring-gray-400 rounded-sm"
@@ -110,20 +133,18 @@
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                     </svg>
-                                </button>                                
+                                </button>
                             </form>
 
                             <div class="pl-1">
                                 <select wire:model='opcion'
-                                        class="border border-gray-300 p-3 rounded-lg"
-                                        name="" id="">                                    
+                                    class="bg-gradient-to-r from-gray-700 to-gray-800 gap-4 text-white font-semibold p-3 rounded-lg"
+                                    name="" id="">
                                     <option value="1">Productos</option>
                                     <option value="2">Consultas</option>
                                 </select>
                             </div>
-                            
                         </div>
-                        
                     </div>
 
                     @if ($tablaProductos)
@@ -141,7 +162,7 @@
 
                                 <tbody class="text-gray-800">
                                     @foreach ($productos as $producto)
-                                        <tr wire:key=''
+                                        <tr wire:key='{{ $producto->id }}'
                                             class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
                                             <td class="py-3 px-4">
                                                 <img class="w-18 h-18"
@@ -159,8 +180,8 @@
                                             </td>
 
                                             <td class="py-3 px-4 font-semibold">
-                                                <button wire:click='' type="button"
-                                                    class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                                <button wire:click='cobro({{ $producto->id }})' type="button"
+                                                    class="cursor-pointer ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                                     Agregar
                                                 </button>
                                             </td>
@@ -168,15 +189,103 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div 
-                    @endif
+                        </div @endif
                 </div>
             </div>
 
-            <div class="border border-amber-400 w-1/4">
+            <!-- SECCIÓN DE LOS DATOS PARA EL COBRO -->
+            <div class="w-full md:w-1/3 lg:w-1/4 shadow-md rounded-lg bg-white p-5">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
+                    Productos y Servicios
+                </h3>
 
+                <form wire:submit.prevent='nombreFactura' class="space-y-4">
+                    <!-- Campo RUC/CI -->
+                    <div class="relative">
+                        <label for="rucCI" class="block text-sm font-medium text-gray-700 mb-1">RUC o CI</label>
+                        <input wire:model='rucCI' type="text"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                            placeholder="Ingrese RUC o CI" @if (!session('cobro')) disabled @endif>
+                        @if (!empty($rucCI))
+                            <button type="button" wire:click="$set('rucCI', '')"
+                                class="text-xl cursor-pointer absolute right-1 top-11 transform -translate-y-1/2 text-gray-400 hover:text-gray-900 hover:bg-gray-300 px-2 hover:rounded-md">
+                                x
+                            </button>
+                        @endif
+                    </div>
+
+                    <!-- Campo Nombre/Razón Social -->
+                    <div class="relative">
+                        <label for="nombreRS" class="block text-sm font-medium text-gray-700 mb-1">Nombre o Razón
+                            Social</label>
+                        <input wire:model="nombreRS" type="text"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                            placeholder="Ingrese nombre o razón social"
+                            @if (!session('cobro')) disabled @endif>
+
+                        @if (!empty($nombreRS))
+                            <button type="button" wire:click="$set('nombreRS', '')"
+                                class="text-xl cursor-pointer absolute right-1 top-11 transform -translate-y-1/2 text-gray-400 hover:text-gray-900 hover:bg-gray-300 px-2 hover:rounded-md">
+                                x
+                            </button>
+                        @endif
+                    </div>
+
+                    <button type="submit" class="hidden"></button>
+                </form>
+
+                <!-- Lista de productos seleccionados -->
+                @if (session('cobro'))
+                    <div class="mt-6 space-y-3">
+                        <p class="text-sm font-semibold text-gray-600">Productos seleccionados:</p>
+
+                        @foreach (session('cobro') as $index => $cobro)
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md shadow-sm">
+                                <div class="flex items-center">
+                                    <!-- Botones de cantidad -->
+                                    <div class="relative flex items-center mr-1">
+                                        <!-- Botón de restar -->
+                                        <button wire:click='disminuir({{ $index }})'
+                                            class="shrink-0 bg-gray-100 hover:bg-gray-200 text-gray-500 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-200 focus:ring-2 focus:outline-none">
+                                            <svg class="w-2.5 h-2.5 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                                            </svg>
+                                        </button>
+                                    
+                                        <!-- Input con cantidad -->
+                                        <input type="text" id="counter-input"
+                                            class="shrink-0 text-gray-900 border-0 bg-transparent text-sm font-normal focus:outline-none focus:ring-0 max-w-[1rem] text-center"
+                                            value="{{ $cobro['cantidad'] }}" disabled />
+                                    
+                                        <!-- Botón de sumar -->
+                                        <button wire:click='cobro({{ $cobro['productoId'] }}, {{ $index }})'
+                                            class="shrink-0 bg-gray-100 hover:bg-gray-200 text-gray-500 inline-flex items-center justify-center border border-gray-300 rounded-md h-5 w-5 focus:ring-gray-200 focus:ring-2 focus:outline-none">
+                                            <svg class="w-2.5 h-2.5 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Nombre del producto -->
+                                    <p class="text-xs text-gray-800">{{ $cobro['producto'] }}</p>
+                                </div>
+                                <!-- Precio -->
+                                <span class="text-xs text-gray-700">{{ number_format($cobro['precio']) }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
+
         </div>
 
+
+        @if ($resultados)
+            @include('includes.caja.modalResultados')
+        @endif
+
+        @if ($registro)
+            @include('includes.caja.modalRegistro')
+        @endif
     </main>
 </div>

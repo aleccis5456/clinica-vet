@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
@@ -17,7 +17,8 @@
 
     @if (!Auth::check())
         @include('login')        
-    @endif        
+    @endif          
+    
 </body>
 
 </html>

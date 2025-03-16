@@ -40,10 +40,10 @@ Route::middleware(Login::class)->group(function () {
 
 
 Route::get('borrar-session', function(){
-    Session::forget('caja');
+    Session::forget('cobro');
     return back();
 });
 
 Route::get('ver-sessiones', function(){
-    dd(session('caja'));
+    dd(session('cobro'));
 });

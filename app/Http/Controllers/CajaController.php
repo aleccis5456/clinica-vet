@@ -46,17 +46,7 @@ class CajaController extends Controller
             $totalProductos += (int)$producto['cantidad']*(int)$producto['precio'];
         }
         $total = $totalConsulta + $totalProductos;
-        
-        $caja[] = [
-            'consultaId' => $consultaId,
-            'cliente' => $consulta->mascota->dueno->toArray(),
-            'mascota' => $consulta->mascota->toArray(),
-            'productos' => $productos,
-            'consulta' => $consulta->toArray(),
-            'montoTotal' => $total,
-        ];
 
-        session(['caja' => $caja]);
 
         $pago = Pago::create([
             'dueno_id' => $consulta->mascota->dueno->id,
@@ -64,7 +54,20 @@ class CajaController extends Controller
             'monto' => $total,
             'pagado' => false,
             'cuotas' => false,
+            'estado' => 'pendiente'
         ]);
+        
+        $caja[] = [
+            'consultaId' => $consultaId,
+            'cliente' => $consulta->mascota->dueno,
+            'mascota' => $consulta->mascota,
+            'productos' => $productos,
+            'consulta' => $consulta,
+            'pagoEstado' => $pago->estado,
+            'montoTotal' => $total,
+        ];
+
+        session(['caja' => $caja]);
         
         return redirect()->back()->with('caja_creada', 'Se ha creado una nueva caja.');
     }

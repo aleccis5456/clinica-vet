@@ -41,38 +41,37 @@
                     class="mt-2 w-full font-medium py-2 rounded-md border border-gray-300 hover:border-gray-500 hover:bg-gray-200">
                     Ver Especies
                 </button>
-            @endif             
+            @endif
         </form>
 
 
-        @if ($tableEspecies)        
-        <div>
-            <table
-                class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
-                <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
-                    <tr>
-                        <th class="py-3 px-4 text-left text-semibold">Especie</th>
-                        <th class="py-3 px-4 text-left text-semibold sr-only">Acción</th>
-                    </tr>
-                </thead>
-    
-                <tbody class="text-gray-800">
-                    @foreach ($especies as $especie)
-                        <tr wire:key='{{ $especie->id }}'
-                            class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                            <td class="py-3 px-4">{{ $especie->nombre }}</td>
-                            <td class="py-3 px-4">
-                                <button wire:click='eliminarEspecie({{ $especie->id }})' type="button"
-                                    class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
-                                    Eliminar
-                                </button>
-                            </td>
+        @if ($tableEspecies)
+            <div>
+                <table class="min-w-full bg-white rounded-b-lg shadow-md hidden md:table">
+                    <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-semibold">Especie</th>
+                            <th class="py-3 px-4 text-left text-semibold sr-only">Acción</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
-    
+                    </thead>
+
+                    <tbody class="text-gray-800">
+                        @foreach ($especies as $especie)
+                            <tr wire:key='{{ $especie->id }}'
+                                class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
+                                <td class="py-3 px-4">{{ $especie->nombre }}</td>
+                                <td class="py-3 px-4">
+                                    <button wire:click='eliminarEspecie({{ $especie->id }})' type="button"
+                                        class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
     </div>
 </div>
