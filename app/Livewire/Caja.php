@@ -8,6 +8,7 @@ use App\Models\TipoConsulta;
 use App\Models\Producto;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Illuminate\Support\Facades\Session;
 
 #[Title('Caja')]
 class Caja extends Component
@@ -152,11 +153,11 @@ class Caja extends Component
      */
     public function cobro($id, $index = null)
     {
-        $cobro = session('cobro', []);
+        $cobro = session('cobro', []);        
         if (session('cobro')) {
-            if ($index != null) {
+            if (isset($index) || $index === 0) {                
                 $this->opcion = $cobro[$index]['opcion'];
-            }
+            }            
         }
         if ($this->opcion == '1') {
             $producto = Producto::find($id);
@@ -237,7 +238,7 @@ class Caja extends Component
         }
         session(['carrito' => $carrito]);
 
-        return back();
+        return redirect('/caja');
     }
     /**
      * función que autocompleta los datos del cliente 
@@ -252,6 +253,9 @@ class Caja extends Component
     public function mount()
     {
         $this->duenos = Dueno::all();
+        if(session('cobro') == []){
+            Session::forget('cobro');
+        }
     }
 
     public function render()
