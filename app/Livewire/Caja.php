@@ -369,8 +369,8 @@ class Caja extends Component
         Session::forget('activo');
     }
 
-    public function mount()
-    {
+    public function mount(){
+        Helper::check();
         $this->duenos = Dueno::all();                   
     }    
 

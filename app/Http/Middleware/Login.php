@@ -22,7 +22,7 @@ class Login
             if (now()->diffInMinutes($lastActivity) > config('session.lifetime')) {
                 Auth::logout();
                 Session::flush();
-                return redirect('/login')->with('message', 'Tu sesión ha expirado por inactividad.');
+                return redirect('/')->with('message', 'Tu sesión ha expirado por inactividad.');
             }
             session(['lastActivityTime' => now()]);
         }

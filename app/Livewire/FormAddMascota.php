@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
 use App\Models\Dueno;
 use App\Models\Especie;
 use App\Models\Mascota;
@@ -147,6 +148,7 @@ class FormAddMascota extends Component
      * 
      */
     public function mount(){
+        Helper::check();
         $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
         $this->duenos = Dueno::all();
         $this->especies = Especie::all();

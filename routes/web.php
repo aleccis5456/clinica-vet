@@ -10,6 +10,7 @@ use App\Livewire\FormAddMascota;
 use App\Livewire\Home;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Login;
+use App\Livewire\Agenda;
 use App\Livewire\Caja;
 use App\Livewire\GestionRoles;
 use App\Livewire\HistorialCompleto;
@@ -22,8 +23,8 @@ Route::post('/registro/save', [AuthController::class, 'register'])->name('auth.r
 Route::post('/iniciar-sesion', [AuthController::class, 'login'])->name('auth.login');
 
 
-Route::get('/', Home::class)->name('index');
 Route::middleware(Login::class)->group(function () {    
+    Route::get('/', Home::class)->name('index');
     Route::get('/registrar/dueno', FormAddDueno::class)->name('add.dueno');
     Route::get('/registrar/mascota', FormAddMascota::class)->name('add.mascota');
     Route::get('/consultas', Consultas::class)->name('consultas');
@@ -35,7 +36,7 @@ Route::middleware(Login::class)->group(function () {
     Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
     Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');    
     Route::get('/caja', Caja::class)->name('caja');
-
+    Route::get('/agenda', Agenda::class)->name('agenda');
 });
 
 

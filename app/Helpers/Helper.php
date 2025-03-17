@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Consulta;
 use App\Models\Producto;
 use App\Models\ConsultaProducto;
@@ -84,6 +85,12 @@ class Helper{
                 'montoTotal' => $pagoSumar,
             ];
             session(['caja' => $caja]);            
+        }
+    }
+
+    public static function check(){
+        if(!Auth::check()){
+            return redirect('/');
         }
     }
 }

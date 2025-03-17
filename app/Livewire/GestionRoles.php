@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
 use App\Models\RolUser;
 use App\Models\Rol;
 use App\Models\User;
@@ -76,6 +77,7 @@ class GestionRoles extends Component
      * 
      */
     public function mount(){
+        Helper::check();
         $this->roles = Rol::all();
         $this->users = User::all();        
     }

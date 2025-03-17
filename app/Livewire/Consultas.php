@@ -540,7 +540,8 @@ class Consultas extends Component
      * 
      */
     public function mount()
-    {
+    {   
+        Helper::check();
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%vet%")->first();
         $vetId = $rol->id;

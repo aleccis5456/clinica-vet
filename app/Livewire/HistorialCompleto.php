@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
 use App\Models\ConsultaProducto;
 use App\Models\ConsultaVeterinario;
 use App\Models\Mascota;
@@ -39,6 +40,7 @@ class HistorialCompleto extends Component
     }    
 
     public function mount($id){        
+        Helper::check();
         $this->consultaId = $id;
         $this->consulta = Consulta::find($this->consultaId);        
         $this->mascota = Mascota::find($this->consulta->mascota_id);              

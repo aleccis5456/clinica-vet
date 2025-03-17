@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
 use App\Models\Categoria;
 use App\Models\Producto;
 use Livewire\Attributes\Title;
@@ -50,6 +51,7 @@ class Inventario extends Component
      * 
      */
     public function mount(){
+        Helper::check();
         $this->productos = Producto::all();
         $this->categorias = Categoria::all();
     }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
 use App\Models\Dueno;
 use App\Models\Mascota;
 use Livewire\Attributes\Rule;
@@ -56,6 +57,7 @@ class FormAddDueno extends Component
      * 
      */
     public function mount(){
+        Helper::check();
         $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
         $this->mascotas = Mascota::all();
     }
@@ -140,7 +142,7 @@ class FormAddDueno extends Component
     }
     public function closeModalAddDueno(){
         $this->modalAddDueno = false;
-    }
+    }    
 
     public function render()
     {                                    
