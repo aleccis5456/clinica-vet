@@ -21,7 +21,7 @@ class Helper{
         return Carbon::parse($fecha)->age;        
     }
 
-    public static function total(){
+    public static function total() : int {
         $total = 0;        
         $cobro = session('cobro');
         foreach($cobro as &$item){
@@ -43,7 +43,8 @@ class Helper{
                 if($item['consultaId'] == $pago->consulta_id){
                     $cortar = true;
                 }
-            }             
+            }    
+            //para cortar el foreach de pagos         
             if($cortar){
                 continue;
             }

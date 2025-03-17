@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Session;
 
 class CajaController extends Controller
 {
-    public function store($consultaId){
+    public function store($consultaId) : mixed{
         $consulta = Consulta::find($consultaId); 
 
         if(!$consulta){
@@ -36,7 +36,7 @@ class CajaController extends Controller
 
         foreach($caja as $item){            
             if($item['consultaId'] == $consultaId){
-                return back()->with('error', 'Esta consulta ya se envio a caja');
+                return back()->with('error', 'Esta consulta ya se envió a caja');
             }
         }    
         

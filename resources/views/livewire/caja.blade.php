@@ -181,9 +181,14 @@
                                         <tr wire:key='{{ $producto->id }}'
                                             class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
                                             <td class="py-3 px-4">
-                                                <img class="w-18 h-18"
+                                                @if (isset($producto->foto))
+                                                    <img class="w-18 h-18"
                                                     src="{{ asset("uploads/productos/$producto->foto") }}"
                                                     alt="" srcset="">
+                                                @else
+                                                    <img class="w-6 h-6 " 
+                                                    src="{{ asset('images/tabicon.png') }}" alt="">
+                                                @endif                                                
                                             </td>
                                             <td class="py-3 px-4">
                                                 {{ $producto->nombre }}

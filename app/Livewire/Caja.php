@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
+use App\Models\Consulta;
 use App\Models\Pago;
 use App\Models\Dueno;
 use App\Models\DatosFactura;
@@ -10,6 +12,7 @@ use App\Models\Producto;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Http\RedirectResponse;
 
 #[Title('Caja')]
 class Caja extends Component
@@ -34,7 +37,7 @@ class Caja extends Component
     public bool $tablaClientes = false;    
     public int $total = 0;
     public bool $confirmar = false;
-    public string $formaPago = '';
+    public string $formaPago = '';    
 
     public function confirmarTrue(){
         $this->validate([
@@ -222,8 +225,7 @@ class Caja extends Component
     /**
      * function que muestra clientes en el modal
      */
-    public function nombreFactura()
-    {
+    public function nombreFactura() : void {
         if (!empty($this->nombreRS)) {
             $filtro = $this->nombreRS;
         } else {
@@ -242,7 +244,7 @@ class Caja extends Component
     /**
      * función para disminuir cantidad de un producto de la session cobro
      */
-    public function disminuir($index){
+    public function disminuir($index) : void {
         $cobro = session('cobro');
             
         if ($cobro[$index]['cantidad'] > 1) {
@@ -256,44 +258,85 @@ class Caja extends Component
     /**
      * función que autocompleta los datos del cliente 
      */
-    public function select($cliente)
-    {        
+    public function select($cliente) : void {        
         $this->nombreRS = $cliente['nombre_rs'];
         $this->rucCI = $cliente['ruc_ci'];
         $this->resultadosFalse();
     }  
 
+    /**
+     * function para crear o actualizar un pago. actualizar un pago de una consulta 
+     */
     public function confirmarPago(){
         $this->validate([
             'formaPago' => 'required'
         ],[
             'formaPago' => 'Selecciona un método de pago'
         ]);
+        $cobro = session('cobro', []);
+        $consultaId = null;
         
+        foreach ($cobro as $item) {
+            if (isset($item['consultaId'])) {
+                $consultaId = $item['consultaId'];
+                break;
+            }
+        }
+               
+        $consulta = Consulta::find($consultaId);                    
         $cliente = DatosFactura::where('ruc_ci', $this->rucCI)->first();
-        
-        $pago = Pago::create([            
-            // 'dueno_id' => , 	
-            // 'consulta_id,' 	
-            // 'monto', 	
-            // 'forma_pago', 	
-            // 'notas', 	
-            // 'pagado', 	
-            // 'cuotas', 	
-            // 'cantidad_pagos', 	
-            // 'fecha_pago', 	
-            // 'fecha_vencimiento', 	
-            // 'estado', 	
-            // 'comprobante', 	 	
-            // 'cliente_id' 	
-        ]);
+    
+        if (!$cliente) {
+            return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
+        }
+                        
+        try{            
+            $pago = Pago::where('consulta_id', $consultaId)->first();
+            if ($pago) {    
+                $pago->update([
+                    'forma_pago' => $this->formaPago,
+                    'pagado' => true,
+                    'cliente_id' => $cliente->id,
+                    'estado' => 'pagado',
+                ]);
 
+                foreach($cobro as $item){
+                    $producto = Producto::find($item['productoId']);
+                    $producto->stock_actual -= $item['cantidad'];
+                    $producto->save();
+                }
+
+            } else {            
+                Pago::create([                                     
+                    'monto' => Helper::total(),
+                    'forma_pago' => $this->formaPago,
+                    'pagado' => true,
+                    'estado' => 'pagado',
+                    'cliente_id' => $cliente->id,
+                ]);
+
+                foreach($cobro as $item){
+                    $producto = Producto::find($item['productoId']);
+                    $producto->stock_actual -= $item['cantidad'];
+                    $producto->save();
+                }
+
+            }
+        }catch(\Exception $e){
+            throw new \Exception($e->getMessage());
+        }
+        
+        Session::forget('caja');
+        Session::forget('cobro');
+        Session::forget('activo');
+        Helper::crearCajas();
+        return redirect()->route('caja')->with('pago', 'Pago confirmado.');
     }
 
     /**
      * funcion para cobrar las consultas que estan en las alertas
      */
-    public function cobrarConsulta($consultaId){
+    public function cobrarConsulta($consultaId) {
         $activo = session('activo', false);
         if($activo){
             return redirect()->route('caja')->with('error', 'Ya se agrego esta consulta');
@@ -321,7 +364,7 @@ class Caja extends Component
     /**
      * 
      */
-    public function borrarCobro(){
+    public function borrarCobro() : void {
         Session::forget('cobro');
         Session::forget('activo');
     }
