@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Pago;
 use App\Models\Dueno;
 use App\Models\DatosFactura;
 use App\Models\TipoConsulta;
@@ -13,12 +14,12 @@ use Illuminate\Support\Facades\Session;
 #[Title('Caja')]
 class Caja extends Component
 {
-    public $search = '';
+    public string $search = '';
     public $producto;
-    public $tablaProductos = false;
+    public bool $tablaProductos = false;
     public $tiposConsultas;
-    public $productos;
-    public $alertas = true;
+    public object $productos;
+    public bool $alertas = true;
     public $opcion = "1";
     public $duenos;
     public $nombreRS = '';
@@ -27,10 +28,27 @@ class Caja extends Component
     public $clientes;
     public $clientesf;
     public $clienteCheck;
-    public $registro = false;
-    public $rNombre;
-    public $rRuc;
-    public $tablaClientes = false;
+    public bool $registro = false;
+    public string $rNombre;
+    public string $rRuc;
+    public bool $tablaClientes = false;    
+    public int $total = 0;
+    public bool $confirmar = false;
+    public string $formaPago = '';
+
+    public function confirmarTrue(){
+        $this->validate([
+            'nombreRS' => 'required',
+            'rucCI' => 'required',
+        ],[
+            'nombreRS' => 'Selecciona un cliente',
+            'rucCI' => 'Selecciona un cliente'
+        ]);
+        $this->confirmar = true;
+    }
+    public function confirmarFalse(){
+        $this->confirmar = false;
+    }
 
     public function tablaClientesTrue(){
         $this->clientesf = DatosFactura::orderByDesc('id')->get();
@@ -66,11 +84,11 @@ class Caja extends Component
         $this->alertas = false;
     }
 
-    public function tablaTrue()
+    public function tablaTrue() : void
     {
         $this->tablaProductos = true;
     }
-    public function tablaFalse()
+    public function tablaFalse() : void
     {
         $this->tablaProductos = false;
     }
@@ -81,6 +99,7 @@ class Caja extends Component
         'pagado' => 'bg-green-200',
         'cancelado' => 'bg-red-200'
     ];
+
     /**
      * funciton para eliminar un cliente 
      */
@@ -92,7 +111,6 @@ class Caja extends Component
         }        
         return redirect()->route('caja')->with('eliminado', 'Eliminado correctamente');
     }
-
 
     /**
      * function para registrar clientes
@@ -151,9 +169,18 @@ class Caja extends Component
     /**
      * function para crear la session('cobro')
      */
-    public function cobro($id, $index = null)
+    public function cobro($id, $index = null, $cantidad = null, $consultaId = null)
     {
-        $cobro = session('cobro', []);        
+        $cobro = session('cobro', []);                
+
+        if(isset($consultaId)){
+            foreach($cobro as $item){
+                if($item['consultaId'] == $consultaId){
+                    return redirect()->route('caja')->with('error', 'Ya se agrego esta consulta');
+                }                            
+            }                                    
+        }                
+        
         if (session('cobro')) {
             if (isset($index) || $index === 0) {                
                 $this->opcion = $cobro[$index]['opcion'];
@@ -161,8 +188,8 @@ class Caja extends Component
         }
         if ($this->opcion == '1') {
             $producto = Producto::find($id);
-        } else {
-            $producto = TipoConsulta::find($id);
+        } else {            
+            $producto = TipoConsulta::find($id);            
         }
         if (!$producto) {
             return redirect()->route('caja');
@@ -179,16 +206,17 @@ class Caja extends Component
 
         if ($contador == 0) {
             $cobro[] = [
+                'consultaId' => $consultaId,
                 'productoId' => $producto->id,
                 'precio' => $producto->precio,
                 'producto' => $producto->nombre,
-                'cantidad' => 1,
+                'cantidad' => $cantidad ?? 1,
                 'opcion' => $this->opcion,
                 'productoCompleto' => $producto,
             ];
         }
 
-        session(['cobro' => $cobro]);
+        session(['cobro' => $cobro]);        
     }
 
     /**
@@ -201,8 +229,7 @@ class Caja extends Component
         } else {
             $filtro = (int)$this->rucCI;
         }        
-        if(empty($this->nombreRS) and empty($this->rucCI)){
-            dd('si?');
+        if(empty($this->nombreRS) and empty($this->rucCI)){            
             $this->clientes = [];
         }else{
             $this->clientes = DatosFactura::whereLike('nombre_rs', "%$filtro%")
@@ -226,20 +253,6 @@ class Caja extends Component
         session(['cobro' => $cobro]);
     }
 
-
-    public function quitar($indice)
-    {
-        $carrito = session('carrito');
-
-        if ($carrito[$indice]['cantidad'] > 1) {
-            $carrito[$indice]['cantidad']--;
-        } else {
-            unset($carrito[$indice]);
-        }
-        session(['carrito' => $carrito]);
-
-        return redirect('/caja');
-    }
     /**
      * función que autocompleta los datos del cliente 
      */
@@ -248,15 +261,75 @@ class Caja extends Component
         $this->nombreRS = $cliente['nombre_rs'];
         $this->rucCI = $cliente['ruc_ci'];
         $this->resultadosFalse();
+    }  
+
+    public function confirmarPago(){
+        $this->validate([
+            'formaPago' => 'required'
+        ],[
+            'formaPago' => 'Selecciona un método de pago'
+        ]);
+        
+        $cliente = DatosFactura::where('ruc_ci', $this->rucCI)->first();
+        
+        $pago = Pago::create([            
+            // 'dueno_id' => , 	
+            // 'consulta_id,' 	
+            // 'monto', 	
+            // 'forma_pago', 	
+            // 'notas', 	
+            // 'pagado', 	
+            // 'cuotas', 	
+            // 'cantidad_pagos', 	
+            // 'fecha_pago', 	
+            // 'fecha_vencimiento', 	
+            // 'estado', 	
+            // 'comprobante', 	 	
+            // 'cliente_id' 	
+        ]);
+
+    }
+
+    /**
+     * funcion para cobrar las consultas que estan en las alertas
+     */
+    public function cobrarConsulta($consultaId){
+        $activo = session('activo', false);
+        if($activo){
+            return redirect()->route('caja')->with('error', 'Ya se agrego esta consulta');
+        }
+        $caja = session('caja', []);
+        $cobro = session('cobro', []);                
+        foreach($caja as $item){      
+            if($item['consultaId'] == $consultaId){                
+                foreach($item['productos'] as $producto){                
+                    if(isset($producto['productoId'])){
+                        $this->opcion = '1';
+                        $this->cobro($producto['productoId'], $index=null, $producto['cantidad']);  
+                    }
+                };   
+                      
+                $this->opcion = '2';
+                $this->cobro($item['consulta']['tipo_id'], $index=null, $cantidad=null, $item['consultaId']);   
+                $this->opcion = '1';
+            }                              
+        }   
+        
+        session(['activo' => true]);
+    }
+
+    /**
+     * 
+     */
+    public function borrarCobro(){
+        Session::forget('cobro');
+        Session::forget('activo');
     }
 
     public function mount()
     {
-        $this->duenos = Dueno::all();
-        if(session('cobro') == []){
-            Session::forget('cobro');
-        }
-    }
+        $this->duenos = Dueno::all();                   
+    }    
 
     public function render()
     {

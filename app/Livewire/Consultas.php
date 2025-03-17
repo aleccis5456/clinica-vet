@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Helper;
 use App\Models\Pago;
 use App\Models\ConsultaProducto;
 use App\Models\TipoConsulta;
@@ -57,7 +58,9 @@ class Consultas extends Component
             $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
         }else{
             $mascotas = Mascota::whereLike('nombre', "%$this->search%")->pluck('id');
-            $this->consultas = Consulta::whereIn('mascota_id', $mascotas)->get();
+            $this->consultas = Consulta::whereIn('mascota_id', $mascotas)
+                                        ->orWhereLike('codigo', "%$this->search%")
+                                        ->get();
         }
     }    
     public function flagC(){
@@ -211,7 +214,7 @@ class Consultas extends Component
      * function que quita una unidad de la session consumos
      */
     public function quitarProducto($index, $consultaId)
-    {
+    {        
         $consumo = session('consumo', []);
 
         if (!isset($consumo[$consultaId][$index])) {
@@ -224,9 +227,8 @@ class Consultas extends Component
             unset($consumo[$consultaId][$index]);
             session(['consumo' => $consumo]);
             //   return redirect()->route('consultas');
-        }
-
-        session(['consumo' => $consumo]); // Guardar la sesión después de modificar
+        }        
+        session(['consumo' => $consumo]); // Guardar la sesión después de modificar        
     }
 
 
@@ -339,8 +341,20 @@ class Consultas extends Component
         $this->modalConfig = false;
     }
 
+    private function codigo($length)
+    {
+        $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $randomString;
+    }
+
     /**
-     * 
+     * funcion que crea las consultas
      */
     public function crearConsulta()
     {
@@ -384,6 +398,7 @@ class Consultas extends Component
                 'notas' => $this->notas,
                 'hora' => $this->hora,
                 'estado' => $this->estado ?? 'Pendiente',
+                'codigo' => $this->codigo(6),
             ]);
         
         } catch (\Exception $e) {
@@ -502,6 +517,7 @@ class Consultas extends Component
         }
         
 
+        
         Session::forget('consumo');
         return redirect()->route('consultas')->with('agregado', 'Consulta Actualizada');
     }
@@ -555,6 +571,8 @@ class Consultas extends Component
         $this->pagos = Pago::all();
 
         $this->comprobarSession();
+        Session::forget('caja');
+        Helper::crearCajas();
     }
 
     public function render()

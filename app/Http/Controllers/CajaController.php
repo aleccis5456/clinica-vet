@@ -26,10 +26,10 @@ class CajaController extends Controller
             $producto = Producto::find($cProducto->producto_id);
                         
             $productos[] = [
+                "productoId" => $producto->id,
                 "producto" => $producto->nombre,
                 "cantidad" => $cProducto->cantidad,                
-                "precio" => $producto->precio
-            ];            
+                "precio" => $producto->precio,            ];            
         }                                
 
         $caja = session('caja', []);    

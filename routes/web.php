@@ -39,11 +39,11 @@ Route::middleware(Login::class)->group(function () {
 });
 
 
-Route::get('borrar-session', function(){
-    Session::forget('cobro');
+Route::get('borrar-session/{session}', function($session){
+    Session::forget($session);
     return back();
 });
 
-Route::get('ver-sessiones', function(){
-    dd(session('cobro'));
+Route::get('ver-sessiones/{session}', function($session){
+    dd(session($session));
 });

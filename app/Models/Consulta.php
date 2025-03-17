@@ -19,7 +19,8 @@ class Consulta extends Model
         'tratamiento', 	
         'notas',
         'estado',        
-        'hora'
+        'hora',
+        'codigo'
     ];
 
     public function mascota(){

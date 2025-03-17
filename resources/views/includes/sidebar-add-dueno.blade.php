@@ -71,7 +71,7 @@
         </div>  
 
         <div>
-            <a href="">
+            <a href="{{ route('caja') }}">
                 <div class=" relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg "
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/pago.jpg') }}'); background-size: cover; background-position: center; ">
                     <div class="{{ session('caja') ? 'backdrop-blur-xs' : '' }} absolute inset-0 flex flex-col justify-center items-center text-white p-4">
