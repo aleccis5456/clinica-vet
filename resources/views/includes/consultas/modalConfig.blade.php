@@ -13,7 +13,7 @@
         </button>
 
         <div
-            class="{{ $consultaToEdit->estado == 'Finalizado' ? 'bg-green-100 border-2 border-green-700' : 'bg-white border border-gray-100' }}  p-6 min-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
+            class="{{ $consultaToEdit->estado == 'Finalizado' ? 'bg-green-100 border-2 border-green-700' : 'bg-white border border-gray-100' }}  p-6 min-w-lg mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Actualizar Consulta</p>
 
             <!-- NOTAS -->
@@ -103,7 +103,7 @@
                             <div class="mb-5">
                                 <label class="block text-gray-800 font-medium mb-2">Seleccionar nuevo
                                     veterinario</label>
-                                <select name="" id="" wire:model='cambiarVetId'
+                                <select wire:model='cambiarVetId' wire:click='setVetChanged({{ 1 }})'
                                     class="w-1/2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                                     <option value="">-Seleccionar-</option>
                                     @php
@@ -115,7 +115,7 @@
 
                                     @foreach ($veterinarios as $veterinario)
                                         @if (!in_array($veterinario->id, $veterinariosEnConsulta))
-                                            <option wire:click='setVetChanged({{ $veterinario->id }})'
+                                            <option
                                                 value="{{ $veterinario->id }}">
                                                 {{ $veterinario->name }}
                                             </option>

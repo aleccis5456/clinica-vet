@@ -304,7 +304,7 @@ class Consultas extends Component
         $this->cambiarVet = false;
     }
     public function setVetChanged($vetId)
-    {
+    {        
         $this->vetChanged = $vetId;
     }
     public function showMessage()
@@ -359,7 +359,7 @@ class Consultas extends Component
      * funcion que crea las consultas
      */
     public function crearConsulta()
-    {
+    {        
         try {
             $this->validate([
                 'mascota_id' => 'required',
@@ -378,16 +378,15 @@ class Consultas extends Component
                         return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha");
                     }
                 }
-            }            
-            if ($this->fecha != now()->format('Y-m-d') and $this->hora != now()->format('H:i')) {
+            }         
+            
+            if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
                 if ($this->hora < now()->format('H:i')) {
                     return redirect()->route('consultas')->with('error', 'La hora de la consulta no puede ser menor a la hora actual');
                 } elseif ($this->fecha < now()->format('Y-m-d')) {
                     return redirect()->route('consultas')->with('error', 'La fecha de la consulta no puede ser menor a la fecha actual');
                 }
-                $this->estado = 'Agendado';
-
-                
+                $this->estado = 'Agendado';                
             }
 
             $consulta = Consulta::create([
@@ -402,16 +401,26 @@ class Consultas extends Component
                 'hora' => $this->hora,
                 'estado' => $this->estado ?? 'Pendiente',
                 'codigo' => $this->codigo(6),
-            ]);
-            
-            $evento = Evento::create([
-                'titulo' => $consulta->tipoConsulta->nombre, 	
-                'descripcion' => '',
-                'fecha_hora' => $consulta->fecha.' '.$consulta->hora, 	
-                'usuario_id', 	
-                'consulta_id' => $consulta->fecha, 	
-                'estado' => 'pendiente'
-            ]);
+            ]);            
+            if($this->estado = 'Agendado'){
+
+                $eventos = Evento::where('estado', 'pendiente')->get();
+
+                foreach($eventos as $evento){
+                    if($evento->consulta->mascota->id == $consulta->mascota_id){
+                        return redirect()->route('consultas')->with('error', 'error');
+                    }                    
+                }
+                
+                Evento::create([
+                    'titulo' => $consulta->tipoConsulta->nombre, 	
+                    'descripcion' => '',
+                    'fecha_hora' => $consulta->fecha.' '.$consulta->hora, 	
+                    'usuario_id', 	
+                    'consulta_id' => $consulta->id, 	
+                    'estado' => 'pendiente'
+                ]);
+            }
 
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
@@ -450,6 +459,16 @@ class Consultas extends Component
                 }
             }
 
+            if($consulta->estado == 'Agendado'){
+                $evento = Evento::where('consulta_id', $consulta->id)
+                                ->where('estado', 'pendiente')
+                                ->where('titulo', $consulta->tipoConsulta->nombre)
+                                ->first();
+                if(!empty($evento)){
+                    $evento->delete();
+                }
+            }
+
             $consulta->estado = $estadoNuevo;
             $consulta->save();
         } catch (\Exception $e) {
@@ -457,14 +476,20 @@ class Consultas extends Component
         }
         
         if($estadoNuevo == 'Agendado'){
-            $evento = Evento::create([
-                'titulo' => $consulta->tipoConsulta->nombre, 	
-                'descripcion' => '', 	
-                'fecha_hora' =>  $consulta->fecha.' '.$consulta->hora, 	
-                'usuario_id', 	
-                'consulta_id' => $consultaID, 	
-                'estado' => 'pendiente'
-            ]);
+            $eventos = Evento::where('estado', 'pendiente')
+                                ->where('consulta_id', $consulta->id)
+                                ->get();
+            
+            if(count($eventos) <= 0){
+                $evento = Evento::create([
+                    'titulo' => $consulta->tipoConsulta->nombre, 	
+                    'descripcion' => '', 	
+                    'fecha_hora' =>  $consulta->fecha.' '.$consulta->hora, 	
+                    'usuario_id', 	
+                    'consulta_id' => $consultaID, 	
+                    'estado' => 'pendiente'
+                ]);
+            }            
         }        
         return redirect()->route('consultas')->with('editado', 'Estado de la consulta actualizado con éxito');
     }

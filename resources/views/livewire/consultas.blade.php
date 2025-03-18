@@ -71,7 +71,7 @@
                         <!-- Tag de estado con degradado -->
                         <select name="" id=""
                             wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
-                            class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-2 py-0.5 text-xs font-semibold text-white rounded-lg
+                            class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-2 py-0.5 text-xs font-semibold text-black rounded-lg
                         bg-gradient-to-r {{ $estados[$consulta->estado] ?? 'from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500' }}"
                             onchange="cambiarColor(this)">
                             @foreach ($estados as $estado => $color)
@@ -82,7 +82,7 @@
                             @endforeach
                         </select>
 
-                        <!-- Botón de configuración -->
+                        <!-- Botón de actualizacion -->
                         <div class="flex flex-col">
                             <div class="">
                                 <button wire:click="openModalConfig({{ $consulta->id }})"
