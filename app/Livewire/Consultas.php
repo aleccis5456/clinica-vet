@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Evento;
 use App\Helpers\Helper;
 use App\Models\Pago;
 use App\Models\ConsultaProducto;
@@ -15,6 +16,7 @@ use App\Models\Mascota;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 #[Title('Consultas')]
 class Consultas extends Component
@@ -376,8 +378,7 @@ class Consultas extends Component
                         return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha");
                     }
                 }
-            }
-
+            }            
             if ($this->fecha != now()->format('Y-m-d') and $this->hora != now()->format('H:i')) {
                 if ($this->hora < now()->format('H:i')) {
                     return redirect()->route('consultas')->with('error', 'La hora de la consulta no puede ser menor a la hora actual');
@@ -385,6 +386,8 @@ class Consultas extends Component
                     return redirect()->route('consultas')->with('error', 'La fecha de la consulta no puede ser menor a la fecha actual');
                 }
                 $this->estado = 'Agendado';
+
+                
             }
 
             $consulta = Consulta::create([
@@ -400,7 +403,16 @@ class Consultas extends Component
                 'estado' => $this->estado ?? 'Pendiente',
                 'codigo' => $this->codigo(6),
             ]);
-        
+            
+            $evento = Evento::create([
+                'titulo' => $consulta->tipoConsulta->nombre, 	
+                'descripcion' => '',
+                'fecha_hora' => $consulta->fecha.' '.$consulta->hora, 	
+                'usuario_id', 	
+                'consulta_id' => $consulta->fecha, 	
+                'estado' => 'pendiente'
+            ]);
+
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -423,11 +435,11 @@ class Consultas extends Component
     /**
      * funcion que actualiza el estado desde la vista principal de las consultas, <select>
      */
-    public function updateEstado($consultaID, $estadoNuevo)
-    {
-        try {
+    public function updateEstado($consultaID, $estadoNuevo) {
+        try {            
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
+
             foreach ($this->consultas as $consultaC) {
                 if ($consultaC->mascota_id == $consulta->mascota_id) {
                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
@@ -437,12 +449,23 @@ class Consultas extends Component
                     }
                 }
             }
+
             $consulta->estado = $estadoNuevo;
             $consulta->save();
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
         }
-
+        
+        if($estadoNuevo == 'Agendado'){
+            $evento = Evento::create([
+                'titulo' => $consulta->tipoConsulta->nombre, 	
+                'descripcion' => '', 	
+                'fecha_hora' =>  $consulta->fecha.' '.$consulta->hora, 	
+                'usuario_id', 	
+                'consulta_id' => $consultaID, 	
+                'estado' => 'pendiente'
+            ]);
+        }        
         return redirect()->route('consultas')->with('editado', 'Estado de la consulta actualizado con éxito');
     }
 

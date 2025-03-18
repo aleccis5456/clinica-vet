@@ -39,7 +39,7 @@ class Home extends Component
     }
 
     public function mount(){
-        Helper::check();
+        
         Helper::crearCajas();       
     }
 
