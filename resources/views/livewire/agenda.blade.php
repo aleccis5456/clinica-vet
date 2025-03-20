@@ -21,9 +21,9 @@
                     <h2 class="text-xl font-semibold flex justify-between">
                         {{ \Carbon\Carbon::create($anio, $mes)->translatedFormat('F Y') }}
                         <div class="">
-                            <button wire:click=""
+                            <button wire:click="update"
                                 class="ml-3 bg-gray-200 cursor-pointer rounded-full hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                                <svg class="w-6 h-6 text-gray-600 " aria-hidden="true"
+                                <svg class="w-8 h-8 text-gray-600 " aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                     viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"

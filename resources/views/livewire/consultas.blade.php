@@ -20,10 +20,14 @@
                         Agregar Tipo de Consulta <span>+</span>
                     </button>
                 </div>
-
-                <div class="p-3">
+                
+                <div class="px-4">
+                    @livewire('alerta-agendados')                    
+                </div>
+                
+                <div class="p-3 flex">
                     <form wire:submit.prevent='busqueda'
-                        class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
+                        class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-l-md w-full md:w-1/3 border border-gray-300">
                         <!-- Input de búsqueda -->
                         <input wire:model='search' type="text"
                             class="w-full bg-transparent text-sm px-3 py-2 outline-none focus:ring-2 focus:ring-gray-400 rounded-sm"
@@ -47,10 +51,19 @@
                             </svg>
                         </button>
                     </form>
+                    <div>
+                        <select wire:model='estadofiltrado' wire:click='filtarPorEstados'
+                            class="bg-gray-800 h-12 rounded-r-md text-white text-center">
+                            <option selected value="1">Todos</option>
+                            @foreach ($estadosf as $tipo)
+                                <option value="{{ $tipo }}">{{ $tipo }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
-
-            <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+            
+            <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">                
                 @php
                     $estados = [
                         'Agendado' => 'from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700',
@@ -72,7 +85,7 @@
                         <select name="" id=""
                             wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
                             class="cursor-pointer estado-select absolute top-2 left-2 z-10 px-2 py-0.5 text-xs font-semibold text-black rounded-lg
-                        bg-gradient-to-r {{ $estados[$consulta->estado] ?? 'from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500' }}"
+                                bg-gradient-to-r {{ $estados[$consulta->estado] ?? 'from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500' }}"
                             onchange="cambiarColor(this)">
                             @foreach ($estados as $estado => $color)
                                 <option value="{{ $estado }}"
@@ -81,6 +94,36 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        @if ($consulta->estado == 'Agendado')
+                            <div class="">                                
+                                <div class="absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm 
+                                            {{ $consulta->fecha < now()->format('Y-m-d')  ? 'bg-red-500' : 'bg-blue-400'}}  
+                                            p-1 overflow-hidden transition-all duration-300 w-7 h-7 hover:w-36 hover:h-20 hover:rounded-md">
+                                    <div class="flex text-center object-center items-center justify-center">
+                                        <p class="group-hover:hidden">
+                                            <svg class="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                              </svg>
+                                        </p>
+                                    </div>     
+                                    <div class="flex">
+                                        <p class="hidden group-hover:block text-xs text-center object-center justify-between">
+                                            <svg class="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                              </svg>                                          
+                                        </p>
+                                        <span class="pl-5 font-semibold">Detalles</span>
+                                    </div>                                                                 
+                                    <p class="hidden group-hover:block mt-1 text-xs text-center object-center">
+                                        Fecha: {{ \Carbon\Carbon::parse($consulta->fecha)->format('d-m-Y')  }}
+                                    </p>  
+                                    <p class="hidden group-hover:block mt-1 text-xs text-center object-center">
+                                        Hora: {{ \Carbon\Carbon::parse($consulta->hora)->format('H:i')  }}
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- Botón de actualizacion -->
                         <div class="flex flex-col">
@@ -112,7 +155,7 @@
                             @if ($pago)
                                 @foreach ($pagoEstados as $estado => $bg)
                                     <div class="">
-                                        <a @if($pago->estado == 'pagado') href="" @else href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}" @endif
+                                        <a @if ($pago->estado == 'pagado') href="" @else href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}" @endif
                                             class="{{ $estado == $pago->estado ? "$bg" : '' }} cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full 
                                                 \[]hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
                                             @if ($pago->estado == 'pagado')

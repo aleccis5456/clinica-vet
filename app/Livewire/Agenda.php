@@ -65,6 +65,17 @@ class Agenda extends Component
 
         $this->generarCalendario();
     }
+
+    public function update(){
+        $eventos = Evento::all();
+
+        foreach($eventos as $evento){
+            if($evento->fecha_hora < Carbon::now()->format('Y-m-d H:i:s')){
+                $evento->delete();
+            }
+        }        
+    }
+
     public function render()
     {
         return view('livewire.agenda');

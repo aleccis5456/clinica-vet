@@ -296,7 +296,7 @@
                 <!-- CAMBIAR ESTADO -->
                 <div class="mb-5 mt-5">
                     <label class="block text-gray-800 font-medium mb-2">Cambiar Estado</label>
-                    <select name="" id=""
+                    <select wire:model='estado' name="" id=""
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                         <option value="">-Seleccionar-</option>
                         @foreach ($estados as $estado => $color)

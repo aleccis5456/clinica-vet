@@ -50,7 +50,17 @@ class Consultas extends Component
     public $flagDiagnostico, $flagSintomas, $flagTratamiento, $flagNotas;
     public $grupoVet;
     public $pagos;
-
+    public $estadosf = [        
+            'Agendado',
+            'Reprogramado',
+            'Pendiente',
+            'En Espera',
+            'En consultorio',
+            'Finalizado',
+            'No asistió',
+            'Cancelado',        
+    ];
+    public $estadofiltrado = '';
 
     /**
      * function para la busqueda
@@ -375,7 +385,7 @@ class Consultas extends Component
             foreach ($this->consultas as $consulta) {
                 if ($consulta->mascota_id == $this->mascota_id) {
                     if ($consulta->estado != 'Finalizado' && $consulta->estado != 'Cancelado') {
-                        return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha");
+                        return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha" . " - " ."Codigo: $consulta->codigo");
                     }
                 }
             }         
@@ -524,8 +534,7 @@ class Consultas extends Component
     /**
      * formulario para editar la consulta (productos, tratamiento, sintomas, etc)
      */
-    public function updateConsulta()
-    {        
+    public function updateConsulta() {        
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             try {
@@ -538,11 +547,10 @@ class Consultas extends Component
                     ]);
                 }
             } catch (\Exception $e) {
-                throw new \Exception($e->getMessage());
+                return redirect()->route('caja')->with('error', '');
             }
         }
-        $consulta = Consulta::find($this->consultaToEdit->id);
-
+        $consulta = Consulta::find($this->consultaToEdit->id);        
         $consulta->update([            
             'fecha' => $this->fechaN ?? $consulta->fecha,
             'tipo_id' => $this->tipo ?? $consulta->tipo_id,
@@ -563,11 +571,9 @@ class Consultas extends Component
                 ]);            
             }
         }
-        
-
-        
+                
         Session::forget('consumo');
-        return redirect()->route('consultas')->with('agregado', 'Consulta Actualizada');
+        return redirect()->route('consultas')->with('editado', 'Consulta Actualizada');
     }
 
     /**
@@ -583,6 +589,18 @@ class Consultas extends Component
         $this->cpId = '';
         return redirect()->route('consultas')->with('eliminado', 'Producto eliminado de la consulta');
     }
+
+    /**
+     * 
+     */
+    public function filtarPorEstados(){
+        if($this->estadofiltrado == 1){
+            $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+        }else{
+            $this->consultas = Consulta::where('estado', $this->estadofiltrado)->get();
+        }        
+    }
+
 
     /**
      * 
