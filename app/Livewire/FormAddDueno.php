@@ -62,7 +62,7 @@ class FormAddDueno extends Component
         $this->mascotas = Mascota::all();
 
 
-        if(empty(session('modulos')['gestionPaciente']['value'])){
+        if(empty(session('modulos')['gestionPaciente'])){
             return redirect('/');
         }
     }

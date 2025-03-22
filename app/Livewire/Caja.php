@@ -407,7 +407,7 @@ class Caja extends Component
     public function mount(){
         Helper::check();
 
-        if(empty(session('modulos')['caja']['value'])){
+        if(empty(session('modulos')['caja'])){
             return redirect('/');
         }
 

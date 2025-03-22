@@ -23,37 +23,37 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Gestión de pacientes -->
             @if (session('modulos'))                            
-                @if (!empty(session('modulos')['gestionPaciente']['value']) == true)
+                @if (!empty(session('modulos')['gestionPaciente']))
                     @include('includes.home.gestion-pacientes')
                 @endif            
 
                 <!-- consultas -->
-                @if (!empty(session('modulos')['consulta']['value']) == true)
+                @if (!empty(session('modulos')['consulta']))
                     @include('includes.home.consultas')
                 @endif            
 
                 <!-- Caja -->            
-                @if (!empty(session('modulos')['caja']['value']) == true)
+                @if (!empty(session('modulos')['caja']))
                     @include('includes.home.caja')                
                 @endif            
 
                 <!-- Inventario -->
-                @if (!empty(session('modulos')['inventario']['value']) == true)
+                @if (!empty(session('modulos')['inventario']))
                     @include('includes.home.inventario')                
                 @endif            
 
                 <!-- Gestión de usuarios -->
-                @if (!empty(session('modulos')['gestionUsuario']['value']) == true)
+                @if (!empty(session('modulos')['gestionUsuario']))
                     @include('includes.home.gestion-usuarios')                
                 @endif            
 
                 <!-- Reportes -->
-                @if (!empty(session('modulos')['reportes']['value']) == true)
+                @if (!empty(session('modulos')['reportes']))
                     @include('includes.home.reportes')                
                 @endif            
 
                 <!-- Alertas y notificaciones -->
-                @if (!empty(session('modulos')['alertas']['value']) == true)
+                @if (!empty(session('modulos')['alertas']))
                     @include('includes.home.alertas')                
                 @endif    
             @endif        

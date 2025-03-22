@@ -641,7 +641,7 @@ class Consultas extends Component
         Session::forget('caja');
         Helper::crearCajas();
 
-        if(empty(session('modulos')['consulta']['value'])){
+        if(empty(session('modulos')['consulta']))  {
             return redirect('/');
         }
     }

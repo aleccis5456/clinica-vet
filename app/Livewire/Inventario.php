@@ -56,7 +56,7 @@ class Inventario extends Component
         $this->categorias = Categoria::all();
 
 
-        if(empty(session('modulos')['inventario']['value'])){
+        if(empty(session('modulos')['inventario'])){
             return redirect('/');
         }
     }
