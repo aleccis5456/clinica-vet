@@ -107,7 +107,7 @@ class Helper{
         $permisosUsuario = [];
         foreach($permisos as $permiso){
             $permisosUsuario[] = $permiso->id;
-        }
+        }        
         $permisosUsuario = array_intersect($permisosRol, $permisosUsuario);
         session(['permisos' => $permisosUsuario]);
 

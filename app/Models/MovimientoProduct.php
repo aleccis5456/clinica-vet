@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MivimientoProduct extends Model
+class MovimientoProduct extends Model
 {
     protected $table = "mivimiento_products";
 
-    protected $fillablle = [
+    protected $fillable = [
         'venta_id', 	
         'producto_id', 	
         'cantidad', 	
         'precio_unitario', 	
-        'precio_total'
+        'precio_total',
+        'consulta_id'
     ];    
 }

@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Helpers\Helper;
+use App\Models\MovimientoProduct;
+use App\Models\Movimiento;
 use App\Models\Consulta;
 use App\Models\Pago;
 use App\Models\Dueno;
@@ -12,6 +14,7 @@ use App\Models\Producto;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 
 #[Title('Caja')]
@@ -289,8 +292,9 @@ class Caja extends Component
         if (!$cliente) {
             return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
         }
-                        
-        try{            
+        
+        DB::beginTransaction();
+        try{                        
             $pago = Pago::where('consulta_id', $consultaId)->first();
             if ($pago) {    
                 $pago->update([
@@ -319,10 +323,29 @@ class Caja extends Component
                     $producto = Producto::find($item['productoId']);
                     $producto->stock_actual -= $item['cantidad'];
                     $producto->save();
-                }
-
+                }                                                
             }
+
+            $venta = Movimiento::create([
+                'codigo' => $this->codigo(6),
+                'monto' => Helper::total(),
+                'cliente_id' => $cliente->id,                        
+                'forma_pago' => $this->formaPago,
+            ]);
+
+            foreach($cobro as $item){
+                MovimientoProduct::create([
+                    'venta_id' => $venta->id,
+                    'producto_id' => $item['opcion'] == '1' ? $item['productoId'] : null,
+                    'consulta_id' => $item['opcion'] == '2' ? $item['productoId'] : null,                    
+                    'cantidad' => $item['cantidad'],
+                    'precio_unitario' => $item['precio'],
+                    'precio_total' => $item['precio'] * $item['cantidad'],
+                ]);
+            }
+            DB::commit();
         }catch(\Exception $e){
+            DB::rollBack();
             throw new \Exception($e->getMessage());
         }
         
@@ -334,7 +357,7 @@ class Caja extends Component
     }
 
     /**
-     * funcion para cobrar las consultas que estan en las alertas
+     * funcion para cobrar las consultas que están en las alertas
      */
     public function cobrarConsulta($consultaId) {
         $activo = session('activo', false);
@@ -368,6 +391,18 @@ class Caja extends Component
         Session::forget('cobro');
         Session::forget('activo');
     }
+
+    private function codigo($length) : string {
+        $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $randomString;
+    }
+    
 
     public function mount(){
         Helper::check();
