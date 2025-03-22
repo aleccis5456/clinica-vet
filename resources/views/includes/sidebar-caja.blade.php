@@ -71,7 +71,7 @@
             </a>
         </div>
 
-        <div>
+        {{-- <div>
             <a href="">
                 <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg"
                     style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ asset('images/tests/agenda.webp') }}'); background-size: cover; background-position: center;">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
         <div>
             <a href="">

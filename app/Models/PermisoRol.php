@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PermisoRol extends Model
 {
-    protected $table = 'permiso_rol';
-    protected $fillable = ['rol_id', 'permiso_id'];
-    public $timestamps = false;
+    protected $table = 'prermiso_rols';
+
+    protected $fillable = ['permiso_id', 'rol_id'];
+        
 }

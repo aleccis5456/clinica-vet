@@ -56,7 +56,7 @@
                 </div>
             </a>
         </div>  
-
+{{-- 
         <div>
             <a href="">
                 <div class="relative group overflow-hidden transition-all duration-300 h-10 hover:h-24 w-full rounded-lg"
@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </a>
-        </div>  
+        </div>   --}}
 
         <div>
             <a href="{{ route('caja') }}">

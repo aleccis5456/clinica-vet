@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permisos_rol', function (Blueprint $table) {
-            $table->foreignId('permisi_id')->constrained('permisos');
-            $table->foreignId('rol_id')->constrained('roles');
+        Schema::create('prermiso_rols', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('permiso_id');
+            $table->unsignedBigInteger('rol_id');
+            $table->timestamps();
         });
     }
 
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('prermiso_rols');
     }
 };

@@ -3,7 +3,8 @@
 namespace App\Livewire;
 
 use App\Helpers\Helper;
-use App\Models\RolUser;
+use App\Models\PermisoRol;
+use App\Models\Permiso;
 use App\Models\Rol;
 use App\Models\User;
 use Livewire\Attributes\Title;
@@ -20,18 +21,91 @@ class GestionRoles extends Component
     public $email = '';
     public $password = '';
     public $rol = '';
+    public $permisosRoles = [];
 
     public $permisos;
     public $roles;
     public $users;
     public $rolUser;   
     public $rolesUsers;
-    public $rolToConf;
+    public $rolToConf;    
+    public $permisosRolesObject;    
 
     public $modelPermisos = false;
     public $modalRol = false;
     public $modalRegistro = false;
     public $tablaRoles = false;
+    public $configRoles = false;
+
+    /**
+     * 
+     */
+    public function mount(){
+        Helper::check();
+        $this->roles = Rol::all();
+        $this->users = User::all();        
+        $this->permisosRolesObject = PermisoRol::all();
+    }
+
+    /**
+     * 
+     */
+    public function establecerPermisos(){                       
+        $this->validate([
+            'permisosRoles' => 'exists:permisos,id'
+        ]);
+
+        $permisosIds = PermisoRol::where('rol_id', $this->rolToConf->id)->pluck('rol_id')->toArray();
+
+        foreach($permisosIds as $permisoId){
+            PermisoRol::where('rol_id', $permisoId)->delete();
+        }                                            
+        try{
+            foreach($this->permisosRoles as $permiso){                
+                PermisoRol::create([
+                    'rol_id' => $this->rolToConf->id,
+                    'permiso_id' => $permiso
+                ]);   
+            }            
+        }catch(\Exception $e){
+            throw new \Exception($e->getMessage());
+        }
+
+
+        return redirect()->route('gestion.roles')->with('editado', 'Configuracion completada');
+    }
+
+
+    /**
+     * fuincion para mostrar el div seleccionado en la vista modalCoigRole. lo unico que hace es recargar :D
+     */
+    public function setPermisos(){        
+    }
+
+
+    /**
+     * 
+     */
+    public function configRolesTrue($rolToConf){        
+        $this->rolToConf = Rol::find($rolToConf);
+        
+        $this->permisosRolesObject = PermisoRol::where('rol_id', $this->rolToConf->id)->get();
+        $this->permisos = Permiso::all();
+                
+        if(count($this->permisosRolesObject) > 0){
+            foreach($this->permisosRolesObject as $item){
+                $this->permisosRoles[] = $item->permiso_id;
+            }
+        }
+
+        $this->closeModalRol();
+        $this->configRoles = true;
+    }
+    public function configRolesFalse(){      
+        $this->permisosRoles = [];
+        $this->configRoles = false;
+        $this->openModalRol();
+    }
 
     /**
      * 
@@ -71,16 +145,7 @@ class GestionRoles extends Component
     }
     public function closeModalRegistro(){
         $this->modalRegistro = false;
-    }
-
-    /**
-     * 
-     */
-    public function mount(){
-        Helper::check();
-        $this->roles = Rol::all();
-        $this->users = User::all();        
-    }
+    }  
 
     public function crearRol(){
         

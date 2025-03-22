@@ -14,7 +14,7 @@
                         Registrar Usuario <span class="">+</span>
                     </button>
                     <button wire:click='openModalRol'
-                        class="p-2 border text-white border-gray-800 rounded-lg bg-gray-700 cursor-pointer font-semibold hover:font-bold">
+                    class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold hover:bg-gray-300 hover:font-bold">
                         Registrar Rol <span class="">+</span>
                     </button>
                 </div>
@@ -135,5 +135,9 @@
 
     @if ($modalRegistro)
         @include('includes.gestion-roles.modalRegistro')        
+    @endif
+
+    @if ($configRoles)
+        @include('includes.gestion-roles.modalConfigRoles')
     @endif
 </div>
