@@ -2,11 +2,14 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\PermisoRol;
+use App\Models\Permiso;
+use App\Models\Rol;
 use App\Models\Consulta;
 use App\Models\Producto;
 use App\Models\ConsultaProducto;
 use App\Models\Pago;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class Helper{    
@@ -93,4 +96,20 @@ class Helper{
             return redirect('/');
         }
     }
+
+    public static function checkRol($rol){
+        $permisos = PermisoRol::where('rol_id', $rol)->get();
+        $permisosRol = [];
+        foreach($permisos as $permiso){
+            $permisosRol[] = $permiso->permiso_id;
+        }
+        $permisos = Permiso::all();
+        $permisosUsuario = [];
+        foreach($permisos as $permiso){
+            $permisosUsuario[] = $permiso->id;
+        }
+        $permisosUsuario = array_intersect($permisosRol, $permisosUsuario);
+        session(['permisos' => $permisosUsuario]);
+
+    }    
 }

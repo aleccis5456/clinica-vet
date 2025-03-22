@@ -48,7 +48,7 @@ class GestionRoles extends Component
     }
 
     /**
-     * 
+     * funcion que establece los permisos, también funciona como un update
      */
     public function establecerPermisos(){                       
         $this->validate([
