@@ -371,6 +371,11 @@ class Caja extends Component
 
     public function mount(){
         Helper::check();
+
+        if(empty(session('modulos')['caja']['value'])){
+            return redirect('/');
+        }
+
         $this->duenos = Dueno::all();                   
     }    
 

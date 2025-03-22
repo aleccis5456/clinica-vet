@@ -640,6 +640,10 @@ class Consultas extends Component
         $this->comprobarSession();
         Session::forget('caja');
         Helper::crearCajas();
+
+        if(empty(session('modulos')['consulta']['value'])){
+            return redirect('/');
+        }
     }
 
     public function render()

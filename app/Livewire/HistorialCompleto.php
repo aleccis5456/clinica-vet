@@ -47,6 +47,10 @@ class HistorialCompleto extends Component
         $this->consultas = Consulta::where('mascota_id', $this->mascota->id)->get();
         $this->cantidad = Consulta::where('mascota_id', $this->mascota->id)->get();
         $this->consultaVeterinario = ConsultaVeterinario::where('consulta_id', $this->consultaId)->get();
+
+        if(empty(session('modulos')['consulta']['value'])){
+            return redirect('/');
+        }
     }
 
     public function render()

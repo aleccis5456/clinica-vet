@@ -12,7 +12,7 @@ use App\Models\Pago;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-class Helper{    
+class Helper{           
     public static function formatearFecha($fecha){        
         return Carbon::parse($fecha)->format('d-m-Y');
     }   
@@ -112,4 +112,51 @@ class Helper{
         session(['permisos' => $permisosUsuario]);
 
     }    
+
+    public static function checkPermisos(){
+        $modulos = session([
+                    'modulos' => [
+                        'gestionPaciente' => ['id' => 1, 'value' => false],
+                        'consulta' => ['id' => 2, 'value' => false],
+                        'caja' => ['id' => 3, 'value' => false],
+                        'inventario' => ['id' => 4, 'value' => false],
+                        'gestionUsuario' => ['id' => 5, 'value' => false],
+                        'reportes' => ['id' => 6, 'value' => false],
+                        'alertas' => ['id' => 7, 'value' => false],
+                    ]
+        ]);
+        if(Auth::user()){
+            $user = Auth::user();   
+            $permisos = Permiso::all();             
+            Helper::checkRol($user->rol_id);            
+
+            $permisosIds = session('permisos');
+            
+            foreach($permisosIds as $permisoId){
+                if($permisoId == 1){
+                    $modulos['gestionPaciente']['value'] = true;
+                }
+                if($permisoId == 2){
+                    $modulos['consulta']['value'] = true;
+                }
+                if($permisoId == 3){
+                    $modulos['caja']['value'] = true;
+                }
+                if($permisoId == 4){
+                    $modulos['inventario']['value'] = true;
+                }
+                if($permisoId == 5){
+                    $modulos['gestionUsuario']['value'] = true;
+                }   
+                if($permisoId == 6){
+                    $modulos['reportes']['value'] = true;
+                }
+                if($permisoId == 7){
+                    $modulos['alertas']['value'] = true;
+                }
+            }
+
+            session(['modulos' => $modulos]);
+        }            
+    }
 }

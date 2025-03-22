@@ -60,6 +60,11 @@ class FormAddDueno extends Component
         Helper::check();
         $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
         $this->mascotas = Mascota::all();
+
+
+        if(empty(session('modulos')['gestionPaciente']['value'])){
+            return redirect('/');
+        }
     }
     /**
      * 
@@ -142,8 +147,8 @@ class FormAddDueno extends Component
     }
     public function closeModalAddDueno(){
         $this->modalAddDueno = false;
-    }    
-
+    }  
+    
     public function render()
     {                                    
         return view('livewire.form-add-dueno');

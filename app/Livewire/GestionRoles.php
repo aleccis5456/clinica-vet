@@ -45,6 +45,10 @@ class GestionRoles extends Component
         $this->roles = Rol::all();
         $this->users = User::all();        
         $this->permisosRolesObject = PermisoRol::all();
+
+        if(empty(session('modulos')['gestionUsuario']['value'])){
+            return redirect('/');
+        }
     }
 
     /**

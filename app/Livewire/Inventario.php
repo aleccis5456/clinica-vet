@@ -54,6 +54,11 @@ class Inventario extends Component
         Helper::check();
         $this->productos = Producto::all();
         $this->categorias = Categoria::all();
+
+
+        if(empty(session('modulos')['inventario']['value'])){
+            return redirect('/');
+        }
     }
     
     /**

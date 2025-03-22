@@ -152,6 +152,10 @@ class FormAddMascota extends Component
         $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
         $this->duenos = Dueno::all();
         $this->especies = Especie::all();
+
+        if(empty(session('modulos')['gestionPaciente']['value'])){
+            return redirect('/');
+        }
     }
 
     /**

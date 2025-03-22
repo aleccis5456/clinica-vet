@@ -22,39 +22,41 @@
     <div class="container mx-auto p-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Gestión de pacientes -->
-            @if ($gestionPaciente['value'] == true)
-                @include('includes.home.gestion-pacientes')
-            @endif            
+            @if (session('modulos'))                            
+                @if (!empty(session('modulos')['gestionPaciente']['value']) == true)
+                    @include('includes.home.gestion-pacientes')
+                @endif            
 
-            <!-- consultas -->
-            @if ($consulta['value'] == true)
-                @include('includes.home.consultas')
-            @endif            
+                <!-- consultas -->
+                @if (!empty(session('modulos')['consulta']['value']) == true)
+                    @include('includes.home.consultas')
+                @endif            
 
-            <!-- Caja -->            
-            @if ($caja['value'] == true)
-                @include('includes.home.caja')                
-            @endif            
+                <!-- Caja -->            
+                @if (!empty(session('modulos')['caja']['value']) == true)
+                    @include('includes.home.caja')                
+                @endif            
 
-            <!-- Inventario -->
-            @if ($inventario['value'] == true)
-                @include('includes.home.inventario')                
-            @endif            
+                <!-- Inventario -->
+                @if (!empty(session('modulos')['inventario']['value']) == true)
+                    @include('includes.home.inventario')                
+                @endif            
 
-            <!-- Gestión de usuarios -->
-            @if ($gestionUsuario['value'] == true)
-                @include('includes.home.gestion-usuarios')                
-            @endif            
+                <!-- Gestión de usuarios -->
+                @if (!empty(session('modulos')['gestionUsuario']['value']) == true)
+                    @include('includes.home.gestion-usuarios')                
+                @endif            
 
-            <!-- Reportes -->
-            @if ($reportes['value'] == true)
-                @include('includes.home.reportes')                
-            @endif            
+                <!-- Reportes -->
+                @if (!empty(session('modulos')['reportes']['value']) == true)
+                    @include('includes.home.reportes')                
+                @endif            
 
-            <!-- Alertas y notificaciones -->
-            @if ($alertas['value'] == true)
-                @include('includes.home.alertas')                
-            @endif            
+                <!-- Alertas y notificaciones -->
+                @if (!empty(session('modulos')['alertas']['value']) == true)
+                    @include('includes.home.alertas')                
+                @endif    
+            @endif        
         </div>
     </div>
 
