@@ -16,7 +16,7 @@ class Movimiento extends Model
     ];
 
     public function cliente(){
-        return $this->belongsTo(Dueno::class, 'cliente_id');
+        return $this->belongsTo(DatosFactura::class, 'cliente_id');
     }
 
     public function productos(){

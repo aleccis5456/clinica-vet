@@ -411,26 +411,7 @@ class Consultas extends Component
                 'hora' => $this->hora,
                 'estado' => $this->estado ?? 'Pendiente',
                 'codigo' => $this->codigo(6),
-            ]);            
-            if($this->estado = 'Agendado'){
-
-                $eventos = Evento::where('estado', 'pendiente')->get();
-
-                foreach($eventos as $evento){
-                    if($evento->consulta->mascota->id == $consulta->mascota_id){
-                        return redirect()->route('consultas')->with('error', 'error');
-                    }                    
-                }
-                
-                Evento::create([
-                    'titulo' => $consulta->tipoConsulta->nombre, 	
-                    'descripcion' => '',
-                    'fecha_hora' => $consulta->fecha.' '.$consulta->hora, 	
-                    'usuario_id', 	
-                    'consulta_id' => $consulta->id, 	
-                    'estado' => 'pendiente'
-                ]);
-            }
+            ]);                        
 
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());

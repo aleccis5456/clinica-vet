@@ -27,9 +27,9 @@ class Caja extends Component
     public object $productos;
     public bool $alertas = true;
     public $opcion = "1";
-    public $duenos;
-    public $nombreRS = '';
-    public $rucCI = '';
+    public object $duenos;
+    public string $nombreRS = '';
+    public string $rucCI = '';
     public $resultados = false;
     public $clientes;
     public $clientesf;
@@ -288,14 +288,13 @@ class Caja extends Component
                
         $consulta = Consulta::find($consultaId);                    
         $cliente = DatosFactura::where('ruc_ci', $this->rucCI)->first();
-    
+        
         if (!$cliente) {
             return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
-        }
-        
+        }        
         DB::beginTransaction();
-        try{                        
-            $pago = Pago::where('consulta_id', $consultaId)->first();
+        try{                                    
+            $pago = Pago::where('consulta_id', $consultaId)->where('pagado', 0)->first();                        
             if ($pago) {    
                 $pago->update([
                     'forma_pago' => $this->formaPago,
@@ -312,7 +311,7 @@ class Caja extends Component
                     }                    
                 }
 
-            } else {            
+            } else {                     
                 Pago::create([                                     
                     'monto' => Helper::total(),
                     'forma_pago' => $this->formaPago,

@@ -22,6 +22,7 @@
                         <thead class="bg-gray-200 text-gray-800 rounded-lg">
                             <tr>                                
                                 <th class="py-3 px-2 text-left text-semibold">fecha</th>
+                                <th class="py-3 px-2 text-left text-semibold">Datos</th>
                                 <th class="py-3 px-2 text-left text-semibold">cantidad</th>
                                 <th class="py-3 px-2 text-left text-semibold">total</th>                                
                             </tr>
@@ -31,6 +32,7 @@
                             @foreach ($ventas as $venta)
                                 <tr wire:key='{{ $venta->id }}' class="hover:bg-gray-100 transition duration-300">                                    
                                     <td class="py-3 px-2">{{ $venta->created_at }}</td>
+                                    <td class="py-3 px-2">{{ $venta->movimiento->cliente }}</td>
                                     <td class="py-3 px-2">{{ $venta->cantidad }}</td>
                                     <td class="py-3 px-2">{{ $venta->precio_total }}</td>                                    
                                 </tr>
