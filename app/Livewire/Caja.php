@@ -305,9 +305,11 @@ class Caja extends Component
                 ]);
 
                 foreach($cobro as $item){
-                    $producto = Producto::find($item['productoId']);
-                    $producto->stock_actual -= $item['cantidad'];
-                    $producto->save();
+                    if($item['opcion'] == '1'){
+                        $producto = Producto::find($item['productoId']);
+                        $producto->stock_actual -= $item['cantidad'];
+                        $producto->save();
+                    }                    
                 }
 
             } else {            

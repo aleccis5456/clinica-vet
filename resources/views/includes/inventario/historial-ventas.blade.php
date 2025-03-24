@@ -15,7 +15,29 @@
         <div class="bg-white border border-gray-200 rounded-lg shadow-lg mx-auto max-w-5xl overflow-hidden ">
             <div class="p-6">
                 <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Historial de ventas</h2>
-                <p>{{ $detalleProducto->nombre }}</p>
+                <p class="text-center font-semibold text-xl">{{ $detalleProducto->nombre }}</p>
+
+                <div class="pt-2 ">
+                    <table class="min-w-full bg-white rounded-lg shadow-md hidden md:table">
+                        <thead class="bg-gray-200 text-gray-800 rounded-lg">
+                            <tr>                                
+                                <th class="py-3 px-2 text-left text-semibold">fecha</th>
+                                <th class="py-3 px-2 text-left text-semibold">cantidad</th>
+                                <th class="py-3 px-2 text-left text-semibold">total</th>                                
+                            </tr>
+                        </thead>
+    
+                        <tbody class="text-gray-800 z-50">
+                            @foreach ($ventas as $venta)
+                                <tr wire:key='{{ $venta->id }}' class="hover:bg-gray-100 transition duration-300">                                    
+                                    <td class="py-3 px-2">{{ $venta->created_at }}</td>
+                                    <td class="py-3 px-2">{{ $venta->cantidad }}</td>
+                                    <td class="py-3 px-2">{{ $venta->precio_total }}</td>                                    
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
         </div>

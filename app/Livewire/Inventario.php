@@ -22,7 +22,7 @@ class Inventario extends Component
     public object $categorias;
     public object $productos;    
     public object $detalleProducto;
-    public object $historialVenta; //historialVentaProducto;
+    public object $ventas; //historial de ventas;
 
     public bool $modalAgregar = false;
     public bool $modalCategoria = false;
@@ -37,12 +37,12 @@ class Inventario extends Component
      * 
      */
     public function historialTrue(int $productoId): void {
-        $this->historialVenta = MovimientoProduct::where('producto_id', $productoId)->get();        
+        $this->ventas = MovimientoProduct::where('producto_id', $productoId)->get();        
         $this->detallesFalse();
         $this->historial = true;
     }
     public function historialFalse($productoId) : void {          
-        $this->historialVenta;
+        $this->ventas;
         $this->detallesTrue($productoId);
         $this->historial = false;              
     }
