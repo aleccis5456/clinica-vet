@@ -31,8 +31,15 @@
                         <tbody class="text-gray-800 z-50">
                             @foreach ($ventas as $venta)
                                 <tr wire:key='{{ $venta->id }}' class="hover:bg-gray-100 transition duration-300">                                    
-                                    <td class="py-3 px-2">{{ $venta->created_at }}</td>
-                                    <td class="py-3 px-2">{{ $venta->movimiento->cliente }}</td>
+                                    <td class="py-3 px-2">{{ \Carbon\Carbon::parse($venta->created_at)->format('d-m-Y  H:i')  }}</td>
+                                    <td class="py-3 px-2">
+                                        <div class="flex">
+                                            <p class="mr-1 font-semibold">Nombre: </p> <p> {{ $venta->movimiento->cliente->nombre_rs }}</p>
+                                        </div>
+                                        <div class="flex">
+                                            <p class="mr-1 font-semibold">RUC o CI: </p><p> {{ $venta->movimiento->cliente->ruc_ci }}</p>
+                                        </div>                                        
+                                    </td>
                                     <td class="py-3 px-2">{{ $venta->cantidad }}</td>
                                     <td class="py-3 px-2">{{ $venta->precio_total }}</td>                                    
                                 </tr>
