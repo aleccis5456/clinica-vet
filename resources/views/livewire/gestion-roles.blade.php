@@ -5,7 +5,7 @@
 
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Usuarios</p>
+        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Usuarios {{ json_encode($eliminarUser) }}</p>
         <div class="mb-4 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
@@ -53,8 +53,7 @@
                         <tr>
                             <th class="py-3 px-4 text-left text-semibold">Nombre</th>
                             <th class="py-3 px-4 text-left text-semibold">Email</th>
-                            <th class="py-3 px-4 text-left text-semibold">Rol</th>
-                            <th class="py-3 px-4 text-left text-semibold">Permisos</th>
+                            <th class="py-3 px-4 text-left text-semibold">Rol</th>                            
                             <th class="py-3 px-4 text-left text-semibold">Acciones</th>
                         </tr>
                     </thead>
@@ -71,16 +70,14 @@
                                             {{ $rol->name }}
                                         @endif
                                     @endforeach
-                                </td>
-                                <td class="py-3 px-4">                                    
-                                </td>
-                                
+                                </td>                                
                                 <td class="py-3 px-4 font-semibold">
-                                    <button wire:click=""
+                                    <button wire:click="editUserTrue({{ $user->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
                                     </button>
-                                    <button wire:click='' type="button"
+                                    <button wire:click='eliminarUserTrue({{ $user->id }})' 
+                                        type="button"
                                         class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                         Eliminar
                                     </button>
@@ -114,13 +111,14 @@
                             
                         </div>
                         <div class="flex justify-end space-x-2 ">
-                            <button wire:click="openModalEdit({{ $user->id }})"
+                            <button wire:click="editUserTrue({{ $user->id }})"
+                                type="button"
                                 class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                 Editar
                             </button>
-                            <button wire:click='opneModalEliminar' wire:model='userToDelete={{ $user->id }}'
+                            <button wire:click='eliminarUserTrue({{ $user->id }})'
                                 type="button"
-                                class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                class="cursor-pointer ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                 Eliminar
                             </button>
                         </div>
@@ -139,5 +137,13 @@
 
     @if ($configRoles)
         @include('includes.gestion-roles.modalConfigRoles')
+    @endif
+
+    @if ($editUser)
+        @include('includes.gestion-roles.modal-edit-user')
+    @endif
+
+    @if ($eliminarUser)
+        @include('includes.gestion-roles.modal-eliminar-user')
     @endif
 </div>

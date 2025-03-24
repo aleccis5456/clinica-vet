@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CajaController;
+use App\Http\Controllers\GestionUsuarioController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\InventarioController;
 use App\Livewire\Consultas;
@@ -15,6 +16,7 @@ use App\Livewire\Caja;
 use App\Livewire\GestionRoles;
 use App\Livewire\HistorialCompleto;
 use App\Livewire\Inventario;
+use App\Livewire\Reportes;
 use Illuminate\Support\Facades\Session;
 
 
@@ -40,7 +42,9 @@ Route::middleware(Login::class)->group(function () {
     Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
     Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');    
     Route::get('/caja', Caja::class)->name('caja');
-    Route::get('/agenda', Agenda::class)->name('agenda');
+    Route::get('/reportes', Reportes::class)->name('reportes');    
+
+    Route::post('/actualizar-user', [GestionUsuarioController::class, 'update'])->name('user.update');
 });
 
 

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\Helper;
+use App\Models\Consulta;
 use App\Models\PermisoRol;
 use App\Models\Permiso;
 use App\Models\Rol;
@@ -15,27 +16,32 @@ use Illuminate\Support\Facades\Hash;
 class GestionRoles extends Component
 {
 
-    public $search = '';
-    public $rolName = '';    
-    public $name = '';
-    public $email = '';
-    public $password = '';
-    public $rol = '';
-    public $permisosRoles = [];
+    public string $search = '';
+    public string $rolName = '';    
+    public string $name;
+    public string $email;
+    public string $password;
+    public string $rol;
+    public array $permisosRoles = [];
 
-    public $permisos;
-    public $roles;
-    public $users;
-    public $rolUser;   
-    public $rolesUsers;
-    public $rolToConf;    
-    public $permisosRolesObject;    
+    public object $permisos;
+    public object $roles;
+    public object $users;
+    public object $rolUser;   
+    public object $rolesUsers;
+    public object $rolToConf;    
+    public object $permisosRolesObject;    
+    public object $userToEdit;
+    public string $userToDelete;
 
-    public $modelPermisos = false;
-    public $modalRol = false;
-    public $modalRegistro = false;
-    public $tablaRoles = false;
-    public $configRoles = false;
+    public bool $modelPermisos = false;
+    public bool $modalRol = false;
+    public bool $modalRegistro = false;
+    public bool $tablaRoles = false;
+    public bool $configRoles = false;
+    public bool $editUser = false;
+    public bool $showPassword = false;
+    public bool $eliminarUser = false;
 
     /**
      * 
@@ -43,12 +49,55 @@ class GestionRoles extends Component
     public function mount(){
         Helper::check();
         $this->roles = Rol::all();
-        $this->users = User::all();        
+        $this->users = User::where('id', '!=', 1)->get();        
         $this->permisosRolesObject = PermisoRol::all();
 
         if(empty(session('modulos')['gestionUsuario'])){
             return redirect('/');
         }
+    }
+
+    /**
+     * funciones para mostrar el modal de eliminar usuario
+     */
+    public function eliminarUserTrue($userId){          
+        $this->userToDelete = $userId;
+        $this->eliminarUser = true;
+    }
+    public function eliminarUserFalse(){
+        $this->eliminarUser = false;
+    }
+    public function eliminar($userId){
+        $user = User::find($userId);
+        $consulta = Consulta::where('veterinario_id', $userId)->get();
+        if(count($consulta) > 0){
+            return redirect('/Gestion/usuario')->with('error', 'No se puede eliminar el usuario, tiene consultas asociadas');
+
+        }
+        
+        $user->delete();
+        return redirect('/Gestion/usuario')->with('eliminado', 'Usuario eliminado con éxito');
+    }
+
+    /**
+     * 
+     */
+    public function showPasswordTrue(){
+        $this->showPassword = true;
+    }
+    public function showPasswordFalse(){
+        $this->showPassword = false;
+    }
+
+    /**
+     * 
+     */
+    public function editUserTrue($userId){        
+        $this->userToEdit = User::find($userId);
+        $this->editUser = true;        
+    }
+    public function editUserFalse(){
+        $this->editUser = false;
     }
 
     /**
@@ -82,6 +131,7 @@ class GestionRoles extends Component
 
     /**
      * fuincion para mostrar el div seleccionado en la vista modalCoigRole. lo unico que hace es recargar :D
+     * realmente no hace nada más que recargar la vista
      */
     public function setPermisos(){        
     }
@@ -199,7 +249,6 @@ class GestionRoles extends Component
         }catch(\Exception $e){
             return redirect('/Gestion/usuario')->with('error', $e->getMessage());
         }          
-        
        
         $this->name = '';
         $this->email = '';

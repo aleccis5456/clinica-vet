@@ -1,6 +1,6 @@
 <div id="confirmarModal" tabindex="-1"
     class=" fixed top-0 right-0 left-0 z-40 flex justify-center items-center w-full h-full bg-black/50">
-    <div class="relative p-4 w-full max-w-md">
+    <div class="relative p-4 w-full max-w-[550px]">
 
         <button type="button"
             class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent {{ $consultaToEdit->estado == 'Finalizado' ? 'hover:bg-green-400' : 'hover:bg-gray-200' }}  hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"

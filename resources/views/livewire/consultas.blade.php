@@ -97,7 +97,7 @@
                         @if ($consulta->estado == 'Agendado')
                             <div class="">                                
                                 <div class="absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm 
-                                            {{ $consulta->fecha < now()->format('Y-m-d')  ? 'bg-red-500' : 'bg-blue-400'}}  
+                                            {{ ($consulta->fecha < now()->format('Y-m-d') or $consulta->hora < now()->format('H:i:s')) ? 'bg-red-500' : 'bg-blue-400' }}
                                             p-1 overflow-hidden transition-all duration-300 w-7 h-7 hover:w-36 hover:h-20 hover:rounded-md">
                                     <div class="flex text-center object-center items-center justify-center">
                                         <p class="group-hover:hidden">

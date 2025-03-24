@@ -14,23 +14,19 @@ use Carbon\Carbon;
 
 class Helper
 {
-    public static function formatearFecha($fecha)
-    {
+    public static function formatearFecha($fecha) {
         return Carbon::parse($fecha)->format('d-m-Y');
     }
 
-    public static function formatearMonto($monto)
-    {
+    public static function formatearMonto($monto) {
         return number_format(round($monto, -2), 0, ',', '.');
     }
 
-    public static function edad($fecha)
-    {
+    public static function edad($fecha) {
         return Carbon::parse($fecha)->age;
     }
 
-    public static function total(): int
-    {
+    public static function total(): int {
         $total = 0;
         $cobro = session('cobro');
         foreach ($cobro as &$item) {
@@ -97,8 +93,7 @@ class Helper
         }
     }
 
-    public static function check()
-    {
+    public static function check(){
         if (!Auth::check()) {
             return redirect('/');
         }
