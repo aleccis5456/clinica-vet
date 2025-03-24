@@ -31,7 +31,11 @@ Route::middleware(Login::class)->group(function () {
     Route::get('/Gestion/usuario', GestionRoles::class)->name('gestion.roles');
     Route::get('/Inventario', Inventario::class)->name('inventario');
     Route::get('/Historial-completo/{id}', HistorialCompleto::class)->name('historial.completo');
+
     Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
+    Route::post('/inventario/actualizar/{productoId}', [InventarioController::class, 'update'])->name('inventario.update');
+    Route::post('/inventario/eliminar', [InventarioController::class, 'destroy'])->name('inventario.destroy');
+
     Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
     Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
     Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');    

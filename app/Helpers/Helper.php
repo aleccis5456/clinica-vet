@@ -120,7 +120,7 @@ class Helper
     }
 
     public static function checkPermisos() : void {
-        $modulos = session(['modulos' => []]);
+        $modulos = session('modulos', []);                
 
         if (Auth::user()) {                             
             $permisosIds = session('permisos');

@@ -21,6 +21,7 @@ class HistorialCompleto extends Component
     public $consultaVeterinario;
     public $flag = false;
     public $productos;
+    public $fecha;
 
 
     public function flagTrue(){
@@ -47,6 +48,7 @@ class HistorialCompleto extends Component
         $this->consultas = Consulta::where('mascota_id', $this->mascota->id)->get();
         $this->cantidad = Consulta::where('mascota_id', $this->mascota->id)->get();
         $this->consultaVeterinario = ConsultaVeterinario::where('consulta_id', $this->consultaId)->get();
+        $this->fecha = Consulta::orderBy('id', 'desc')->first();
 
         if(empty(session('modulos')['consulta'])){
             return redirect('/');

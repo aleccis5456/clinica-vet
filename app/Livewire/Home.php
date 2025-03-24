@@ -18,6 +18,14 @@ class Home extends Component
 {
     public $modal = false;
     public $register = false;
+    public $modalLogout = false;
+
+    public function logoutModal(){
+        $this->modalLogout = true;
+    }
+    public function closeLogoutModal(){
+        $this->modalLogout = false;
+    }
 
     public function openRegister(){
         $this->register = true;

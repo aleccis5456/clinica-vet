@@ -402,11 +402,9 @@ class Caja extends Component
 
         return $randomString;
     }
-    
 
     public function mount(){
         Helper::check();
-
         if(empty(session('modulos')['caja'])){
             return redirect('/');
         }

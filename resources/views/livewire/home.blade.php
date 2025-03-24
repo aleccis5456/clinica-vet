@@ -6,8 +6,9 @@
             @endif
             <h1 class="text-2xl font-bold">
                 <a wire:navigate href="{{ route('index') }}">Clínica Veterinaria</a>
+                {{ json_encode($modalLogout) }}
             </h1>
-            <button wire:confirm='estas seguro?' wire:click='logout' class=" cursor-pointer">
+            <button wire:click='logoutModal' class=" cursor-pointer">
                 <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -60,8 +61,14 @@
         </div>
     </div>
 
-    @include('includes.home.modal-gestion-pacietes')
+    
+    @include('includes.home.modal-gestion-pacietes')        
+    
+    
 
+    @if ($modalLogout)
+        @include('includes.home.modal-logout')
+    @endif    
 
     <!-- Agenda de citas -->
     {{-- @include('includes.home.agendas') --}}

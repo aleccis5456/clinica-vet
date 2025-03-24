@@ -16,7 +16,6 @@
 
                     <button wire:click='openTipoConsulta'
                         class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold hover:bg-gray-300 hover:font-bold">
-
                         Agregar Tipo de Consulta <span>+</span>
                     </button>
                 </div>
@@ -197,6 +196,7 @@
                                     </a>
                                 </div>
                             @endif
+                            <!-- end envio a caja -->
                         </div>
 
                         <div class="relative ">
@@ -241,6 +241,7 @@
                                         {{ Str::upper($consulta->tipoConsulta->nombre) }}</p>
                                 </div>
                             </div>
+                            <!-- HISTOTIAL COMPLETO -->
                             <div class="flex justify-center">
                                 <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->id]) }}"
                                     class="flex items-center gap-5 text-sm font-semibold px-4 py-2 

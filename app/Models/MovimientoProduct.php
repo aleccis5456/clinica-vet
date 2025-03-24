@@ -16,4 +16,12 @@ class MovimientoProduct extends Model
         'precio_total',
         'consulta_id'
     ];    
+    
+    public function producto(){
+        return $this->belongsTo(Producto::class, 'producto_id');
+    }
+
+    public function consulta(){
+        return $this->belongsTo(Consulta::class, 'consulta_id');
+    }
 }

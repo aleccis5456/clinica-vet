@@ -39,7 +39,7 @@
                         <p class="flex items-center gap-2 text-gray-700">
                             <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             Última consulta: 
-                            <span class="font-medium">{{ \Carbon\Carbon::parse($consulta->fecha)->format('d/m/Y') }}</span>
+                            <span class="font-medium">{{ \Carbon\Carbon::parse($fecha->fecha)->format('d/m/Y') }}</span>
                         </p>
                     </div>
                 </div>
@@ -52,6 +52,7 @@
                         <thead class="bg-gray-200 text-gray-800 ">
                             <tr>
                                 <th class="py-3 px-4 text-left text-semibold">Fecha</th>
+                                <th class="py-3 px-4 text-left text-semibold">Código</th>
                                 <th class="py-3 px-4 text-left text-semibold">Tipo de consulta</th>
                                 <th class="py-3 px-4 text-left text-semibold">Acciones</th>
                                 <th class="py-3 px-4 text-left text-semibold">detalle</th>
@@ -62,6 +63,7 @@
                                 <tr wire:key='{{ $consultaf->id }}'
                                     class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
                                     <td class="py-3 px-4">{{ \Carbon\Carbon::parse($consultaf->fecha)->format('d/m/Y') }}</td>
+                                    <td class="py-3 px-4">{{ $consultaf->codigo }}</td>
                                     <td class="py-3 px-4">{{ $consultaf->tipoConsulta->nombre }}</td>
                                     <td class="py-3 px-4 hover:underline cursor-pointer">
                                         <button wire:click='' type="button"

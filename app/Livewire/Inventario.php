@@ -2,9 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\MovimientoProduct;
 use App\Helpers\Helper;
 use App\Models\Categoria;
 use App\Models\Producto;
+use Illuminate\Http\RedirectResponse;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -14,43 +16,97 @@ class Inventario extends Component
     public $productoToEdit = '';
     public $productoId = '';
     public $categoria = '';
-    public $search = '';
+    public string $search = '';
+    public int $verTodo = 9;
     
-    public $categorias;
-    public $productos;
+    public object $categorias;
+    public object $productos;    
+    public object $detalleProducto;
+    public object $historialVenta; //historialVentaProducto;
 
-    public $modalAgregar = false;
-    public $modalCategoria = false;
-    public $modalEditar = false;
-    public $modalEliminar = false;
-    public $tableCategoria = false;
+    public bool $modalAgregar = false;
+    public bool $modalCategoria = false;
+    public bool $modalEditar = false;
+    public bool $modalEliminar = false;
+    public bool $tableCategoria = false;
+    public bool $editar = false;
+    public bool $detalles = false;
+    public bool $historial = false;
 
     /**
      * 
      */
-    public function opneTableCategoria()
-    {
+    public function historialTrue(int $productoId): void {
+        $this->historialVenta = MovimientoProduct::where('producto_id', $productoId)->get();        
+        $this->detallesFalse();
+        $this->historial = true;
+    }
+    public function historialFalse($productoId) : void {          
+        $this->historialVenta;
+        $this->detallesTrue($productoId);
+        $this->historial = false;              
+    }
+
+
+    /**
+     * 
+     */
+    public function detallesTrue($productoId) : void {
+        $this->detalleProducto = Producto::find($productoId);
+        $this->detalles = true;
+    }
+    public function detallesFalse() : void {
+        $this->detalles = false;
+        $this->detalleProducto;
+    }
+
+    /**
+     * 
+     */
+    public function editarTrue($productoId) : void {        
+        $this->productoToEdit = Producto::find($productoId);
+        $this->editar = true;
+    }
+    public function editarFalse() : void {
+        $this->editar = false;
+    }
+
+    /**
+     * 
+     */
+    public function openVerTodo($productoId) : void {        
+        $this->verTodo = 100;
+        $this->productoId = $productoId;
+    }
+    public function closeVerTodo() : void {
+        $this->verTodo = 9;
+        $this->productoId = '';
+    }
+
+    /**
+     * 
+     */
+    public function opneTableCategoria() : void {
         $this->tableCategoria = true;
     }   
-    public function closeTableCategoria(){
+    public function closeTableCategoria() : void{
         $this->tableCategoria = false;
     }
 
     /**
      * 
      */
-    public function openModalAgregar()
-    {
+    public function openModalAgregar() : void {
         $this->modalAgregar = true;
     }
-    public function closeModalAgregar(){
+    public function closeModalAgregar() : void {
         $this->modalAgregar = false;
     }
 
     /**
      * 
      */
-    public function mount(){
+    public function mount() {
         Helper::check();
         $this->productos = Producto::all();
         $this->categorias = Categoria::all();
@@ -64,19 +120,17 @@ class Inventario extends Component
     /**
      * 
      */
-    public function openModalCategoria()
-    {
+    public function openModalCategoria() : void {
         $this->modalCategoria = true;
     }
-    public function closeModalCategoria(){
+    public function closeModalCategoria() : void {
         $this->modalCategoria = false;
     }   
 
     /**
      * 
      */
-    public function agregarCategoria()
-    {
+    public function agregarCategoria() : RedirectResponse {
         $this->validate([
             'categoria' => 'required'
         ]);
@@ -92,8 +146,7 @@ class Inventario extends Component
         
     }   
 
-    public function render()
-    {
+    public function render() : \Illuminate\View\View{
         return view('livewire.inventario');
     }
 }
