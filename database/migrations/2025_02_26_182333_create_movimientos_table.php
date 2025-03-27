@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo');
             $table->integer('monto');
-            $table->foreignId('cliente_id')->constrained('duenos');
+            $table->unsignedInteger('cliente_id');
             $table->string('forma_pago');
             $table->timestamps();
             $table->softDeletes();

@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Models\Evento;
 use App\Helpers\Helper;
 use App\Models\Pago;
 use App\Models\ConsultaProducto;
@@ -450,15 +449,15 @@ class Consultas extends Component
                 }
             }
 
-            if($consulta->estado == 'Agendado'){
-                $evento = Evento::where('consulta_id', $consulta->id)
-                                ->where('estado', 'pendiente')
-                                ->where('titulo', $consulta->tipoConsulta->nombre)
-                                ->first();
-                if(!empty($evento)){
-                    $evento->delete();
-                }
-            }
+            // if($consulta->estado == 'Agendado'){
+            //     $evento = Evento::where('consulta_id', $consulta->id)
+            //                     ->where('estado', 'pendiente')
+            //                     ->where('titulo', $consulta->tipoConsulta->nombre)
+            //                     ->first();
+            //     if(!empty($evento)){
+            //         $evento->delete();
+            //     }
+            // }
 
             $consulta->estado = $estadoNuevo;
             $consulta->save();
@@ -466,22 +465,22 @@ class Consultas extends Component
             return redirect()->route('consultas')->with('error', $e->getMessage());
         }
         
-        if($estadoNuevo == 'Agendado'){
-            $eventos = Evento::where('estado', 'pendiente')
-                                ->where('consulta_id', $consulta->id)
-                                ->get();
+        // if($estadoNuevo == 'Agendado'){
+        //     $eventos = Evento::where('estado', 'pendiente')
+        //                         ->where('consulta_id', $consulta->id)
+        //                         ->get();
             
-            if(count($eventos) <= 0){
-                $evento = Evento::create([
-                    'titulo' => $consulta->tipoConsulta->nombre, 	
-                    'descripcion' => '', 	
-                    'fecha_hora' =>  $consulta->fecha.' '.$consulta->hora, 	
-                    'usuario_id', 	
-                    'consulta_id' => $consultaID, 	
-                    'estado' => 'pendiente'
-                ]);
-            }            
-        }        
+        //     if(count($eventos) <= 0){
+        //         $evento = Evento::create([
+        //             'titulo' => $consulta->tipoConsulta->nombre, 	
+        //             'descripcion' => '', 	
+        //             'fecha_hora' =>  $consulta->fecha.' '.$consulta->hora, 	
+        //             'usuario_id', 	
+        //             'consulta_id' => $consultaID, 	
+        //             'estado' => 'pendiente'
+        //         ]);
+        //     }            
+        // }        
         return redirect()->route('consultas')->with('editado', 'Estado de la consulta actualizado con éxito');
     }
 
@@ -528,7 +527,7 @@ class Consultas extends Component
                     ]);
                 }
             } catch (\Exception $e) {
-                return redirect()->route('caja')->with('error', '');
+                throw new \Exception($e->getMessage());
             }
         }
         $consulta = Consulta::find($this->consultaToEdit->id);        

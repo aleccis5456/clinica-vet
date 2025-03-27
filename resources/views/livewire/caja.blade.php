@@ -9,43 +9,43 @@
                 <p class="pl-1 py-7 text-4xl font-semibold">Caja</p>
                 <div class="mb-4  rounded-lg">
                     <div class="bg-gray-200 rounded-lg ">
-                        <p class="pl-4 pt-2 font-semibold text-lg flex">
-                            Consultas Pendientes
-                            <button
-                                @if ($alertas) wire:click="alertaFalse" @else wire:click="alertaTrue" @endif
-                                class="ml-2 flex cursor-pointer text-sm px-2 py-1 bg-orange-200 rounded-full text-orange-600">
-                                {{ count(session('caja')) }}
-                                <span>
-                                    @if ($alertas)
-                                        <svg class="w-5 h-5 text-orange-600" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m5 15 7-7 7 7" />
-                                        </svg>
-                                    @else
-                                        <svg class="w-5 h-5 text-orange-600" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="m19 9-7 7-7-7" />
-                                        </svg>
-                                    @endif
-
-                                </span>
-
-
-                            </button>
-                        </p>
+                        @if (session('caja'))
+                            <p class="pl-4 pt-2 font-semibold text-lg flex">
+                                Consultas Pendientes
+                                <button
+                                    @if ($alertas) wire:click="alertaFalse" @else wire:click="alertaTrue" @endif
+                                    class="ml-2 flex cursor-pointer text-sm px-2 py-1 bg-orange-200 rounded-full text-orange-600">
+                                    {{ count(session('caja')) }}
+                                    <span>
+                                        @if ($alertas)
+                                            <svg class="w-5 h-5 text-orange-600" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7" />
+                                            </svg>
+                                        @else
+                                            <svg class="w-5 h-5 text-orange-600" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
+                                            </svg>
+                                        @endif
+                                    </span>
+                                </button>
+                            </p>
+                        @endif
                         @if ($alertas)
                             <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 @if (session('caja'))
                                     @foreach (session('caja') as $caja)
                                         <div
-                                            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow relative group">                                            
+                                            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow relative group">
                                             <!-- Contenido principal -->
                                             <div class="p-4 cursor-pointer">
-                                                <p class="text-xs text-gray-500">Código: {{ $caja['consulta']->codigo }}</p>
+                                                <p class="text-xs text-gray-500">Código: {{ $caja['consulta']->codigo }}
+                                                </p>
                                                 <div class="flex justify-between items-start mb-2">
                                                     <div>
                                                         <p class="font-bold text-gray-800">
@@ -89,7 +89,7 @@
                                                         Gs.
                                                     </p>
                                                 </div>
-                                            </div>                                           
+                                            </div>
 
                                             <!-- Botón de cobro (aparece al pasar el mouse) -->
                                             <div
@@ -98,10 +98,10 @@
                                                     class="cursor-pointer  w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
                                                     <i class="fas fa-cash-register mr-2"></i> Cobrar
                                                 </button>
-                                            </div>                                            
+                                            </div>
                                         </div>
                                     @endforeach
-                                @endif                                
+                                @endif
                             </div>
                         @endif
 
@@ -167,12 +167,12 @@
                                             <td class="py-3 px-4">
                                                 @if (isset($producto->foto))
                                                     <img class="w-18 h-18"
-                                                    src="{{ asset("uploads/productos/$producto->foto") }}"
-                                                    alt="" srcset="">
+                                                        src="{{ asset("uploads/productos/$producto->foto") }}"
+                                                        alt="" srcset="">
                                                 @else
-                                                    <img class="w-6 h-6 " 
-                                                    src="{{ asset('images/tabicon.png') }}" alt="">
-                                                @endif                                                
+                                                    <img class="w-6 h-6 " src="{{ asset('images/tabicon.png') }}"
+                                                        alt="">
+                                                @endif
                                             </td>
                                             <td class="py-3 px-4">
                                                 {{ $producto->nombre }}

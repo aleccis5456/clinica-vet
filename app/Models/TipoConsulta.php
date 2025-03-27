@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TipoConsulta extends Model
 {
     protected $table = 'tipo_consultas';
-    protected $fillable = ['nombre', 'descripcion','precio'];
+    protected $fillable = ['nombre', 'descripcion','precio','veces_realizadas'];
     public $timestamps = false;
 
     public function consultas()

@@ -29,6 +29,7 @@ class AuthController extends Controller
                 'name' => $request->nombre,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'rol_id' => $request->rol_id ?? 1,
             ]);
                 
             return redirect()->route('index')->with('agregado', 'El registro se completó');

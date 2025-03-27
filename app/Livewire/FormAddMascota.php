@@ -48,6 +48,23 @@ class FormAddMascota extends Component
      * LA CREACION Y EDICION ESTA EN EL CONTROLADOR
      */
 
+
+
+    /**
+     * 
+     */
+    public function mount(){
+        Helper::check();
+        $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
+        $this->duenos = Dueno::all();
+        $this->especies = Especie::all();          
+
+        if(empty(session('modulos')['gestionPaciente'])){
+            return redirect('/');
+        }
+    }
+
+
     /**
      * 
      */
@@ -142,20 +159,6 @@ class FormAddMascota extends Component
     }
     public function closeModalAdd(){
         $this->modalAdd = false;
-    }
-
-    /**
-     * 
-     */
-    public function mount(){
-        Helper::check();
-        $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
-        $this->duenos = Dueno::all();
-        $this->especies = Especie::all();
-
-        if(empty(session('modulos')['gestionPaciente'])){
-            return redirect('/');
-        }
     }
 
     /**

@@ -8,24 +8,22 @@ use Exception;
 
 class MascotaController extends Controller
 {
-    public function crearMascota(Request $request){            
-        $request->validate([
-            'dueno_id' => 'required',
-            'nombre' => 'required',            
-            'raza' => 'required',
-            'nacimiento' => 'date|required',
-            'genero' => 'required',     
-            'especie_id' => 'required|exists:especies,id'
-        ]);
-
-        if ($request->hasFile('foto')) {
-            $image_path = $request->file('foto');
-            $imageName = time()."$request->nombre" . '.' . $image_path->getClientOriginalExtension();
-            $destinationPath = public_path('uploads/mascotas');
-            $image_path->move($destinationPath, $imageName);
-        }
-        
-        try{
+    public function crearMascota(Request $request){                  
+        try{            
+            $request->validate([
+                'dueno_id' => 'required',
+                'nombre' => 'required',                        
+                'nacimiento' => 'date|required',
+                'genero' => 'required',     
+                'especie_id' => 'required|exists:especies,id'
+            ]);        
+            if ($request->hasFile('foto')) {
+                $image_path = $request->file('foto');
+                $imageName = time()."$request->nombre" . '.' . $image_path->getClientOriginalExtension();
+                $destinationPath = public_path('uploads/mascotas');
+                $image_path->move($destinationPath, $imageName);
+            }
+                
             Mascota::create([
                 'dueno_id' => $request->dueno_id,
                 'nombre' => $request->nombre,            
@@ -41,7 +39,7 @@ class MascotaController extends Controller
         }
 
         
-        return redirect()->route('index')->with('agregado', "$request->nombre, se agrego correctamente");        
+        return redirect()->route('add.mascota')->with('agregado', "$request->nombre, se agrego correctamente");        
     }
 
     public function editSave(Request $request){                      

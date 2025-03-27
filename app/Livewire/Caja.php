@@ -301,32 +301,17 @@ class Caja extends Component
                     'pagado' => true,
                     'cliente_id' => $cliente->id,
                     'estado' => 'pagado',
-                ]);
+                ]);              
 
-                foreach($cobro as $item){
-                    if($item['opcion'] == '1'){
-                        $producto = Producto::find($item['productoId']);
-                        $producto->stock_actual -= $item['cantidad'];
-                        $producto->save();
-                    }                    
-                }
-
-            } else {                     
+            } else {                        
                 Pago::create([                                     
                     'monto' => Helper::total(),
                     'forma_pago' => $this->formaPago,
                     'pagado' => true,
                     'estado' => 'pagado',
                     'cliente_id' => $cliente->id,
-                ]);
-
-                foreach($cobro as $item){
-                    $producto = Producto::find($item['productoId']);
-                    $producto->stock_actual -= $item['cantidad'];
-                    $producto->save();
-                }                                                
-            }
-
+                ]);                                                             
+            }            
             $venta = Movimiento::create([
                 'codigo' => $this->codigo(6),
                 'monto' => Helper::total(),
@@ -334,7 +319,7 @@ class Caja extends Component
                 'forma_pago' => $this->formaPago,
             ]);
 
-            foreach($cobro as $item){
+            foreach($cobro as $item){                
                 MovimientoProduct::create([
                     'venta_id' => $venta->id,
                     'producto_id' => $item['opcion'] == '1' ? $item['productoId'] : null,
@@ -342,7 +327,18 @@ class Caja extends Component
                     'cantidad' => $item['cantidad'],
                     'precio_unitario' => $item['precio'],
                     'precio_total' => $item['precio'] * $item['cantidad'],
-                ]);
+                ]);                
+                if($item['opcion'] == '1'){
+                    $producto = Producto::find($item['productoId']);
+                    $producto->stock_actual -= $item['cantidad'];
+                    $producto->ventas += $item['cantidad'];
+                    $producto->save();
+                }
+                if($item['opcion'] == '2'){                       
+                    $tipo = TipoConsulta::find($item['productoId']);                                        
+                    $tipo->veces_realizadas += 1;                    
+                    $tipo->save();
+                }                               
             }
             DB::commit();
         }catch(\Exception $e){

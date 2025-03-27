@@ -130,7 +130,7 @@ class Inventario extends Component
     /**
      * 
      */
-    public function agregarCategoria() : RedirectResponse {
+    public function agregarCategoria()  {
         $this->validate([
             'categoria' => 'required'
         ]);

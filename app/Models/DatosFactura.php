@@ -12,5 +12,9 @@ class DatosFactura extends Model
         'nombre_rs', 	
         'ruc_ci'
     ];
+
+    public function compras(){
+        return $this->hasMany(Movimiento::class);
+    }
 }
 

@@ -82,7 +82,7 @@
 
                                 </td>
                                 <td class="py-3 px-2">
-                                    {{ $producto->categoria }}
+                                    {{ $producto->tipoCategoria->nombre }}
                                 </td>
                                 <td class="py-3 px-2">{{ App\Helpers\Helper::formatearMonto($producto->precio) }} Gs.
                                 </td>

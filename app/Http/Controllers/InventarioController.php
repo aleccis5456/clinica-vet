@@ -56,7 +56,7 @@ class InventarioController extends Controller
                 'precio' => 'required',            
                 'precio_compra' => 'nullable',
                 'stock_actual' => 'required',
-                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',            
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',            
             ]);
 
             $producto = Producto::find($productoId);

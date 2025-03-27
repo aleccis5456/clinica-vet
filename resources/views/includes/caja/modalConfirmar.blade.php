@@ -22,8 +22,8 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                         <option value="">-Elegir-</option>
                         <option value="efectivo">Efectivo</option>
-                        <option value="efectivo">Tarjeta</option>
-                        <option value="transf">Transferencia</option>
+                        <option value="tarjeta">Tarjeta</option>
+                        <option value="transferencia">Transferencia</option>
                         <option value="otro">QR</option>
                     </select>
                 </div>

@@ -9,6 +9,7 @@
         "php": "^8.2",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "laraveldaily/laravel-charts": "^0.2.3",
         "livewire/livewire": "^3.6"
     },
     "require-dev": {

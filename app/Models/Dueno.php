@@ -16,9 +16,5 @@ class Dueno extends Model
     
     public function mascotas(){
         return $this->hasMany(Mascota::class);
-    }
-
-    public function compras(){
-        return $this->hasMany(Movimiento::class);
-    }
+    }    
 }
