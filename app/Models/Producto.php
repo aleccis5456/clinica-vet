@@ -29,9 +29,8 @@ class Producto extends Model
         return $this->belongsTo(Categoria::class, 'categoria');
     }
     
-    public function consultas()
-{
-    return $this->belongsToMany(Consulta::class, 'consulta_productos', 'producto_id', 'consulta_id');
-}
+    public function consultas(){
+        return $this->belongsToMany(Consulta::class, 'consulta_productos', 'producto_id', 'consulta_id');
+    }
 
 }

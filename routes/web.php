@@ -13,6 +13,7 @@ use App\Livewire\Home;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Login;
 use App\Livewire\Agenda;
+use App\Livewire\Alertas;
 use App\Livewire\Caja;
 use App\Livewire\GestionRoles;
 use App\Livewire\HistorialCompleto;
@@ -48,6 +49,8 @@ Route::middleware(Login::class)->group(function () {
     Route::post('/actualizar-user', [GestionUsuarioController::class, 'update'])->name('user.update');
 
     Route::get('/reporte-pdf/ventas', [ReportsController::class, 'exportarPdf'])->name('reporte.pdf');  
+
+    Route::get('/alertas', Alertas::class)->name('alertas');
 });
 
 

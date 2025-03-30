@@ -11,7 +11,7 @@
         
         <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Categoría:</span>
-            <span class="text-gray-800">{{ $detalleProducto->categoria }}</span>
+            <span class="text-gray-800">{{ $detalleProducto->tipoCategoria->nombre }}</span>
         </div>
 
         <div class="flex justify-between">

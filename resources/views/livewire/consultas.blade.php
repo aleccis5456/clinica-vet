@@ -19,11 +19,11 @@
                         Agregar Tipo de Consulta <span>+</span>
                     </button>
                 </div>
-                
+
                 <div class="px-4">
-                    @livewire('alerta-agendados')                    
+                    @livewire('alerta-agendados')
                 </div>
-                
+
                 <div class="p-3 flex">
                     <form wire:submit.prevent='busqueda'
                         class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-l-md w-full md:w-1/3 border border-gray-300">
@@ -61,25 +61,39 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">                
+
+            <div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
                 @php
                     $estados = [
-                        'Agendado' => 'from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700',
-                        'Reprogramado' => 'from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800',
-                        'Pendiente' => 'from-orange-400 to-orange-500 hover:from-orange-600 hover:to-orange-700',
-                        'En Espera' => 'from-yellow-400 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700',
-                        'En consultorio' => 'from-green-400 to-green-500 hover:from-green-600 hover:to-green-700',
-                        'Finalizado' => 'from-green-800 to-green-900 hover:from-green-900 hover:to-green-950',
-                        'No asistió' => 'from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800',
-                        'Cancelado' => 'from-red-500 to-red-700 hover:from-red-600 hover:to-red-800',
+                        'Agendado' => 'from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600',
+                        'En seguimiento' => 'from-indigo-500 to-indigo-700 hover:from-indigo-600 hover:to-indigo-800',
+                        'Internado' => 'from-red-700 to-red-800 hover:from-red-800 hover:to-red-900',
+                        'Pendiente' => 'from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600',
+                        'En recepción' => 'from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700',
+                        'En consultorio' => 'from-green-500 to-green-600 hover:from-green-600 hover:to-green-700',
+                        'Finalizado' => 'from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800',
+                        'No asistió' => 'from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600',
+                        'Cancelado' => 'from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800',
+                    ];
+
+                    $estadosf = [
+                        'Agendado' => 'bg-sky-200 border-sky-300',
+                        'En seguimiento' => 'bg-indigo-200 border-indigo-300',
+                        'Internado' => 'bg-red-200 border-red-300',
+                        'Pendiente' => 'bg-amber-100 border-amber-300',
+                        'En recepción' => 'bg-yellow-100 border-yellow-300',
+                        'En consultorio' => 'bg-green-200 border-green-300',
+                        'Finalizado' => 'bg-gray-200 border-gray-300',
+                        'No asistió' => 'bg-gray-200 border-gray-400',
+                        'Cancelado' => 'bg-rose-200 border-rose-300',
                     ];
                 @endphp
 
                 <!-- Card 1 -->
                 @foreach ($consultas as $consulta)
-                    <div
-                        class="max-w-[270px] bg-gray-200 shadow-md rounded-lg group overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gray-200 relative">
+                <div class="max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 hover:scale-101 hover:shadow-lg relative 
+                border {{ $estadosf[$consulta->estado] ?? 'bg-gray-200 border-gray-300' }}" 
+        id="consulta-{{ $consulta->id }}">
                         <!-- Tag de estado con degradado -->
                         <select name="" id=""
                             wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
@@ -95,44 +109,54 @@
                         </select>
 
                         @if ($consulta->estado == 'Agendado')
-                            <div class="">                                
-                                <div class="absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm 
+                            <div class="">
+                                <div
+                                    class="group absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm 
                                             {{ ($consulta->fecha < now()->format('Y-m-d') or $consulta->hora < now()->format('H:i:s')) ? 'bg-red-500' : 'bg-blue-400' }}
                                             p-1 overflow-hidden transition-all duration-300 w-7 h-7 hover:w-36 hover:h-20 hover:rounded-md">
                                     <div class="flex text-center object-center items-center justify-center">
                                         <p class="group-hover:hidden">
-                                            <svg class="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                              </svg>
+                                            <svg class="w-5 h-5 text-gray-800 " aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
                                         </p>
-                                    </div>     
+                                    </div>
                                     <div class="flex">
-                                        <p class="hidden group-hover:block text-xs text-center object-center justify-between">
-                                            <svg class="w-5 h-5 text-gray-800 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                              </svg>                                          
+                                        <p
+                                            class="hidden group-hover:block text-xs text-center object-center justify-between">
+                                            <svg class="w-5 h-5 text-gray-800 " aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
                                         </p>
                                         <span class="pl-5 font-semibold">Detalles</span>
-                                    </div>                                                                 
+                                    </div>
                                     <p class="hidden group-hover:block mt-1 text-xs text-center object-center">
-                                        Fecha: {{ \Carbon\Carbon::parse($consulta->fecha)->format('d-m-Y')  }}
-                                    </p>  
+                                        Fecha: {{ \Carbon\Carbon::parse($consulta->fecha)->format('d-m-Y') }}
+                                    </p>
                                     <p class="hidden group-hover:block mt-1 text-xs text-center object-center">
-                                        Hora: {{ \Carbon\Carbon::parse($consulta->hora)->format('H:i')  }}
+                                        Hora: {{ \Carbon\Carbon::parse($consulta->hora)->format('H:i') }}
                                     </p>
                                 </div>
                             </div>
                         @endif
 
                         <!-- Botón de actualizacion -->
-                        <div class="flex flex-col">
-                            <div class="">
+                        <div class="flex flex-col ">
+                            <div class="group">
                                 <button wire:click="openModalConfig({{ $consulta->id }})"
-                                    class="bg-gray-200 cursor-pointer absolute top-2 right-2 z-10 p-1  rounded-full 
+                                    class=" bg-gray-200 cursor-pointer absolute top-2 right-2 z-10 p-1  rounded-full 
                                         hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                                    <svg class="w-6 h-6 text-gray-600 " aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                        viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-gray-600 transition duration-300 group-hover:rotate-45 group-hover:text-gray-800 "
+                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                        height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"
                                             d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4" />
@@ -153,22 +177,23 @@
                             @endphp
                             @if ($pago)
                                 @foreach ($pagoEstados as $estado => $bg)
-                                    <div class="">
+                                    <!-- icono de pagado (el verde) -->
+                                    <div class="group">
                                         <a @if ($pago->estado == 'pagado') href="" @else href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}" @endif
-                                            class="{{ $estado == $pago->estado ? "$bg" : '' }} cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full 
-                                                \[]hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
+                                            class="{{ $estado == $pago->estado ? "$bg" : '' }} cursor-pointer absolute top-12 right-2 z-10 p-1 rounded-full ">
                                             @if ($pago->estado == 'pagado')
-                                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    fill="none" viewBox="0 0 24 24">
+                                                <svg class="w-6 h-6 text-white transition duration-300 group-hover:scale-140"
+                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                                    height="24" fill="none" viewBox="0 0 24 24">
                                                     <path stroke="currentColor" stroke-linecap="round"
                                                         stroke-linejoin="round" stroke-width="2"
                                                         d="M5 11.917 9.724 16.5 19 7.5" />
                                                 </svg>
                                             @else
-                                                <svg class="w-6 h-6 text-gray-600" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    fill="none" viewBox="0 0 24 24">
+                                                <svg class="w-6 h-6 text-gray-600 transition duration-300 group-hover:scale-140"
+                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                                    width="24" height="24" fill="none"
+                                                    viewBox="0 0 24 24">
                                                     <path fill="currentColor"
                                                         d="M4 19v2c0 .5523.44772 1 1 1h14c.5523 0 1-.4477 1-1v-2H4Z" />
                                                     <path fill="currentColor" fill-rule="evenodd"
@@ -180,13 +205,13 @@
                                     </div>
                                 @endforeach
                             @else
-                                <div class="">
+                                <!-- icono de la caja -->
+                                <div class="group">
                                     <a href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}"
-                                        class="bg-gray-200 cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full 
-                                        hover:bg-opacity-40 transition-all duration-200 focus:outline-none">
-                                        <svg class="w-6 h-6 text-gray-600" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="none" viewBox="0 0 24 24">
+                                        class="bg-gray-200 cursor-pointer absolute top-12 right-2 z-10 p-1  rounded-full">
+                                        <svg class="w-6 h-6 text-gray-600 transition duration-300 group-hover:scale-115 group-hover:text-gray-800"
+                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                            height="24" fill="none" viewBox="0 0 24 24">
                                             <path fill="currentColor"
                                                 d="M4 19v2c0 .5523.44772 1 1 1h14c.5523 0 1-.4477 1-1v-2H4Z" />
                                             <path fill="currentColor" fill-rule="evenodd"
@@ -244,7 +269,7 @@
                             <!-- HISTOTIAL COMPLETO -->
                             <div class="flex justify-center">
                                 <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->id]) }}"
-                                    class="flex items-center gap-5 text-sm font-semibold px-4 py-2 
+                                    class="flex items-center gap-5 text-xs md:text-sm font-semibold px-4 py-2 
                                            bg-gradient-to-r from-blue-400 to-blue-500 
                                            hover:from-blue-600 hover:to-blue-700 
                                            text-white rounded-lg ">
@@ -276,10 +301,6 @@
         @include('includes.consultas.modalTipoConsulta')
     @endif
 
-    {{-- class="flex items-center gap-5 text-sm font-semibold px-4 py-2 
-    bg-gradient-to-r from-blue-400 to-blue-500 
-    hover:from-blue-600 hover:to-blue-700 
-    text-white rounded-lg " --}}
     <script>
         function cambiarColor(select) {
             let colores = @json($estados);
@@ -287,5 +308,16 @@
                 "estado-select absolute top-2 left-2 z-10 px-4 py-2 text-xs font-semibold text-white rounded-lg bg-gradient-to-r " +
                 (colores[select.value] || "from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500");
         }
+
+        function cambiarColorCard(id, estado) {
+    let coloresf = @json($estadosf);
+    let card = document.getElementById(`consulta-${id}`);
+    
+    if (card) {
+        card.className = `max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 
+                          hover:scale-101 hover:shadow-lg relative ${coloresf[estado] || 'bg-gray-300 border-gray-400'}`;
+    }
+}
+
     </script>
 </div>
