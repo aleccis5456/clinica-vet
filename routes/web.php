@@ -5,6 +5,7 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\GestionUsuarioController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\ReportsController;
 use App\Livewire\Consultas;
 use App\Livewire\FormAddDueno;
 use App\Livewire\FormAddMascota;
@@ -45,6 +46,8 @@ Route::middleware(Login::class)->group(function () {
     Route::get('/reportes', Reportes::class)->name('reportes');    
 
     Route::post('/actualizar-user', [GestionUsuarioController::class, 'update'])->name('user.update');
+
+    Route::get('/reporte-pdf/ventas', [ReportsController::class, 'exportarPdf'])->name('reporte.pdf');  
 });
 
 

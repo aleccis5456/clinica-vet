@@ -8,24 +8,75 @@
 
         <div class="grid grid-cols-3 gap-4 px-12">
             <div class="col-span-2 bg-gray-100 rounded-lg p-4 ">
-                <p>Productos mas vendidos</p>
+                <div class="flex justify-between">
+                    <div class="flex relative">
+                        <p class="font-semibold text-lg">Productos mas vendidos</p>
+                        @if ($filtroTag)
+                            <p
+                                class="font-semibold flex ml-1 pr-7 bg-gray-400 px-2 rounded-full absolute top-1 left-52 text-sm">
+                                {{ $filtroTag }}
+                                <span wire:click='refresh'
+                                    class="cursor-pointer ml-1 bg-gray-500 px-2 rounded-full absolute right-0 font-semibold">
+                                    x
+                                </span>
+                            </p>
+                        @endif
+                        {{-- <p class="bg-gray-400 p-1">{{ $filtroTag }}</p> --}}
+                    </div>
+                    <!-- boton de pdf -->
+                    <div>
+                        <button wire:click="fechasTrue"
+                            class="bg-red-600 text-white px-2 py-1 rounded-lg cursor-pointer group">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white transition duration-300 group-hover:rotate-12"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd"
+                                    d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        </button>
+                    </div>
+                    <!-- boton de filtro -->
+                    <div class="relative">
+                        <span class="font-semibold absolute right-11">Filtros: </span>
+                        <button wire:click='filtroTrue'
+                            class="cursor-pointer pr-2 bg-black rounded-md text-white px-2 py-1 group">
+                            <svg class=" w-6 h-6 transition duration-300 group-hover:rotate-12" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 17 17">
+                                <path
+                                    d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                 <div class="mt-2 rounded-lg overflow-hidden shadow-md ">
                     <table class="min-w-full bg-white rounded-lg hidden md:table">
                         <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                             <tr>
-                                <th class="py-3 px-4 text-left text-semibold sr-only">foto</th>
-                                <th class="py-3 px-4 text-left text-semibold">Producto</th>
-                                <th class="py-3 px-4 text-left text-semibold">Ventas</th>
+                                <th class="py-1 px-4 text-left text-semibold sr-only">foto</th>
+                                <th class="py-1 px-4 text-left text-semibold">Producto</th>
+                                <th class="py-1 px-4 text-left text-semibold">Ventas</th>
                             </tr>
                         </thead>
 
-                        <tbody class="text-gray-800">                        
-                                <tr wire:key=''
+                        <tbody class="text-gray-800">
+                            @foreach ($ventas as $venta)
+                                <tr wire:key='{{ $venta->id }}'
                                     class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                                    <td class="py-3 px-4"></td>
-                                    <td class="py-3 px-4"></td>
-                                    <td class="py-3 px-4"></td>
-                                </tr>                        
+                                    <td class="px-4">
+                                        <img class="w-12 h-12" src="{{ asset('uploads/productos/' . $venta->foto) }}"
+                                            alt="">
+                                    </td>
+                                    <td class=" px-4">
+                                        {{ $venta->nombre }}
+                                    </td>
+                                    <td class=" px-4">
+                                        {{ $venta->ventas }}
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -62,72 +113,13 @@
                 </div>
             </div>
         </div>
-
-        {{-- <div class="border-t border-gray-400 p-4 grid grid-cols-2">            
-            <div class=" p-2">
-                <div class="flex">
-                    @foreach ($especies as $especie)
-                    <div class="bg-gray-300/80 p-4 m-1 rounded-lg flex">
-                        <p class="font-semibold mr-1">{{Str::ucfirst($especie->nombre) }}: </p>
-                        @php
-                            $cantidad = 0;
-                            $mascotas = App\Models\Mascota::where('especie_id', $especie->id)->get();
-                            
-                            $cantidad = count($mascotas);                            
-                        @endphp                
-                        <span> {{ $cantidad }}</span>
-                        
-                    </div>
-                    @endforeach                                        
-                </div>
-            </div>
-
-            <div class="border border-red-500 p-2">
-                <p>Productos mas vendidos</p>
-                <div class="mt-2 rounded-lg overflow-hidden shadow-md ">
-                    <table class="min-w-full bg-white rounded-lg hidden md:table">
-                        <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
-                            <tr>
-                                <th class="py-3 px-4 text-left text-semibold sr-only">foto</th>
-                                <th class="py-3 px-4 text-left text-semibold">Nombre</th>
-                                <th class="py-3 px-4 text-left text-semibold">Especie</th>
-                                <th class="py-3 px-4 text-left text-semibold">Raza</th>
-                                <th class="py-3 px-4 text-left text-semibold">Cumpleaños</th>
-                                <th class="py-3 px-4 text-left text-semibold">Humano</th>
-                                <th class="py-3 px-4 text-left text-semibold">Acciones</th>
-                            </tr>
-                        </thead>
-    
-                        <tbody class="text-gray-800">
-                            @foreach ($mascotas as $mascota)
-                                <tr wire:key='{{ $mascota->id }}'
-                                    class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                                    <td class="py-3 px-4"><img class="w-12 h-12 rounded-full"
-                                            src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt=""></td>
-                                    <td class="py-3 px-4">{{ $mascota->nombre }} ({{ $mascota->genero }})</td>
-                                    <td class="py-3 px-4"> {{ $mascota->especieN->nombre }} </td>
-                                    <td class="py-3 px-4"> {{ $mascota->raza }} </td>
-                                    <td class="py-3 px-4"> {{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }}
-                                    </td>
-                                    <td class="py-3 px-4"> {{ $mascota->dueno->nombre }} </td>
-                                    <td class="py-3 px-4 font-semibold">
-                                        <button wire:click="openModalEdit({{ $mascota->id }})"
-                                            class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                            Editar
-                                        </button>
-                                        <button wire:click='openModalEliminar({{ $mascota->id }})' type="button"
-                                            class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-black rounded-md px-3 py-1 text-sm">
-                                            Eliminar
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </div> --}}
-
     </main>
+
+    @if ($fechas)
+        @include('includes.reportes.ventas')
+    @endif
+
+    @if ($filtro)
+        @include('includes.reportes.filtros')
+    @endif
 </div>
