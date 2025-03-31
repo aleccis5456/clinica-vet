@@ -13,16 +13,31 @@
         </button>
 
         <form action="{{ route('mascota.crear') }}" method="POST" enctype="multipart/form-data"
-            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
+            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto"
+            onkeydown="return event.key !== 'Enter';">
             @csrf
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Mascota</p>
 
 
-            <!--  Campo para relacionar don una persona -->
+            <!--  Campo para relacionar al dueno -->
             <div class="mb-4">
-                <label class="block text-gray-800 font-medium mb-2">Seleccionar Dueño</label>
-                <select wire:model='dueno_id' name="dueno_id" name="" id="select2"
-                    class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                <label class="block text-gray-800 font-medium mb-2">Buscar y/o Seleccionar Dueño</label>                
+                <!-- muestra el dueno seleccionado -->                                        
+                <div class="flex relative">
+                    <input type="text" wire:model='dueno' wire:keydown.enter="searchDueno"
+                    class="transition duration-300 {{ empty($dueno_id) ? 'w-[70%]' : 'w-[30%]' }}  px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
+                    placeholder="Nombre o email" value="{{ $duenoSet->nombre ?? '' }}">
+
+                    <button type="button" wire:click="searchDueno"
+                            class="absolute {{ empty($dueno_id) ? 'right-26' : 'left-15' }} top-[3px] bg-gray-200 hover:bg-gray-300 transition p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 21 21">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </button>
+                <select wire:model='dueno_id' name="dueno_id"
+                    class="transition duration-300 {{ empty($dueno_id) ? 'w-[30%]' : 'w-[70%]' }} px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <option value="">-Elegir-</option>
                     @foreach ($duenos as $dueno)
                         <option value="{{ $dueno->id }}">{{ $dueno->nombre }} | {{ $dueno->email }}</option>
@@ -33,6 +48,7 @@
                         <span class="text-red-700 underline">{{ $message }}</span>
                     @enderror
                 </p>
+                </div>                
             </div>
 
             <!-- Campo Nombre -->

@@ -5,11 +5,7 @@
     </div>
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Mascotas</p>
-        @if ($modalAdd)
-            @include('includes.formMascotas.modalAdd')
-        @endif
-
+        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Mascotas</p>        
         <div class="mb-4 border border-gray-100 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
@@ -18,13 +14,10 @@
                         Agregar Mascota <span class="">+</span>
                     </button>
                     <span wire:click='openModalEspecies'
-                        class="cursor-pointer p-3  bg-gray-400  rounded-lg font-semibold  hover:bg-gray-800 hover:text-gray-100">
+                        class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold hover:bg-gray-300 hover:font-bold">
                         Agregar Especie +
                     </span>
                 </div>
-                @if ($modalEspecies)
-                    @include('includes.formMascotas.modalEspecies')
-                @endif
                 <div class="p-3">
                     <!-- Buscador -->
                     <form wire:submit.prevent='filtrar'
@@ -138,21 +131,29 @@
                                 Eliminar
                             </button>
                         </div>
-
                     </div>
-                @endforeach
-                {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
+                @endforeach                
             </div>
-
         </div>
+        <!-- modal para agregar mascota -->
+        @if ($modalAdd)
+            @include('includes.formMascotas.modalAdd')
+        @endif
+        <!-- modal para agregar especie -->
+        @if ($modalEspecies)
+            @include('includes.formMascotas.modalEspecies')
+        @endif
+        <!-- modal para editar mascota -->
+        @if ($modalEliminar)
+            @include('includes.formMascotas.modalEliminar')
+        @endif
+        <!-- modal alerta de eliminacion -->
+        @if ($modalEdit)
+            @include('includes.formMascotas.modalEdit')
+        @endif
+
+        @if ($buscarDueno)
+            @include('includes.formMascotas.duenos')
+        @endif
     </main>
-
-    @if ($modalEliminar)
-        @include('includes.formMascotas.modalEliminar')
-    @endif
-
-    @if ($modalEdit)
-        @include('includes.formMascotas.modalEdit')
-    @endif
-
 </div>

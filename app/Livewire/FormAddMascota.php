@@ -18,39 +18,40 @@ class FormAddMascota extends Component
     use WithFileUploads;
 
     #[Rule('nullable')]
-    public $dueno_id = '';
-    public $nombre = '';
-    public $especie = '';
-    public $raza = '';
-    public $nacimiento;
-    public $genero = '';
-    public $historial_medico = '';
-    public $flagEliminarHM = '';
-    public $flagElimiarFoto = '';
+    public string $dueno_id = '';    
+    public string $genero = '';
+    public string $nombre = '';
+    public string $especie = '';
+    public string $raza = '';
+    public ?string $nacimiento = null;
+    public string $historial_medico = '';
+    public string $flagEliminarHM = '';
+    public string $flagElimiarFoto = '';    
 
     #[Rule('image', message: 'Usar un formato correcto')]
     #[Rule('nullable')]
-    public $foto;
+    public string $foto;
     //    #[Rule('required', message: 'Ingrese un nombre')]
-    public $modalAdd = false;
-    public $mascotas;
-    public $duenos;
-    public $especies;
-    public $modalEspecies = false;
-    public $tableEspecies = false;
-    public $modalEliminar = false;
-    public $mascotaId = '';
-    public $mascotaToEdit;
-    public $modalEdit = false;
-    public $search = '';    
-    
-    /***
-     * LA CREACION Y EDICION ESTA EN EL CONTROLADOR
+    public bool $modalAdd = false;
+    public object $mascotas;
+    public object $duenos;
+    public object $especies;
+    public bool $modalEspecies = false;
+    public bool $tableEspecies = false;
+    public bool $modalEliminar = false;
+    public string $mascotaId = '';
+    public object $mascotaToEdit;
+    public bool $modalEdit = false;
+    public string $search = '';    
+    public bool $buscarDueno = false;
+    public string $dueno = '';
+    public ?object $duenosEcontrados;
+
+      /***
+     * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
      */
 
-
-
-    /**
+       /**
      * 
      */
     public function mount(){
@@ -64,6 +65,34 @@ class FormAddMascota extends Component
         }
     }
 
+    /**
+     * 
+     */
+    public function selectDueno(int $duenoId){
+        $this->dueno_id = $duenoId;
+        $this->buscarDuenoFalse();
+        $this->dueno = '';
+        $this->duenosEcontrados = null;
+    }
+
+    /**
+     * 
+     */
+    public function buscarDuenoTrue() :void {
+        $this->buscarDueno = true;
+    }
+    public function buscarDuenoFalse() :void {
+        $this->buscarDueno = false;
+    }      
+
+    public function searchDueno() : void {        
+        $this->validate([
+            'dueno' => 'required'
+        ]);
+
+        $this->duenosEcontrados = Dueno::where('nombre', 'like', "%$this->dueno%")->get();                        
+        $this->buscarDuenoTrue();        
+    } 
 
     /**
      * 

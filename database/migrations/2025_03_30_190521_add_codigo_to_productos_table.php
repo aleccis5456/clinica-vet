@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('productos', function (Blueprint $table) {
-            
+            $table->string('codigo')->after('id')->unique()->nullable();
+            $table->string('codigo_barras')->after('codigo')->unique()->nullable();
+            $table->unsignedBigInteger('proveedir_id')->nullable();
         });
     }
 

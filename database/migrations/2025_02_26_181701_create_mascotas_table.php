@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dueno_id')->constrained('duenos');
             $table->string('nombre');
-            $table->string('especie');
+            $table->string('especie')->nullable();
             $table->string('raza');
             $table->date('nacimiento');
             $table->enum('genero', ['Macho', 'Hembra']);
