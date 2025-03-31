@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -49,7 +51,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function equipos(){
+    public function equipos() : BelongsToMany {
         return $this->belongsToMany(Equipo::class, 'equipo_veterinario', 'veterinario_id', 'equipo_id');
     }
     
@@ -57,7 +59,7 @@ class User extends Authenticatable
     //     return $this->belongsTo(Rol::class, 'role_user', 'role_id', 'user_id');
     // }
 
-    public function rol(){
+    public function rol() : BelongsTo {
         return $this->belongsTo(Rol::class, 'rol_id');
     }
     

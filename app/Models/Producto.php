@@ -19,6 +19,9 @@ class Producto extends Model
         'stock_actual', 	
         'foto',
         'ventas',
+        'codigo',
+        'codigo_barras',
+        'proveedor_id',
     ];
 
     public function movimientos() : BelongsToMany {
@@ -29,7 +32,7 @@ class Producto extends Model
         return $this->belongsTo(Categoria::class, 'categoria');
     }
     
-    public function consultas(){
+    public function consultas() :BelongsToMany {
         return $this->belongsToMany(Consulta::class, 'consulta_productos', 'producto_id', 'consulta_id');
     }
 
