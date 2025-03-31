@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('mascota_id')->constrained('mascotas');
             $table->foreignId('veterinario_id')->constrained('users');
             $table->dateTime('fecha');
-            $table->enum('tipo', ['Consulta Médica', 'Baño', 'Peluquería', 'Otro']);
+            $table->unsignedBigInteger('tipo_id');
             $table->text('sintomas')->nullable();
             $table->text('diagnostico')->nullable();
             $table->text('tratamiento')->nullable();

@@ -91,9 +91,9 @@
 
                 <!-- Card 1 -->
                 @foreach ($consultas as $consulta)
-                <div class="max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 hover:scale-101 hover:shadow-lg relative 
-                border {{ $estadosf[$consulta->estado] ?? 'bg-gray-200 border-gray-300' }}" 
-        id="consulta-{{ $consulta->id }}">
+                    <div class="max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 hover:scale-101 hover:shadow-lg relative 
+                border {{ $estadosf[$consulta->estado] ?? 'bg-gray-200 border-gray-300' }}"
+                        id="consulta-{{ $consulta->id }}">
                         <!-- Tag de estado con degradado -->
                         <select name="" id=""
                             wire:change='updateEstado({{ $consulta->id }}, $event.target.value)'
@@ -301,6 +301,10 @@
         @include('includes.consultas.modalTipoConsulta')
     @endif
 
+    @if ($mascotasBusqueda)
+        @include('includes.consultas.mascotas')
+    @endif
+
     <script>
         function cambiarColor(select) {
             let colores = @json($estados);
@@ -310,14 +314,14 @@
         }
 
         function cambiarColorCard(id, estado) {
-    let coloresf = @json($estadosf);
-    let card = document.getElementById(`consulta-${id}`);
-    
-    if (card) {
-        card.className = `max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 
-                          hover:scale-101 hover:shadow-lg relative ${coloresf[estado] || 'bg-gray-300 border-gray-400'}`;
-    }
-}
+            let coloresf = @json($estadosf);
+            let card = document.getElementById(`consulta-${id}`);
 
+            if (card) {
+                card.className =
+                    `max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 
+                          hover:scale-101 hover:shadow-lg relative ${coloresf[estado] || 'bg-gray-300 border-gray-400'}`;
+            }
+        }
     </script>
 </div>

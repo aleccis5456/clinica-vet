@@ -60,6 +60,31 @@ class Consultas extends Component
             'Cancelado',        
     ];
     public $estadofiltrado = '';
+    public bool $mascotasBusqueda = false;   
+    public string $mascotaSearch = '';
+    public ?object $mascotaResultado;
+    public ?object $mascotaSelect;
+
+    /**
+     * 
+     */
+    public function mascotasBusquedaTrue(){
+        $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")->get();
+        $this->mascotasBusqueda = true;        
+    }
+    public function mascotasBusquedaFalse(){
+        $this->mascotasBusqueda = false;
+    }
+
+    /**
+     * 
+     */
+     public function selectMascota($mascotaId){
+        $this->mascota_id = $mascotaId;
+        $this->mascotasBusqueda = false;   
+        $this->mascotaSearch = '';
+        $this->mascotaSearch = Mascota::find($mascotaId)->nombre;
+     }
 
     /**
      * function para la busqueda
@@ -449,38 +474,11 @@ class Consultas extends Component
                 }
             }
 
-            // if($consulta->estado == 'Agendado'){
-            //     $evento = Evento::where('consulta_id', $consulta->id)
-            //                     ->where('estado', 'pendiente')
-            //                     ->where('titulo', $consulta->tipoConsulta->nombre)
-            //                     ->first();
-            //     if(!empty($evento)){
-            //         $evento->delete();
-            //     }
-            // }
-
             $consulta->estado = $estadoNuevo;
             $consulta->save();
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
-        }
-        
-        // if($estadoNuevo == 'Agendado'){
-        //     $eventos = Evento::where('estado', 'pendiente')
-        //                         ->where('consulta_id', $consulta->id)
-        //                         ->get();
-            
-        //     if(count($eventos) <= 0){
-        //         $evento = Evento::create([
-        //             'titulo' => $consulta->tipoConsulta->nombre, 	
-        //             'descripcion' => '', 	
-        //             'fecha_hora' =>  $consulta->fecha.' '.$consulta->hora, 	
-        //             'usuario_id', 	
-        //             'consulta_id' => $consultaID, 	
-        //             'estado' => 'pendiente'
-        //         ]);
-        //     }            
-        // }        
+        }       
         return redirect()->route('consultas')->with('editado', 'Estado de la consulta actualizado con éxito');
     }
 

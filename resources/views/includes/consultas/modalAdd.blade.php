@@ -12,21 +12,32 @@
             <span class="sr-only">Cerrar</span>
         </button>
         <form wire:submit.prevent="crearConsulta"
-            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
+            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto"
+            onkeydown="return event.key !== 'Enter';">
             <!-- Título -->
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Consulta</p>
 
             <!-- Mascota -->
-            <div class="mb-4">
+            <div class="mb-4 relative">
                 <label class="block text-gray-800 font-medium mb-2">Mascota</label>
-                <select wire:model="mascota_id"
+                <input type="text" wire:model='mascotaSearch' wire:keydown.enter='mascotasBusquedaTrue'
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                <button type="submit" 
+                        class="absolute right-1 mt-[3px] bg-gray-200 hover:bg-gray-300 transition p-2 rounded-lg">
+                    <svg class="w-5 h-5 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 21 21">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </button>
+                {{-- <select wire:model="mascota_id"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                    <option value="">Selecciona una mascota</option>
-                    @foreach ($mascotas as $mascota)
+                    <option value="">Selecciona una mascota</option>                    
+                    @foreach ($mascotas as $mascota)                        
                         <option value="{{ $mascota->id }}">{{ $mascota->nombre }} | {{ $mascota->dueno->nombre }}
                         </option>
                     @endforeach
-                </select>
+                </select> --}}
                 @error('mascota_id')
                     <span class="text-red-700 underline">{{ $message }}</span>
                 @enderror
