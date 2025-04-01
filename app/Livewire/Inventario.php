@@ -41,6 +41,8 @@ class Inventario extends Component {
     public bool $historial = false;
     public bool $modalProveedor = false;
     public bool $flagCodigo = false;
+    public bool $alertaDelete = false;
+
 
     /**
      * 
@@ -54,6 +56,15 @@ class Inventario extends Component {
         if(empty(session('modulos')['inventario'])){
             return redirect('/');
         }
+    }
+
+
+    public function alertaTrue($productoId) : void {
+        $this->productoId = $productoId;
+        $this->alertaDelete = true;
+    }
+    public function alertaFalse() : void {
+        $this->alertaDelete = false;
     }
 
     /*
@@ -186,10 +197,18 @@ class Inventario extends Component {
 
         $this->categoria = '';
         $this->closeModalCategoria();
-        return redirect()->route('inventario')->with('agregado', 'Categoria agregada correctamente');
-
-        
+        return redirect()->route('inventario')->with('agregado', 'Categoria agregada correctamente');        
     }   
+
+    public function deleteProducto(){
+        try{
+            $producto = Producto::find($this->productoId)->delete();
+        }catch(\Exception $e){
+            DB::commit();
+            throw new \Exception($e->getMessage());
+        }
+        return redirect()->route('inventario')->with('eliminado', 'Producto eliminado correctamente');
+    }
 
     public function render() : \Illuminate\View\View{
         return view('livewire.inventario');

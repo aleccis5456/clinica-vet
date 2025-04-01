@@ -39,11 +39,4 @@ class Producto extends Model
     public function proveedor() : belongsTo {
         return $this->belongsTo(Proveedor::class, 'proveedor_id');
     }
-    // public function getFotoAttribute($value) {
-    //     return $value ? asset('storage/' . $value) : null;
-    // }
-    // public function getFotoUrlAttribute() {
-    //     return $this->foto ? asset('storage/' . $this->foto) : null;
-    // }
-
 }
