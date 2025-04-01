@@ -24,7 +24,7 @@ class Caja extends Component
     public $producto;
     public bool $tablaProductos = false;
     public $tiposConsultas;
-    public object $productos;
+    public ?object $productos;
     public bool $alertas = true;
     public $opcion = "1";
     public object $duenos;
@@ -150,9 +150,7 @@ class Caja extends Component
      */
     public function filtrar()
     {
-        if (empty($this->search)) {
-            $this->productos;
-            $this->tiposConsultas;
+        if (empty($this->search)) {            
             $this->tablaFalse();
         } else {
             $this->alertaFalse();
@@ -162,7 +160,7 @@ class Caja extends Component
             } else {
                 $this->productos = TipoConsulta::whereLike('nombre', "%$this->search%")->get();
             }
-        }
+        }        
     }
 
     public function flag()

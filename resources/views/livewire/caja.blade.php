@@ -138,8 +138,7 @@
 
                             <div class="pl-1">
                                 <select wire:model='opcion'
-                                    class="bg-gradient-to-r from-gray-700 to-gray-800 gap-4 text-white font-semibold p-3 rounded-lg"
-                                    name="" id="">
+                                    class="bg-gradient-to-r from-gray-700 to-gray-800 gap-4 text-white  font-semibold p-3 rounded-lg">
                                     <option value="1">Productos</option>
                                     <option value="2">Consultas</option>
                                 </select>

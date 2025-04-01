@@ -20,10 +20,10 @@ class Inventario extends Component {
     public string $search = '';
     public int $verTodo = 9;
     public string $nombreP = '';
-    public int $telefonoP;
-    public string $direccionP = '';
-    public string $email = '';
-    public string $ruc = '';
+    public ?int $telefonoP;
+    public ?string $direccionP;
+    public ?string $email;
+    public ?string $ruc;
     
     public object $categorias;
     public object $productos;    
@@ -80,19 +80,15 @@ class Inventario extends Component {
     public function crearProveedor(){
         try{
             $this->validate([
-                'nombreP' => 'required',
-                'telefonoP' => 'numeric',
-                'direccionP' => 'string',
-                'email' => 'email',
-                'ruc' => 'string'
+                'nombreP' => 'required',                                
             ]);
     
             $this->proveedores = Proveedor::create([
                 'nombre' => $this->nombreP,
-                'telefono' => $this->telefonoP,
-                'direccion' => $this->direccionP,
-                'email' => $this->email,
-                'ruc' => $this->ruc
+                'telefono' => $this->telefonoP ?? null,
+                'direccion' => $this->direccionP ?? null,
+                'email' => $this->email ?? null,
+                'ruc' => $this->ruc ?? null,
             ]);
         }catch(\Exception $e){
             DB::commit();

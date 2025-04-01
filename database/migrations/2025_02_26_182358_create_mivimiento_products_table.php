@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mivimiento_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('venta_id')->constrained('movimientos');
-            $table->foreignId('producto_id')->constrained('productos');
+            $table->foreignId('producto_id')->constrained('productos')->nullable();
             $table->integer('cantidad');
             $table->integer('precio_unitario');
             $table->integer('precio_total');

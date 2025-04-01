@@ -20,12 +20,12 @@ class InventarioController extends Controller
                 'precio' => 'required',            
                 'precio_compra' => 'nullable',
                 'stock_actual' => 'required',
-                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',            
+                'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',            
             ]);
 
             if ($request->hasFile('foto')) {
                 $image_path = $request->file('foto');
-                $imageName = time()."$request->nombre" . '.' . $image_path->getClientOriginalExtension();
+                $imageName = time(). '.' . $image_path->getClientOriginalExtension();
                 $destinationPath = public_path('uploads/productos');
                 $image_path->move($destinationPath, $imageName);
             }
@@ -65,7 +65,7 @@ class InventarioController extends Controller
 
             if ($request->hasFile('foto')) {
                 $image_path = $request->file('foto');
-                $imageName = time()."$request->nombre" . '.' . $image_path->getClientOriginalExtension();
+                $imageName = time() . $image_path->getClientOriginalExtension();
                 $destinationPath = public_path('uploads/productos');
                 $image_path->move($destinationPath, $imageName);
             }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('datos_facturas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre_rs');
-            $table->integer('ruc_ci');
+            $table->string('ruc_ci');
             $table->timestamps();
         });
     }

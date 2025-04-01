@@ -7,14 +7,7 @@
         
         <p class="pl-1 py-7 text-4xl font-semibold">Inventario</p>
         <div class="mb-4">
-            <div class="bg-gray-200 rounded-t-lg">
-                
-                <button class="relative inline-block font-medium group py-1.5 px-2.5">
-                    <span class="absolute inset-0 w-full h-full transition duration-400 ease-out transform translate-x-1 translate-y-1 bg-indigo-600 group-hover:-translate-x-0 group-hover:-translate-y-0"></span>
-                    <span class="absolute inset-0 w-full h-full bg-white border border-indigo-600 group-hover:bg-indigo-50"></span>
-                    <span class="relative text-indigo-600 ">Button Hover</span>
-                    </button>
-
+            <div class="bg-gray-200 rounded-t-lg">            
                 <div class="p-4">
                     <button wire:click='openModalAgregar'
                         class="p-2 text-gray-200 rounded-lg bg-gray-800 cursor-pointer font-semibold transition duration hover:bg-gray-700 hover:text-white">

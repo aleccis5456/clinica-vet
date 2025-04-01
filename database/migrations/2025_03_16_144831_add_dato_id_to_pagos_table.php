@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pagos', function (Blueprint $table) {
-            $table->unsignedBigInteger('cliente_id')->required();
+            $table->unsignedBigInteger('cliente_id')->nullable();
         });
     }
 
