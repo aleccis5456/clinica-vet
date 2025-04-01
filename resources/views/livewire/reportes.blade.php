@@ -82,19 +82,7 @@
                 </div>
             </div>
 
-            <div class="bg-gray-100 h-48 rounded-lg">
-
-            </div>
-
-            <div class="bg-gray-100 h-24 rounded-lg">
-
-            </div>
-
-            <div class="bg-gray-100 h-24 rounded-lg">
-
-            </div>
-
-            <div class="bg-gray-100 p-2 rounded-lg">
+            <div class="bg-red-100 h-48 rounded-lg">
                 <p class="font-semibold text-xl">Cantidad por especies</p>
                 <div class="flex">
                     @foreach ($especies as $especie)
@@ -111,7 +99,12 @@
                         </div>
                     @endforeach
                 </div>
+            </div>          
+
+            <div class="col-span-3 bg-gray-100 rounded-lg p-4 ">
+                @livewire('entradas-table')
             </div>
+                        
         </div>
     </main>
 

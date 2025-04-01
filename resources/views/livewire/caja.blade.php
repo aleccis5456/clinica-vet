@@ -126,7 +126,6 @@
                                 @endif
 
                                 <!-- Botón de búsqueda -->
-
                                 <button type="submit" class="bg-gray-200 hover:bg-gray-300 transition p-2 rounded-lg">
                                     <svg class="w-5 h-5 text-gray-700" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 -3 21 21">
