@@ -13,7 +13,7 @@ class Producto extends Model
     protected $fillable = [
         'nombre', 	
         'descripcion', 	
-        'categoria', 	
+        'categoria_id', 	
         'precio', 	
         'precio_compra', 	
         'stock_actual', 	
@@ -29,11 +29,21 @@ class Producto extends Model
     }
 
     public function tipoCategoria() : belongsTo {
-        return $this->belongsTo(Categoria::class, 'categoria');
+        return $this->belongsTo(Categoria::class, 'categoria_id');
     }
     
     public function consultas() :BelongsToMany {
         return $this->belongsToMany(Consulta::class, 'consulta_productos', 'producto_id', 'consulta_id');
     }
+
+    public function proveedor() : belongsTo {
+        return $this->belongsTo(Proveedor::class, 'proveedor_id');
+    }
+    // public function getFotoAttribute($value) {
+    //     return $value ? asset('storage/' . $value) : null;
+    // }
+    // public function getFotoUrlAttribute() {
+    //     return $this->foto ? asset('storage/' . $this->foto) : null;
+    // }
 
 }

@@ -9,14 +9,14 @@ use App\Models\Producto;
 
 class InventarioController extends Controller
 {
-    public function store(Request $request)
-    {        
-
+    public function store(Request $request){                   
         try{        
             $request->validate([
                 'nombre' => 'required',
+                'proveedor_id' => 'nullable|exists:proveedores,id',
+                'codigo' => 'nullable|unique:productos,codigo',
                 'descripcion' => 'nullable',            
-                'categoria' => 'required|exists:categorias,id',            
+                'categoria_id' => 'required|exists:categorias,id',            
                 'precio' => 'required',            
                 'precio_compra' => 'nullable',
                 'stock_actual' => 'required',
@@ -32,8 +32,10 @@ class InventarioController extends Controller
 
             $producto = Producto::create([
                 'nombre' => $request->nombre,
+                'codigo' => $request->flagCodigo ? $this->codigo(6) : ($request->codigo ?? null),
+                'proveedor_id' => $request->proveedor_id ?? null,
                 'descripcion' => $request->descripcion,
-                'categoria' => $request->categoria,
+                'categoria_id' => $request->categoria_id,
                 'precio' => $request->precio,
                 'precio_compra' => $request->precio_compra,
                 'stock_actual' => $request->stock_actual,
@@ -79,7 +81,7 @@ class InventarioController extends Controller
             $producto->update([
                 'nombre' => $request->nombre,
                 'descripcion' => $request->descripcion,
-                'categoria' => $request->categoria,
+                'categoria_id' => $request->categoria,
                 'precio' => $request->precio,
                 'precio_compra' => $request->precio_compra,
                 'stock_actual' => $request->stock_actual,
@@ -92,4 +94,15 @@ class InventarioController extends Controller
 
         return back()->with('editado', 'Producto Actualizado');
     }   
+
+    private function codigo($length) : string {
+        $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $randomString;
+    }
 }

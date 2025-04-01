@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion')->nullable();
-            $table->enum('categoria', ['Medicamento', 'Insumo', 'Equipo']);
+            $table->unsignedBigInteger('categoria_id');
             $table->integer('precio');
             $table->integer('stock_actual');            
             $table->timestamps();

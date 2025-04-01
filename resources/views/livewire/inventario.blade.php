@@ -4,19 +4,32 @@
     </div>
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
+        
         <p class="pl-1 py-7 text-4xl font-semibold">Inventario</p>
         <div class="mb-4">
             <div class="bg-gray-200 rounded-t-lg">
+                
+                <button class="relative inline-block font-medium group py-1.5 px-2.5">
+                    <span class="absolute inset-0 w-full h-full transition duration-400 ease-out transform translate-x-1 translate-y-1 bg-indigo-600 group-hover:-translate-x-0 group-hover:-translate-y-0"></span>
+                    <span class="absolute inset-0 w-full h-full bg-white border border-indigo-600 group-hover:bg-indigo-50"></span>
+                    <span class="relative text-indigo-600 ">Button Hover</span>
+                    </button>
+
                 <div class="p-4">
                     <button wire:click='openModalAgregar'
-                        class="p-2 text-gray-200 rounded-lg bg-gray-800 cursor-pointer font-semibold hover:bg-gray-700 hover:text-white">
+                        class="p-2 text-gray-200 rounded-lg bg-gray-800 cursor-pointer font-semibold transition duration hover:bg-gray-700 hover:text-white">
                         Agregar Producto <span class="">+</span>
                     </button>
                     <button wire:click='openModalCategoria'
-                        class="p-2 text-gray-900 rounded-lg bg-gray-400 cursor-pointer font-semibold hover:bg-gray-500 hover:text-gray-100">
+                    class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold transition duration hover:bg-gray-300 hover:font-bold">
                         Agregar Categoria <span class="">+</span>
                     </button>
+                    <button wire:click='proveedorTrue'
+                    class="p-2 text-gray-900 rounded-lg bg-gray-400 cursor-pointer font-semibold transition duration-200 hover:bg-gray-500 hover:text-gray-100">
+                    Agregar Proveedor <span class="">+</span>
+                </button>
                 </div>
+                
                 <div class="p-3">
                     <form wire:submit.prevent=''
                         class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
@@ -63,8 +76,7 @@
                             <tr wire:key='{{ $producto->id }}' class="hover:bg-gray-100 transition duration-300">
                                 <td class="py-3 px-2 max-w-[130px] overflow-visible">
                                     <img class="w-12 h-12  rounded-md hover:scale-[500%] hover:translate-x-16 transition-transform duration-200 ease-in-out"
-                                        src="{{ asset("uploads/productos/$producto->foto") }}" alt=""
-                                        srcset="">
+                                        src="{{ asset("uploads/productos/$producto->foto") }}" alt="">
                                 </td>
                                 <td class="py-3 px-2">{{ $producto->nombre }}</td>
                                 <td class="py-3 px-2 max-w-[280px]">                                    
@@ -126,5 +138,9 @@
 
     @if ($historial)
         @include('includes.inventario.historial-ventas')
+    @endif
+
+    @if ($modalProveedor)
+        @include('includes.inventario.proveedor')
     @endif
 </div>

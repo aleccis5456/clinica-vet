@@ -20,15 +20,26 @@
             <!-- Nombre -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Nombre</label>
-                <input wire:model="nombre" name="nombre" type="text"
+                <input name="nombre" type="text"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 @error('nombre') <span class="text-red-700 underline">{{ $message }}</span> @enderror
             </div>
-        
+            
+            <!-- Codigo -->
+            <div class="mb-4">
+                <div class="flex">
+                    <label class="mr-2 block text-gray-800 font-medium mb-2">Código</label>
+                    <input class="mb-2 mr-1 cursor-pointer" type="checkbox" name="flagCodigo" id=""><p class="text-xs mt-1">Código Automático</p>
+                </div>                
+                <input name="codigo" type="text"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                @error('nombre') <span class="text-red-700 underline">{{ $message }}</span> @enderror
+            </div>
+
             <!-- Descripción -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Descripción</label>
-                <textarea wire:model="descripcion" name="descripcion"
+                <textarea name="descripcion"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"></textarea>
                 @error('descripcion') <span class="text-red-700 underline">{{ $message }}</span> @enderror
             </div>
@@ -36,11 +47,24 @@
             <!-- Categoría -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Categoría</label>
-                <select name="categoria" id=""
+                <select name="categoria_id" id=""
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <option value="">Seleccione una categoría</option>
                     @foreach ($categorias as $categoria)
                         <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                    @endforeach
+                </select>
+                @error('categoria') <span class="text-red-700 underline">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Proveedor -->
+            <div class="mb-4">
+                <label class="block text-gray-800 font-medium mb-2">Proveedor</label>
+                <select name="proveedor_id" id=""
+                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                    <option value="">Seleccione un proveedor</option>
+                    @foreach ($proveedores as $proveedor)
+                        <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option>
                     @endforeach
                 </select>
                 @error('categoria') <span class="text-red-700 underline">{{ $message }}</span> @enderror

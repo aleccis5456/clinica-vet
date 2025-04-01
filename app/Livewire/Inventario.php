@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Proveedor;
 use App\Models\MovimientoProduct;
 use App\Helpers\Helper;
 use App\Models\Categoria;
@@ -9,20 +10,26 @@ use App\Models\Producto;
 use Illuminate\Http\RedirectResponse;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
 #[Title('Inventario')]
-class Inventario extends Component
-{
-    public $productoToEdit = '';
-    public $productoId = '';
-    public $categoria = '';
+class Inventario extends Component {
+    public  $productoToEdit = '';
+    public string $productoId = '';
+    public string $categoria = '';
     public string $search = '';
     public int $verTodo = 9;
+    public string $nombreP = '';
+    public int $telefonoP;
+    public string $direccionP = '';
+    public string $email = '';
+    public string $ruc = '';
     
     public object $categorias;
     public object $productos;    
     public object $detalleProducto;
     public object $ventas; //historial de ventas;
+    public object $proveedores;
 
     public bool $modalAgregar = false;
     public bool $modalCategoria = false;
@@ -32,6 +39,58 @@ class Inventario extends Component
     public bool $editar = false;
     public bool $detalles = false;
     public bool $historial = false;
+    public bool $modalProveedor = false;
+    public bool $flagCodigo = false;
+
+    /**
+     * 
+     */
+    public function mount() {
+        Helper::check();
+        $this->productos = Producto::all();
+        $this->categorias = Categoria::all();
+        $this->proveedores = Proveedor::all();
+
+        if(empty(session('modulos')['inventario'])){
+            return redirect('/');
+        }
+    }
+
+    /*
+     * 
+     */
+    public function proveedorTrue() : void {     
+        $this->modalProveedor = true;
+    }
+    public function proveedorFalse() : void {
+        $this->modalProveedor = false;
+    }
+
+    public function crearProveedor(){
+        try{
+            $this->validate([
+                'nombreP' => 'required',
+                'telefonoP' => 'numeric',
+                'direccionP' => 'string',
+                'email' => 'email',
+                'ruc' => 'string'
+            ]);
+    
+            $this->proveedores = Proveedor::create([
+                'nombre' => $this->nombreP,
+                'telefono' => $this->telefonoP,
+                'direccion' => $this->direccionP,
+                'email' => $this->email,
+                'ruc' => $this->ruc
+            ]);
+        }catch(\Exception $e){
+            DB::commit();
+            throw new \Exception($e->getMessage());
+        }
+        return redirect()->route('inventario')->with('agregado', 'Proveedor agregado correctamente');            
+        $this->modalProveedor = false;        
+    }
+
 
     /**
      * 
@@ -101,21 +160,7 @@ class Inventario extends Component
     }
     public function closeModalAgregar() : void {
         $this->modalAgregar = false;
-    }
-
-    /**
-     * 
-     */
-    public function mount() {
-        Helper::check();
-        $this->productos = Producto::all();
-        $this->categorias = Categoria::all();
-
-
-        if(empty(session('modulos')['inventario'])){
-            return redirect('/');
-        }
-    }
+    }    
     
     /**
      * 
@@ -130,7 +175,7 @@ class Inventario extends Component
     /**
      * 
      */
-    public function agregarCategoria()  {
+    public function agregarCategoria() {
         $this->validate([
             'categoria' => 'required'
         ]);

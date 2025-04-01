@@ -41,8 +41,8 @@
                 <select name="categoria" id=""
                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <option value="">Seleccione una categoría</option>
-                    @foreach ($categorias as $categoria)
-                        <option value="{{ $categoria->id }}" {{ $categoria->id == $productoToEdit->categoria ? 'selected' : '' }}>
+                    @foreach ($categorias as $categoria)                        
+                        <option value="{{ $categoria->id }}" {{ $categoria->id == $productoToEdit->categoria_id ? 'selected' : '' }}>
                             {{ $categoria->nombre }}
                         </option>
                     @endforeach
