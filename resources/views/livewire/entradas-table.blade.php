@@ -2,17 +2,16 @@
     <div class="flex justify-between">
         <div class="flex relative">
             <p class="font-semibold text-lg">Entradas</p>
-            {{-- @if ($filtroTag)
+            @if ($filtroTag)
                 <p
                     class="font-semibold flex ml-1 pr-7 bg-gray-400 px-2 rounded-full absolute top-1 left-52 text-sm">
                     {{ $filtroTag }}
                     <span wire:click='refresh'
-                        class="cursor-pointer ml-1 bg-gray-500 px-2 rounded-full absolute right-0 font-semibold">
+                        class="cursor-pointer ml-1 bg-gray-500 px-2 rounded-full absolute right-0 font-semibold hover:scale-115">
                         x
                     </span>
                 </p>
-            @endif --}}
-            {{-- <p class="bg-gray-400 p-1">{{ $filtroTag }}</p> --}}
+            @endif            
         </div>
         <!-- boton de pdf -->
         <div>
@@ -31,7 +30,7 @@
         <!-- boton de filtro -->
         <div class="relative">
             <span class="font-semibold absolute right-11">Filtros: </span>
-            <button wire:click='' class="cursor-pointer pr-2 bg-black rounded-md text-white px-2 py-1 group">
+            <button wire:click='filtroTrue' class="cursor-pointer pr-2 bg-black rounded-md text-white px-2 py-1 group">
                 <svg class=" w-6 h-6 transition duration-300 group-hover:rotate-12" xmlns="http://www.w3.org/2000/svg"
                     width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 0 17 17">
                     <path
@@ -90,5 +89,9 @@
     </div>
     @if ($pdf)
         @include('includes.reportes.entradas')
+    @endif
+
+    @if ($filtro)
+        @include('includes.reportes.entradas-filtro')
     @endif
 </div>

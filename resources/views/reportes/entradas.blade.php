@@ -70,7 +70,7 @@
 
 <body>
     <div class="container">
-        <h2>Reporte de Ventas</h2>
+        <h2>Reporte de Entradas</h2>
         <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($desde)->format('d/m/Y') }} a 
             {{ \Carbon\Carbon::parse($hasta)->format('d/m/Y') }}</p>
         <p><strong>Usuario:</strong> {{ Auth::user()->name }}</p>
