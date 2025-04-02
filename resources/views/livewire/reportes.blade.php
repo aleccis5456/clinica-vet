@@ -16,7 +16,7 @@
                                 class="font-semibold flex ml-1 pr-7 bg-gray-400 px-2 rounded-full absolute top-1 left-52 text-sm">
                                 {{ $filtroTag }}
                                 <span wire:click='refresh'
-                                    class="cursor-pointer ml-1 bg-gray-500 px-2 rounded-full absolute right-0 font-semibold">
+                                    class="cursor-pointer ml-1 bg-gray-500 px-2 rounded-full absolute right-0 font-semibold hover:scale-115 ">
                                     x
                                 </span>
                             </p>

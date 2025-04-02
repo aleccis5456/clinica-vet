@@ -49,6 +49,7 @@ Route::middleware(Login::class)->group(function () {
     Route::post('/actualizar-user', [GestionUsuarioController::class, 'update'])->name('user.update');
 
     Route::get('/reporte-pdf/ventas', [ReportsController::class, 'exportarPdf'])->name('reporte.pdf');  
+    Route::post('/reporte-pdf/entradas', [ReportsController::class, 'reporteEntradas'])->name('reporte.entradas');
 
     Route::get('/alertas', Alertas::class)->name('alertas');
 });

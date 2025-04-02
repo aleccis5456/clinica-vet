@@ -4,10 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Movimiento;
 use App\Models\MovimientoProduct;
-use App\Models\Producto;
-use App\Models\TipoConsulta;
-use App\Models\Especie;
 use Livewire\Component;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 class EntradasTable extends Component
@@ -23,13 +21,21 @@ class EntradasTable extends Component
 
     public bool $fechas = false;
     public bool $filtro = false;
-    
+    public bool $pdf = false;
+
+
     public function mount() : void {
-        $this->ventas = Movimiento::orderBy('created_at', 'desc')
-                                            ->get();
+        $this->ventas = Movimiento::orderBy('created_at', 'desc')->get();
         $this->movimientoP = MovimientoProduct::all();
     }
-
+    
+    public function pdfTrue() : void {
+        $this->pdf = true;
+    }
+    public function pdfFalse() : void {
+        $this->pdf = false;
+    }
+    
     public function render() {
         return view('livewire.entradas-table');
     }
