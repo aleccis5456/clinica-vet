@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\TipoConsulta;
 use App\Models\MovimientoProduct;
 use App\Models\Producto;
 use App\Models\Especie;
@@ -10,14 +11,36 @@ use Carbon\Carbon;
 
 class Reportes extends Component {
     public string $search = '';
+    public string $desde = '';
+    public string $hasta = '';       
+    public string $filtroTag = '';
+    public $filtroPor = 1;
+
     public object $especies;
     public object $productos;    
-    public object $ventas;
+    public object $ventas;    
+
     public bool $fechas = false;
-    public string $desde = '';
-    public string $hasta = '';   
     public bool $filtro = false;
-    public string $filtroTag = '';
+
+    public function setFiltroPor($filtroPor) : void {        
+        if($filtroPor == 1){
+            $this->filtroPor = 1;
+            $this->ventas = Producto::where('ventas', '!=', 0)
+                                ->orderBy('ventas', 'desc')
+                                ->get();
+                                
+            $this->filtro = false;
+
+        }else if($filtroPor == 2){
+            $this->filtroPor = 2;
+            $this->ventas = TipoConsulta::where('veces_realizadas' , '!=', 0)
+                                ->orderBy('veces_realizadas', 'desc')
+                                ->get();
+    
+            $this->filtro = false;  
+        }
+    }
 
     /**
      * 

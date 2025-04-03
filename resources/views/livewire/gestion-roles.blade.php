@@ -5,7 +5,7 @@
 
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Usuarios {{ json_encode($eliminarUser) }}</p>
+        <p class="pl-1 py-7 text-4xl font-semibold">Gestión de Usuarios</p>
         <div class="mb-4 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">

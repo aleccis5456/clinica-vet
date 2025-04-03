@@ -1,7 +1,6 @@
 <div id="confirmarModal" tabindex="-1"
     class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full bg-black/50">
     <div class="relative p-4 w-full max-w-md">
-
         <button type="button"
             class="m-2 absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             wire:click="filtroFalse">
@@ -15,6 +14,26 @@
         <div class="bg-white border border-gray-100 p-4 max-w-md mx-auto shadow-lg rounded-lg">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Opciones de filtro</p>
             <div class="mb-5">
+                <div class="mb-5">
+                    <p class="font-medium text-gray-700">Filtrar por:</p>
+                    <div class="flex" wire:click='setFiltroPor(1)'>
+                        <label for=""
+                               class="cursor-pointer w-full hover:bg-gray-200 p-2 rounded mb-0.5 border border-gray-300 {{ $filtroPor == 1 ? 'bg-gray-100' : 'bg-white' }}">
+                            <input wire:model='filtroPor' type="radio" 
+                                class="{{ $filtroPor == 1 ? '' : 'hidden' }}">            
+                            Productos
+                        </label>        
+                    </div>
+
+                    <div class="flex" wire:click='setFiltroPor(2)'>
+                        <label for=""
+                               class="cursor-pointer w-full hover:bg-gray-200 p-2 rounded mb-0.5 border border-gray-300 {{ $filtroPor == 2 ? 'bg-gray-100' : 'bg-white' }}">
+                            <input wire:model='filtroPor'  type="radio" 
+                                class="{{ $filtroPor == 2 ? '' : 'hidden' }}">        
+                            Consultas
+                        </label>        
+                    </div>
+                </div>
                 <p  class="font-medium text-gray-700">Por búsqueda</p>
                 <form wire:submit.prevent='filtrar'
                     class="relative h-10 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full  border border-gray-300">
@@ -42,8 +61,8 @@
                 </form>
 
                 <form wire:submit.prevent='filtrar'>
-                    <div class="flex flex-col">
-                        <p  class="font-medium text-gray-700">Por Fecha</p>
+                    <div class="flex flex-col mt-5">
+                        <p class="font-medium text-gray-700">Por Fecha</p>
                         <label for="">desde</label>
                         <input type="date" wire:model="desde" id="fecha"
                             class="bg-gray-200 rounded-md p-2 mb-2">

@@ -10,7 +10,13 @@
             <div class="col-span-2 bg-gray-100 rounded-lg p-4 ">
                 <div class="flex justify-between">
                     <div class="flex relative">
-                        <p class="font-semibold text-lg">Productos mas vendidos</p>
+                        <p class="font-semibold text-lg">
+                            @if ($filtroPor == 1)
+                                Productos mas vendidos
+                            @else
+                                Consultas mas realizadas
+                            @endif                            
+                        </p>
                         @if ($filtroTag)
                             <p
                                 class="font-semibold flex ml-1 pr-7 bg-gray-400 px-2 rounded-full absolute top-1 left-52 text-sm">
@@ -56,8 +62,8 @@
                         <thead class="bg-gray-200 text-gray-800 border-t border-gray-300">
                             <tr>
                                 <th class="py-1 px-4 text-left text-semibold sr-only">foto</th>
-                                <th class="py-1 px-4 text-left text-semibold">Producto</th>
-                                <th class="py-1 px-4 text-left text-semibold">Ventas</th>
+                                <th class="py-1 px-4 text-left text-semibold">{{ $filtroPor == 1 ? 'Producto' : 'Consulta' }}</th>
+                                <th class="py-1 px-4 text-left text-semibold">{{ $filtroPor == 1 ? 'Ventas' : 'Veces realizadas' }}</th>
                             </tr>
                         </thead>
 
@@ -65,15 +71,23 @@
                             @foreach ($ventas as $venta)
                                 <tr wire:key='{{ $venta->id }}'
                                     class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                                    <td class="px-4">
-                                        <img class="w-12 h-12" src="{{ asset('uploads/productos/' . $venta->foto) }}"
-                                            alt="">
+                                    <td class="px-4 {{$filtroPor == 2 ? 'py-2' : '' }}">
+                                        @if ($venta->foto == null)
+                                            <img class="w-3 h-3" src="{{ asset('images/tabicon.png') }}" alt="Foto del producto">                                            
+                                        @else
+                                            <img class="w-12 h-12" src="{{ asset('uploads/productos/' . $venta->foto) }}" alt="Foto del producto">
+                                        @endif                                        
                                     </td>
-                                    <td class=" px-4">
+                                    <td class=" px-4 {{$filtroPor == 2 ? 'py-2' : '' }}">
                                         {{ $venta->nombre }}
                                     </td>
-                                    <td class=" px-4">
-                                        {{ $venta->ventas }}
+                                    <td class=" px-4 {{$filtroPor == 2 ? 'py-2' : '' }}">
+                                        @if ($filtroPor == 1)
+                                            {{ $venta->ventas }}
+                                        @else
+                                            {{ $venta->veces_realizadas }}                                            
+                                        @endif
+                                        
                                     </td>
                                 </tr>
                             @endforeach
