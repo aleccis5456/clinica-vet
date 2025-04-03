@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Hash;
 
 class GestionUsuarioController extends Controller
 {
-    public function update(Request $request){        
+    public function update(Request $request){      
+        
+        if($request->rol != 1 and $request->userId == 1){
+            return redirect()->back()->with('error', 'No puedes cambiar el usuario administrador');  
+        }
+
         $request->validate([
             'name' => 'sometimes',
             'email' => 'sometimes',

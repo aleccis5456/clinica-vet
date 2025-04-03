@@ -49,7 +49,8 @@ class GestionRoles extends Component
     public function mount(){
         Helper::check();
         $this->roles = Rol::all();
-        $this->users = User::where('id', '!=', 1)->get();        
+        $this->users = User::all();        
+        // $this->users = User::where('id', '!=', 1)->get();        
         $this->permisosRolesObject = PermisoRol::all();
 
         if(empty(session('modulos')['gestionUsuario'])){
