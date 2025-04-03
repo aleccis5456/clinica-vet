@@ -255,7 +255,8 @@ class Consultas extends Component
     /**
      * function que quita una unidad de la session consumos
      */
-    public function quitarProducto($index, $consultaId) {
+    public function quitarProducto($index, $consultaId)
+    {
         $consumo = session('consumo', []);
 
         if (!isset($consumo[$consultaId][$index])) {
@@ -276,20 +277,24 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openTablaDeProducto() : void {
+    public function openTablaDeProducto(): void
+    {
         $this->tablaDeProductos = true;
     }
-    public function closeTablaDeProductos() : void{
+    public function closeTablaDeProductos(): void
+    {
         $this->tablaDeProductos = false;
     }
 
     /**
      * 
      */
-    public function openTablaTipoConsulta() : void {
+    public function openTablaTipoConsulta(): void
+    {
         $this->tablaTipoConsulta = true;
     }
-    public function closeTablaTipoConsulta() : void{
+    public function closeTablaTipoConsulta(): void
+    {
         $this->tablaTipoConsulta = false;
     }
 
@@ -413,15 +418,23 @@ class Consultas extends Component
                     }
                 }
             }
+            if ($this->fecha <= now()->format('Y-m-d')) {
+                if ($this->hora < now()->format('H:i')) {
+                    return redirect()->route('consultas')->with('error', 'La fecha y hora de la consulta no puede ser menor a la fecha y hora actual');
+                }
+            }
 
             if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
-                if ($this->hora < now()->format('H:i')) {
-                    return redirect()->route('consultas')->with('error', 'La hora de la consulta no puede ser menor a la hora actual');
-                } elseif ($this->fecha < now()->format('Y-m-d')) {
-                    return redirect()->route('consultas')->with('error', 'La fecha de la consulta no puede ser menor a la fecha actual');
-                }
                 $this->estado = 'Agendado';
             }
+            // if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
+            //     if ($this->hora < now()->format('H:i')) {
+            //         return redirect()->route('consultas')->with('error', 'La hora de la consulta no puede ser menor a la hora actual');
+            //     } elseif ($this->fecha < now()->format('Y-m-d')) {
+            //         return redirect()->route('consultas')->with('error', 'La fecha de la consulta no puede ser menor a la fecha actual');
+            //     }
+            //     $this->estado = 'Agendado';
+            // }
 
             $consulta = Consulta::create([
                 'mascota_id' => $this->mascota_id,
@@ -458,7 +471,8 @@ class Consultas extends Component
     /**
      * funcion que actualiza el estado desde la vista principal de las consultas, <select>
      */
-    public function updateEstado($consultaID, $estadoNuevo) {
+    public function updateEstado($consultaID, $estadoNuevo)
+    {
         try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
@@ -467,7 +481,7 @@ class Consultas extends Component
                 if ($consultaC->mascota_id == $consulta->mascota_id) {
                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
                         if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
-                            if($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió'){
+                            if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
                                 return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
                             }
                             return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
@@ -475,7 +489,7 @@ class Consultas extends Component
                     }
                 }
             }
-            
+
             $consulta->estado = $estadoNuevo;
             $consulta->save();
         } catch (\Exception $e) {
@@ -488,7 +502,8 @@ class Consultas extends Component
     /**
      * funciton para cambiar veterinario
      */
-    public function updateVet() {
+    public function updateVet()
+    {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
@@ -513,8 +528,9 @@ class Consultas extends Component
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta()  {
-        
+    public function updateConsulta()
+    {
+
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             try {
@@ -531,7 +547,7 @@ class Consultas extends Component
             }
         }
         $consulta = Consulta::find($this->consultaToEdit->id);
-            
+
         $consulta->update([
             'fecha' => $this->fechaN ?? $consulta->fecha,
             'tipo_id' => $this->tipo ?? $consulta->tipo_id,
