@@ -88,11 +88,10 @@
                         'Cancelado' => 'bg-rose-200 border-rose-300',
                     ];
                 @endphp
-
-                <!-- Card 1 -->
+                
                 @foreach ($consultas as $consulta)
                     <div class="max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 hover:scale-101 hover:shadow-lg relative 
-                border {{ $estadosf[$consulta->estado] ?? 'bg-gray-200 border-gray-300' }}"
+                            border {{ $estadosf[$consulta->estado] ?? 'bg-gray-200 border-gray-300' }}"
                         id="consulta-{{ $consulta->id }}">
                         <!-- Tag de estado con degradado -->
                         <select name="" id=""
@@ -110,9 +109,10 @@
 
                         @if ($consulta->estado == 'Agendado')
                             <div class="">
+                                {{-- {{ ($consulta->fecha < now()->format('Y-m-d') or $consulta->hora < now()->format('H:i:s')) ? 'bg-red-500' : 'bg-blue-400' }} --}}
                                 <div
-                                    class="group absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm 
-                                            {{ ($consulta->fecha < now()->format('Y-m-d') or $consulta->hora < now()->format('H:i:s')) ? 'bg-red-500' : 'bg-blue-400' }}
+                                    class="group absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm                                             
+                                    {{ $consulta->fecha > now()->format('Y-m-d') ? 'bg-blue-400' : ($consulta->hora < now()->format('H:i:s') ? 'bg-red-500' : 'bg-blue-400' ) }}
                                             p-1 overflow-hidden transition-all duration-300 w-7 h-7 hover:w-36 hover:h-20 hover:rounded-md">
                                     <div class="flex text-center object-center items-center justify-center">
                                         <p class="group-hover:hidden">

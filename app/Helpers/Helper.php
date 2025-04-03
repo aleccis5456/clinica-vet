@@ -4,7 +4,6 @@ namespace App\Helpers;
 
 use App\Models\PermisoRol;
 use App\Models\Permiso;
-use App\Models\Rol;
 use App\Models\Consulta;
 use App\Models\Producto;
 use App\Models\ConsultaProducto;
@@ -146,4 +145,29 @@ class Helper
             session(['modulos' => $modulos]);
         }
     }
+
+    public static function updateEstado($consultaID, $estadoNuevo) {        
+        $consultas = Consulta::all();
+        try {
+            $consulta = Consulta::find($consultaID);            
+            $nombre = $consulta->mascota->nombre;
+
+            foreach ($consultas as $consultaC) {
+                if ($consultaC->mascota_id == $consulta->mascota_id) {
+                    if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
+                        if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
+                            if($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió'){
+                                return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
+                            }
+                            return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {            
+            throw new \Exception('Error al cambiar el estado de la consulta: ' . $e->getMessage());
+        }        
+        return $estadoNuevo;
+    }
+
 }

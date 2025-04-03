@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('producto_id')->constrained('productos');
             $table->foreignId('consulta_id')->constrained('consultas');
             $table->integer('cantidad');
-            $table->text('descripcion');
+            $table->text('descripcion')->nullable();
             $table->timestamps();
         });
     }

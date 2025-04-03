@@ -71,11 +71,11 @@
                                     <img class="w-12 h-12  rounded-md hover:scale-[500%] hover:translate-x-16 transition-transform duration-200 ease-in-out"
                                         src="{{ asset("uploads/productos/$producto->foto") }}" alt="">
                                 </td>
-                                <td class="py-3 px-2">{{ $producto->nombre }}</td>
+                                <td class="py-3 px-2 max-w-[120px]">{{ $producto->nombre }}</td>
                                 <td class="py-3 px-2 max-w-[280px]">                                    
                                     @if ($producto->id == $productoId)
                                         {{ $producto->descripcion }}
-                                        <span wire:click='closeVerTodo()'
+                                        <span wire:click='closeVerTodo'
                                             class="cursor-pointer underline text-red-300">ver menos
                                         </span>
                                     @else

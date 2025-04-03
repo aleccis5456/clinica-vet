@@ -49,18 +49,18 @@ class Consultas extends Component
     public $flagDiagnostico, $flagSintomas, $flagTratamiento, $flagNotas;
     public $grupoVet;
     public $pagos;
-    public $estadosf = [        
-            'Agendado',
-            'Reprogramado',
-            'Pendiente',
-            'En Espera',
-            'En consultorio',
-            'Finalizado',
-            'No asistió',
-            'Cancelado',        
+    public $estadosf = [
+        'Agendado',
+        'Reprogramado',
+        'Pendiente',
+        'En Espera',
+        'En consultorio',
+        'Finalizado',
+        'No asistió',
+        'Cancelado',
     ];
     public $estadofiltrado = '';
-    public bool $mascotasBusqueda = false;   
+    public bool $mascotasBusqueda = false;
     public string $mascotaSearch = '';
     public ?object $mascotaResultado;
     public ?object $mascotaSelect;
@@ -68,38 +68,43 @@ class Consultas extends Component
     /**
      * 
      */
-    public function mascotasBusquedaTrue(){
+    public function mascotasBusquedaTrue()
+    {
         $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")->get();
-        $this->mascotasBusqueda = true;        
+        $this->mascotasBusqueda = true;
     }
-    public function mascotasBusquedaFalse(){
+    public function mascotasBusquedaFalse()
+    {
         $this->mascotasBusqueda = false;
     }
 
     /**
      * 
      */
-     public function selectMascota($mascotaId){
+    public function selectMascota($mascotaId)
+    {
         $this->mascota_id = $mascotaId;
-        $this->mascotasBusqueda = false;   
+        $this->mascotasBusqueda = false;
         $this->mascotaSearch = '';
         $this->mascotaSearch = Mascota::find($mascotaId)->nombre;
-     }
+    }
 
     /**
      * function para la busqueda
      */
-    public function busqueda(){        
-        if(empty($this->search)){
+    public function busqueda()
+    {
+        if (empty($this->search)) {
             $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
-        }else{
+        } else {
             $mascotas = Mascota::whereLike('nombre', "%$this->search%")->pluck('id');
             $this->consultas = Consulta::whereIn('mascota_id', $mascotas)
-                                        ->orWhereLike('codigo', "%$this->search%")
-                                        ->get();
+                ->orWhereLike('codigo', "%$this->search%")
+                ->get();
         }
-    }    
-    public function flagC(){
+    }
+    public function flagC()
+    {
         $this->search = '';
         $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
     }
@@ -107,10 +112,11 @@ class Consultas extends Component
     /**
      * function para elimiar un veterinario del grupo
      */
-    public function eliminarVetGrupo($vetId){
-        try{
+    public function eliminarVetGrupo($vetId)
+    {
+        try {
             $vet = ConsultaVeterinario::find($vetId)?->delete();
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
 
@@ -197,7 +203,7 @@ class Consultas extends Component
 
     public function flag()
     {
-        $this->q = '';        
+        $this->q = '';
     }
 
     /**
@@ -249,8 +255,7 @@ class Consultas extends Component
     /**
      * function que quita una unidad de la session consumos
      */
-    public function quitarProducto($index, $consultaId)
-    {        
+    public function quitarProducto($index, $consultaId) {
         $consumo = session('consumo', []);
 
         if (!isset($consumo[$consultaId][$index])) {
@@ -263,7 +268,7 @@ class Consultas extends Component
             unset($consumo[$consultaId][$index]);
             session(['consumo' => $consumo]);
             //   return redirect()->route('consultas');
-        }        
+        }
         session(['consumo' => $consumo]); // Guardar la sesión después de modificar        
     }
 
@@ -271,27 +276,22 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openTablaDeProducto()
-    {
+    public function openTablaDeProducto() : void {
         $this->tablaDeProductos = true;
     }
-    public function closeTablaDeProductos()
-    {
+    public function closeTablaDeProductos() : void{
         $this->tablaDeProductos = false;
     }
 
     /**
      * 
      */
-    public function openTablaTipoConsulta()
-    {
+    public function openTablaTipoConsulta() : void {
         $this->tablaTipoConsulta = true;
     }
-    public function closeTablaTipoConsulta()
-    {
+    public function closeTablaTipoConsulta() : void{
         $this->tablaTipoConsulta = false;
     }
-
 
     /**
      * 
@@ -338,7 +338,7 @@ class Consultas extends Component
         $this->cambiarVet = false;
     }
     public function setVetChanged($vetId)
-    {        
+    {
         $this->vetChanged = $vetId;
     }
     public function showMessage()
@@ -393,7 +393,7 @@ class Consultas extends Component
      * funcion que crea las consultas
      */
     public function crearConsulta()
-    {        
+    {
         try {
             $this->validate([
                 'mascota_id' => 'required',
@@ -409,18 +409,18 @@ class Consultas extends Component
             foreach ($this->consultas as $consulta) {
                 if ($consulta->mascota_id == $this->mascota_id) {
                     if ($consulta->estado != 'Finalizado' && $consulta->estado != 'Cancelado') {
-                        return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha" . " - " ."Codigo: $consulta->codigo");
+                        return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha" . " - " . "Codigo: $consulta->codigo");
                     }
                 }
-            }         
-            
+            }
+
             if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
                 if ($this->hora < now()->format('H:i')) {
                     return redirect()->route('consultas')->with('error', 'La hora de la consulta no puede ser menor a la hora actual');
                 } elseif ($this->fecha < now()->format('Y-m-d')) {
                     return redirect()->route('consultas')->with('error', 'La fecha de la consulta no puede ser menor a la fecha actual');
                 }
-                $this->estado = 'Agendado';                
+                $this->estado = 'Agendado';
             }
 
             $consulta = Consulta::create([
@@ -435,8 +435,7 @@ class Consultas extends Component
                 'hora' => $this->hora,
                 'estado' => $this->estado ?? 'Pendiente',
                 'codigo' => $this->codigo(6),
-            ]);                        
-
+            ]);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -460,7 +459,7 @@ class Consultas extends Component
      * funcion que actualiza el estado desde la vista principal de las consultas, <select>
      */
     public function updateEstado($consultaID, $estadoNuevo) {
-        try {            
+        try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
 
@@ -468,17 +467,20 @@ class Consultas extends Component
                 if ($consultaC->mascota_id == $consulta->mascota_id) {
                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
                         if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
+                            if($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió'){
+                                return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
+                            }
                             return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
                         }
                     }
                 }
             }
-
+            
             $consulta->estado = $estadoNuevo;
             $consulta->save();
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
-        }       
+        }
         return redirect()->route('consultas')->with('editado', 'Estado de la consulta actualizado con éxito');
     }
 
@@ -486,8 +488,7 @@ class Consultas extends Component
     /**
      * funciton para cambiar veterinario
      */
-    public function updateVet()
-    {
+    public function updateVet() {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
@@ -510,9 +511,10 @@ class Consultas extends Component
         }
     }
     /**
-     * formulario para editar la consulta (productos, tratamiento, sintomas, etc)
+     * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta() {        
+    public function updateConsulta()  {
+        
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             try {
@@ -528,28 +530,29 @@ class Consultas extends Component
                 throw new \Exception($e->getMessage());
             }
         }
-        $consulta = Consulta::find($this->consultaToEdit->id);        
-        $consulta->update([            
+        $consulta = Consulta::find($this->consultaToEdit->id);
+            
+        $consulta->update([
             'fecha' => $this->fechaN ?? $consulta->fecha,
             'tipo_id' => $this->tipo ?? $consulta->tipo_id,
             'sintomas' => $this->flagSintomas ? null : $this->sintomas,
             'diagnostico' => $this->flagDiagnostico ? null : $this->diagnostico,
-            'tratamiento' => $this->flagTratamiento? null : $this->tratamiento,
-            'notas' => $this->flagNotas ? null : $this->notas,                
+            'tratamiento' => $this->flagTratamiento ? null : $this->tratamiento,
+            'notas' => $this->flagNotas ? null : $this->notas,
             'hora' => $this->horaN ?? $consulta->hora,
-            'estado' => $this->estado ?? $consulta->estado,
+            'estado' => Helper::updateEstado($this->consultaToEdit->id, $this->estado) ?? $consulta->estado,
         ]);
         $consulta->save();
 
-        if(!empty($this->veterinariosAgg)){           
-            foreach($this->veterinariosAgg as $vetId){            
+        if (!empty($this->veterinariosAgg)) {
+            foreach ($this->veterinariosAgg as $vetId) {
                 ConsultaVeterinario::create([
                     'consulta_id' => $consulta->id,
                     'veterinario_id' => $vetId
-                ]);            
+                ]);
             }
         }
-                
+
         Session::forget('consumo');
         return redirect()->route('consultas')->with('editado', 'Consulta Actualizada');
     }
@@ -571,12 +574,13 @@ class Consultas extends Component
     /**
      * 
      */
-    public function filtarPorEstados(){
-        if($this->estadofiltrado == 1){
+    public function filtarPorEstados()
+    {
+        if ($this->estadofiltrado == 1) {
             $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
-        }else{
+        } else {
             $this->consultas = Consulta::where('estado', $this->estadofiltrado)->get();
-        }        
+        }
     }
 
 
@@ -584,7 +588,7 @@ class Consultas extends Component
      * 
      */
     public function mount()
-    {   
+    {
         Helper::check();
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%vet%")->first();
@@ -610,7 +614,18 @@ class Consultas extends Component
         $this->hora = now()->format('H:i');
 
         $this->mascotas = Mascota::all();
-        $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+        $this->consultas = Consulta::orderByRaw("
+                            CASE 
+                                WHEN estado = 'Internado' THEN 1
+                                WHEN estado = 'En consultorio' THEN 2
+                                WHEN estado = 'En recepción' THEN 3
+                                WHEN estado = 'Agendado' THEN 4
+                                ELSE 5
+                            END")
+            ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
+            ->take(12)
+            ->get();
+
         $this->tipoConsultas = TipoConsulta::all();
         $this->grupoVet = ConsultaVeterinario::all();
         $this->pagos = Pago::all();
@@ -619,7 +634,7 @@ class Consultas extends Component
         Session::forget('caja');
         Helper::crearCajas();
 
-        if(empty(session('modulos')['consulta']))  {
+        if (empty(session('modulos')['consulta'])) {
             return redirect('/');
         }
     }
