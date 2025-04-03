@@ -29,7 +29,7 @@ class Reportes extends Component {
             $this->ventas = Producto::where('ventas', '!=', 0)
                                 ->orderBy('ventas', 'desc')
                                 ->get();
-                                
+
             $this->filtro = false;
 
         }else if($filtroPor == 2){
@@ -92,13 +92,29 @@ class Reportes extends Component {
                                             ->orderBy('productos.ventas', 'desc')
                                             ->get();
             $this->filtroTag = 'Fecha';
-        }else{        
-            $this->ventas = MovimientoProduct::join('productos', 'mivimiento_products.producto_id', '=', 'productos.id')
-                                            ->whereNotNull('mivimiento_products.producto_id')                                            
-                                            ->where('productos.nombre', 'like', '%'.$this->search.'%')                                           
-                                            ->orderBy('productos.ventas', 'desc')
-                                            ->get();
-            $this->filtroTag = $this->search;
+        }else{
+            if($this->desde == '' and $this->hasta == ''){
+                $this->ventas = MovimientoProduct::join('productos', 'mivimiento_products.producto_id', '=', 'productos.id')
+                ->whereNotNull('mivimiento_products.producto_id')                                            
+                ->where('productos.nombre', 'like', '%'.$this->search.'%')                                           
+                ->orderBy('productos.ventas', 'desc')
+                ->get();
+
+                $this->filtroTag = $this->search;
+            }else{
+                $this->desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d H:s:i') : Carbon::parse($this->desde)->format('Y-m-d H:s:i'); 
+                $this->hasta = empty($this->hasta) ? now()->endOfDay()->format('Y-m-d H:s:i') :  Carbon::parse($this->hasta)->format('Y-m-d H:s:i');
+                
+                $this->ventas = MovimientoProduct::join('productos', 'mivimiento_products.producto_id', '=', 'productos.id')
+                                                ->whereNotNull('mivimiento_products.producto_id')
+                                                ->whereBetween('mivimiento_products.created_at', [$this->desde, $this->hasta])    
+                                                ->where('productos.nombre', 'like', '%'.$this->search.'%')                                           
+                                                ->orderBy('productos.ventas', 'desc')
+                                                ->get();
+                
+                $this->filtroTag = 'Búsqueda y Fecha';
+            }               
+            
         }                
         $this->filtroFalse();
         
