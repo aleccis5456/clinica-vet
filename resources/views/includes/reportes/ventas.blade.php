@@ -13,7 +13,8 @@
         </button>
         {{--  --}}
         <form action="{{ route('reporte.pdf') }}"
-                class="bg-white border border-gray-100 p-4 max-w-md mx-auto shadow-lg rounded-lg">
+            class="bg-white border border-gray-100 p-4 max-w-md mx-auto shadow-lg rounded-lg">
+            <input type="hidden" name="filtroPor" value="{{ $filtroPor }}">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Elegir Rango de fecha</p>
             <div class="flex flex-col space-y-2">
                 <label class="mx-auto font-semibold" for="">Desde</label>

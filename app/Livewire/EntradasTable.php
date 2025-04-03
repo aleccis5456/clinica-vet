@@ -59,10 +59,9 @@ class EntradasTable extends Component
      */
     public function filtrar(){                        
         if($this->search == ''){                  
-            $desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d H:s:i') : Carbon::parse($this->desde)->format('Y-m-d H:s:i'); 
-            $hasta = empty($this->hasta) ? now()->endOfDay()->format('Y-m-d H:s:i') :  Carbon::parse($this->hasta)->format('Y-m-d H:s:i');
-            
-            
+            $desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d H:s:i') : Carbon::parse($this->desde)->startOfDay()->format('Y-m-d H:s:i'); 
+            $hasta = empty($this->hasta) ? now()->endOfDay()->format('Y-m-d H:s:i') :  Carbon::parse($this->hasta)->endOfDay()->format('Y-m-d H:s:i');
+                        
             $this->ventas = Movimiento::whereBetween('created_at', [$desde, $hasta])->get();
             $this->filtroTag = 'Fecha';
         }else{                    

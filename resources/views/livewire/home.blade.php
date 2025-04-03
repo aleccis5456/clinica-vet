@@ -6,7 +6,7 @@
             @endif
             <h1 class="text-2xl font-bold">
                 <a wire:navigate href="{{ route('index') }}">Clínica Veterinaria</a>
-                {{ json_encode($modalLogout) }}
+                {{-- {{ json_encode($modalLogout) }} --}}
             </h1>
             <button wire:click='logoutModal' class=" cursor-pointer">
                 <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"

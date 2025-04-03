@@ -6,23 +6,36 @@ use App\Models\Movimiento;
 use App\Models\MovimientoProduct;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class ReportsController extends Controller
 {
-    public function exportarPdf(Request $request) {             
-        $desde = $request->desde . ' 00:00:00' ?? now()->startOfDay();
-        $hasta = $request->hasta . ' 23:59:59' ?? now()->endOfDay();
-        $ventas = MovimientoProduct::join('productos', 'mivimiento_products.producto_id', '=', 'productos.id')                                       
-                                        ->whereBetween('mivimiento_products.created_at', [$desde, $hasta])
-                                        ->whereNotNull('mivimiento_products.producto_id')                                        
-                                        ->orderBy('productos.ventas', 'desc')
-                                        ->get();        
+    public function exportarPdf(Request $request) {            
+        if($request->filtroPor == 1){        
+            $desde = $request->desde . ' 00:00:00' ?? now()->startOfDay();
+            $hasta = $request->hasta . ' 23:59:59' ?? now()->endOfDay();
 
+            $ventas = MovimientoProduct::join('productos', 'mivimiento_products.producto_id', '=', 'productos.id')                                       
+                                            ->whereBetween('mivimiento_products.created_at', [$desde, $hasta])
+                                            ->whereNotNull('mivimiento_products.producto_id')                                        
+                                            ->orderBy('productos.ventas', 'desc')
+                                            ->get();        
+        }else{                    
+            $desde = empty($request->desde) ? now()->startOfDay()->format('Y-m-d H:s:i') : Carbon::parse($request->desde)->startOfDay()->format('Y-m-d H:s:i'); 
+            $hasta = empty($request->hasta) ? now()->endOfDay()->format('Y-m-d H:s:i') :  Carbon::parse($request->hasta)->endOfDay()->format('Y-m-d H:s:i');            
+            $ventas = MovimientoProduct::join('tipo_consultas', 'mivimiento_products.consulta_id', '=', 'tipo_consultas.id')
+                                            ->whereBetween('mivimiento_products.created_at', [$desde, $hasta])
+                                            ->whereNotNull('mivimiento_products.consulta_id')
+                                            ->orderBy('tipo_consultas.veces_realizadas', 'desc')
+                                            ->get();
+                                        
+        }            
         $data = [
             'ventas' => $ventas,
             'title' => 'Reporte de Ventas',
             'desde' => $request->desde,
-            'hasta' => $request->hasta
+            'hasta' => $request->hasta,
+            'filtroPor' => $request->filtroPor,
         ];            
         $pdf = Pdf::loadView('reportes.ventas', $data);        
         return $pdf->download('reporte_ventas.pdf');

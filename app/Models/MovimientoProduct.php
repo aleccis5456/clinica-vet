@@ -21,7 +21,7 @@ class MovimientoProduct extends Model
         return $this->belongsTo(Producto::class, 'producto_id');
     }
 
-    public function consulta(){
+    public function tipoConsulta(){
         return $this->belongsTo(TipoConsulta::class, 'consulta_id');
     }
 

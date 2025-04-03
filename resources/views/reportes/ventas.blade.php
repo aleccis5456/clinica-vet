@@ -49,6 +49,7 @@
     </style>
 </head>
 <body>
+    @if ($filtroPor == 1)
     <div class="container">
         <h2>Reporte de Ventas</h2>
         fecha: {{ \Carbon\Carbon::parse($desde)->format('d-m-Y') }}  a {{ \Carbon\Carbon::parse($hasta)->format('d-m-Y') }}
@@ -66,6 +67,26 @@
                 </tr>
             @endforeach
         </table>
+    </div>        
+    @else
+    <div class="container">
+        <h2>Reporte de Ventas</h2>
+        fecha: {{ \Carbon\Carbon::parse($desde)->format('d-m-Y') }}  a {{ \Carbon\Carbon::parse($hasta)->format('d-m-Y') }}
+        <br>
+        Usuario: {{ Auth::user()->name }}
+        <table>
+            <tr>
+                <th>Producto</th>
+                <th>Ventas</th>
+            </tr>
+            @foreach ($ventas as $venta)            
+                <tr>
+                    <td>{{ $venta->tipoConsulta->nombre }}</td>
+                    <td>{{ $venta->tipoConsulta->veces_realizadas }}</td>
+                </tr>
+            @endforeach
+        </table>
     </div>
+    @endif    
 </body>
 </html>
