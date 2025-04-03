@@ -91,7 +91,7 @@
             <!-- Muestra los datos en dispositivos móviles -->
             <div class="md:hidden">
                 @foreach ($users as $user)
-                    <div class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
+                    <div  wire:key='{{ $user->id }}'class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
                         <div class="flex justify-between mb-2 bg-white p-1">
                             <span class="font-medium text-gray-800">Nombre:</span>
                             <span class="text-gray-600">{{ $user->nombre }}</span>

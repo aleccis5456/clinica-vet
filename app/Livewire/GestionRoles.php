@@ -130,7 +130,7 @@ class GestionRoles extends Component
 
 
     /**
-     * fuincion para mostrar el div seleccionado en la vista modalCoigRole. lo unico que hace es recargar :D
+     * function para mostrar el div seleccionado en la vista modalCoigRole. lo unico que hace es recargar :D
      * realmente no hace nada más que recargar la vista
      */
     public function setPermisos(){        
@@ -242,10 +242,6 @@ class GestionRoles extends Component
                 'rol_id' => $this->rol
             ]);
     
-            // RolUser::create([
-            //     'user_id' => $user->id,
-            //     'role_id' => $this->rol
-            // ]);
         }catch(\Exception $e){
             return redirect('/Gestion/usuario')->with('error', $e->getMessage());
         }          
@@ -257,6 +253,7 @@ class GestionRoles extends Component
         $this->closeModalRegistro();
         return redirect('/Gestion/usuario')->with('agregado', 'Usuario creado con éxito');
     }
+    
     public function render()
     {
         return view('livewire.gestion-roles');

@@ -18,7 +18,7 @@
             <input type="hidden" name="userId" value="{{ $userToEdit->id }}">
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Nombre</label>
-                <input name="name" type="text" value="{{ $userToEdit->name }}"
+                <input name="name" type="text" placeholder="Ingrese nuevo nombre"
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
                     @error('rolName')
@@ -29,7 +29,7 @@
 
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">E mail</label>
-                <input name="email" type="email" value="{{ $userToEdit->email }}"
+                <input autocomplete="off" name="email" type="email" placeholder='Ingrese nuevo E-mail'
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
                     @error('rolName')
@@ -40,7 +40,7 @@
 
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Contraseña</label>
-                <input name="password" type="password" placeholder="Ingrese nueva constaseña"
+                <input autocomplete="new-password"  name="password" type="password" placeholder="Ingrese nueva constaseña"
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">                
                 <p>
                     @error('rolName')

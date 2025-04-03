@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class GestionUsuarioController extends Controller
 {
-    public function update(Request $request){
+    public function update(Request $request){        
         $request->validate([
             'name' => 'sometimes',
             'email' => 'sometimes',
@@ -25,7 +25,7 @@ class GestionUsuarioController extends Controller
             'name' => $request->name ?? $user->name,
             'email' => $request->email ?? $user->email,
             'password' => empty($request->password) ? $user->password : Hash::make($request->password),          
-            'rol' => $request->rol ?? $user->rol_id,
+            'rol_id' => (int)$request->rol ?? $user->rol_id,
         ]);
 
         return redirect()->back()->with('editado', 'Usuario actualizado correctamente');
