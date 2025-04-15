@@ -12,14 +12,23 @@ class AlertaAgendados extends Component {
     public function mount(){
         $consultas = Consulta::where('estado', 'Agendado')
                             ->where('fecha', '<', now()->format('Y-m-d'))->get();                             
-                            
-        if (count($consultas) != 0) {
-            $this->consultas = Consulta::where('estado', 'Agendado')->where(function ($query) {
-                $query->where('hora', '<', now()->format('H:i:s'))
-                    ->orWhere('fecha', '<', now()->format('Y-m-d'));
-            })->get();                        
+
+        if(count($consultas) != 0){
+            $this->consultas = $consultas;
             $this->mostrar = true;
+        } else {
+            $this->consultas = [];
+            $this->mostrar = false;
+
         }
+
+        // if (count($consultas) != 0) {
+        //     $this->consultas = Consulta::where('estado', 'Agendado')->where(function ($query) {
+        //         $query->where('hora', '<', now()->format('H:i:s'))
+        //             ->orWhere('fecha', '<', now()->format('Y-m-d'));
+        //     })->get();                        
+        //     $this->mostrar = true;
+        // }
         //dd($this->consultas, $this->mostrar);
     }        
     public function render()
