@@ -39,7 +39,7 @@
                     @endforeach
                 </select> --}}
                 @error('mascota_id')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -55,7 +55,7 @@
                     @endforeach
                 </select>
                 @error('tipo')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -77,7 +77,7 @@
                     </optgroup>
                 </select>
                 @error('veterinario_id')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -87,7 +87,7 @@
                 <input type="date" wire:model="fecha"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 @error('fecha')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -97,7 +97,7 @@
                 <input type="time" wire:model="hora"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 @error('fecha')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -108,7 +108,7 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
                     rows="3" placeholder="Describe los síntomas"></textarea>
                 @error('sintomas')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -119,7 +119,7 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
                     rows="3" placeholder="Describe el diagnóstico"></textarea>
                 @error('diagnostico')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -130,7 +130,7 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
                     rows="3" placeholder="Describe el tratamiento"></textarea>
                 @error('tratamiento')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 
@@ -141,7 +141,7 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
                     rows="3" placeholder="Añade notas adicionales"></textarea>
                 @error('notas')
-                    <span class="text-red-700 underline">{{ $message }}</span>
+                    <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
             </div>
 

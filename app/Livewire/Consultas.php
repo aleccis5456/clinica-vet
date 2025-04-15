@@ -51,9 +51,10 @@ class Consultas extends Component
     public $pagos;
     public $estadosf = [
         'Agendado',
-        'Reprogramado',
+        'En seguimiento',
+        'Internado',
         'Pendiente',
-        'En Espera',
+        'En recepción',
         'En consultorio',
         'Finalizado',
         'No asistió',
@@ -399,16 +400,19 @@ class Consultas extends Component
      */
     public function crearConsulta()
     {
-        try {
-            $this->validate([
-                'mascota_id' => 'required',
-                'veterinario_id' => 'required',
-                'fecha' => 'required',
-                'tipo' => 'required',
-            ]);
-        } catch (\Exception $e) {
-            return redirect()->route('consultas')->with('error', $e->getMessage());
-        }
+
+        $this->validate([
+            'mascota_id' => 'required',
+            'veterinario_id' => 'required',
+            'fecha' => 'required',
+            'tipo' => 'required',
+        ], [
+            'mascota_id.required' => 'El campo mascota es obligatorio',
+            'veterinario_id.required' => 'El campo veterinario es obligatorio',
+            'fecha.required' => 'El campo fecha es obligatorio',
+            'tipo.required' => 'El campo tipo de consulta es obligatorio',
+        ]);
+
 
         try {
             foreach ($this->consultas as $consulta) {
@@ -427,14 +431,6 @@ class Consultas extends Component
             if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
                 $this->estado = 'Agendado';
             }
-            // if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
-            //     if ($this->hora < now()->format('H:i')) {
-            //         return redirect()->route('consultas')->with('error', 'La hora de la consulta no puede ser menor a la hora actual');
-            //     } elseif ($this->fecha < now()->format('Y-m-d')) {
-            //         return redirect()->route('consultas')->with('error', 'La fecha de la consulta no puede ser menor a la fecha actual');
-            //     }
-            //     $this->estado = 'Agendado';
-            // }
 
             $consulta = Consulta::create([
                 'mascota_id' => $this->mascota_id,
@@ -593,7 +589,17 @@ class Consultas extends Component
     public function filtarPorEstados()
     {
         if ($this->estadofiltrado == 1) {
-            $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+            $this->consultas = Consulta::orderByRaw("
+                            CASE 
+                                WHEN estado = 'Internado' THEN 1
+                                WHEN estado = 'En consultorio' THEN 2
+                                WHEN estado = 'En recepción' THEN 3
+                                WHEN estado = 'Agendado' THEN 4
+                                ELSE 5
+                            END")
+            ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
+            ->take(12)
+            ->get();
         } else {
             $this->consultas = Consulta::where('estado', $this->estadofiltrado)->get();
         }

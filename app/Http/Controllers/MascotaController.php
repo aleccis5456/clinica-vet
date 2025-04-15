@@ -35,7 +35,7 @@ class MascotaController extends Controller
                 'especie_id' => $request->especie_id
             ]);
         }catch(\Exception $e){
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
 
         
