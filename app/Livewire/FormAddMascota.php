@@ -30,7 +30,7 @@ class FormAddMascota extends Component
 
     #[Rule('image', message: 'Usar un formato correcto')]
     #[Rule('nullable')]
-    public string $foto;
+    public $foto;
     //    #[Rule('required', message: 'Ingrese un nombre')]
     public bool $modalAdd = false;
     public object $mascotas;

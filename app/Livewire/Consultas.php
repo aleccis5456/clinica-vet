@@ -69,21 +69,18 @@ class Consultas extends Component
     /**
      * 
      */
-    public function mascotasBusquedaTrue()
-    {
+    public function mascotasBusquedaTrue() {
         $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")->get();
         $this->mascotasBusqueda = true;
     }
-    public function mascotasBusquedaFalse()
-    {
+    public function mascotasBusquedaFalse() {
         $this->mascotasBusqueda = false;
     }
 
     /**
      * 
      */
-    public function selectMascota($mascotaId)
-    {
+    public function selectMascota($mascotaId) {
         $this->mascota_id = $mascotaId;
         $this->mascotasBusqueda = false;
         $this->mascotaSearch = '';
@@ -93,8 +90,7 @@ class Consultas extends Component
     /**
      * function para la busqueda
      */
-    public function busqueda()
-    {
+    public function busqueda() {
         if (empty($this->search)) {
             $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
         } else {
@@ -104,8 +100,7 @@ class Consultas extends Component
                 ->get();
         }
     }
-    public function flagC()
-    {
+    public function flagC() {
         $this->search = '';
         $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
     }
@@ -113,8 +108,7 @@ class Consultas extends Component
     /**
      * function para elimiar un veterinario del grupo
      */
-    public function eliminarVetGrupo($vetId)
-    {
+    public function eliminarVetGrupo($vetId) {
         try {
             $vet = ConsultaVeterinario::find($vetId)?->delete();
         } catch (\Exception $e) {
@@ -127,8 +121,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function vaciarVariables()
-    {
+    public function vaciarVariables() {
         $this->mascota_id = null;
         $this->veterinario_id = null;
         $this->fecha = null;
@@ -144,21 +137,18 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openProductoConsulta($cpId)
-    {
+    public function openProductoConsulta($cpId) {
         $this->cpId = $cpId;
         $this->modalProductoConsulta = true;
     }
-    public function closeProductoConsulta()
-    {
+    public function closeProductoConsulta() {
         $this->modalProductoConsulta = false;
     }
 
     /**
      * comprueba que hay ningun array vacio 
      */
-    public function comprobarSession()
-    {
+    public function comprobarSession() {
         $sessionConsumo = session('consumo', []);
 
         // Filtrar los valores vacíos
@@ -177,20 +167,17 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openProductoConsumido()
-    {
+    public function openProductoConsumido() :void {
         $this->productoConsumido = true;
     }
-    public function closeProductoConsumido()
-    {
+    public function closeProductoConsumido() :void {
         $this->productoConsumido = false;
     }
 
     /**
      * 
      */
-    public function filtrarProductos()
-    {
+    public function filtrarProductos() {
         $this->openProductoConsumido();
         if (empty($this->q)) {
             $this->productos = Producto::take(0)->get();
@@ -202,16 +189,14 @@ class Consultas extends Component
         }
     }
 
-    public function flag()
-    {
+    public function flag() {
         $this->q = '';
     }
 
     /**
      * creacion de la sesion de productos
      */
-    public function addProducto($productoId, $consultaId)
-    {
+    public function addProducto($productoId, $consultaId) {
         $producto = Producto::find($productoId);
 
         if (!$producto) {
@@ -256,8 +241,7 @@ class Consultas extends Component
     /**
      * function que quita una unidad de la session consumos
      */
-    public function quitarProducto($index, $consultaId)
-    {
+    public function quitarProducto($index, $consultaId) {
         $consumo = session('consumo', []);
 
         if (!isset($consumo[$consultaId][$index])) {
@@ -278,40 +262,33 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openTablaDeProducto(): void
-    {
+    public function openTablaDeProducto(): void {
         $this->tablaDeProductos = true;
     }
-    public function closeTablaDeProductos(): void
-    {
+    public function closeTablaDeProductos(): void {
         $this->tablaDeProductos = false;
     }
 
     /**
      * 
      */
-    public function openTablaTipoConsulta(): void
-    {
+    public function openTablaTipoConsulta(): void {
         $this->tablaTipoConsulta = true;
     }
-    public function closeTablaTipoConsulta(): void
-    {
+    public function closeTablaTipoConsulta(): void {
         $this->tablaTipoConsulta = false;
     }
 
     /**
      * 
      */
-    public function openTipoConsulta()
-    {
+    public function openTipoConsulta() {
         $this->tipoConsulta = true;
     }
-    public function closeTipoConsulta()
-    {
+    public function closeTipoConsulta() {
         $this->tipoConsulta = false;
     }
-    public function crearTipoConsulta()
-    {
+    public function crearTipoConsulta() {
         $this->validate([
             'nombre' => 'required',
             'descripcion' => 'nullable',
@@ -334,25 +311,20 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openCambiarVet()
-    {
+    public function openCambiarVet() {
         $this->cambiarVet = true;
     }
-    public function closeCambiarVet()
-    {
+    public function closeCambiarVet() {
         $this->vetChanged = '';
         $this->cambiarVet = false;
     }
-    public function setVetChanged($vetId)
-    {
+    public function setVetChanged($vetId) {
         $this->vetChanged = $vetId;
     }
-    public function showMessage()
-    {
+    public function showMessage() {
         $this->message = true;
     }
-    public function closeMessage()
-    {
+    public function closeMessage() {
         $this->message = false;
     }
 
@@ -360,8 +332,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openModalConfig($consultaId)
-    {
+    public function openModalConfig($consultaId) {
         $this->consultaToEdit = Consulta::find($consultaId);
         $this->horaN = $this->consultaToEdit->hora;
         $this->fechaN = $this->consultaToEdit->fecha;
@@ -374,8 +345,8 @@ class Consultas extends Component
         $this->consultasProductos = ConsultaProducto::where('consulta_id', $consultaId)->get();
         $this->modalConfig = true;
     }
-    public function closeModalConfig()
-    {
+
+    public function closeModalConfig() {
         Session::forget('consumo');
         $this->flag();
         $this->vetChanged = '';
@@ -383,8 +354,7 @@ class Consultas extends Component
         $this->modalConfig = false;
     }
 
-    private function codigo($length)
-    {
+    private function codigo($length) {
         $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         $randomString = '';
 
@@ -398,9 +368,7 @@ class Consultas extends Component
     /**
      * funcion que crea las consultas
      */
-    public function crearConsulta()
-    {
-
+    public function crearConsulta() {
         $this->validate([
             'mascota_id' => 'required',
             'veterinario_id' => 'required',
@@ -454,12 +422,10 @@ class Consultas extends Component
     /**
      * 
      */
-    public function opneAddConsulta()
-    {
+    public function opneAddConsulta() {
         $this->addConsulta = true;
     }
-    public function closeAddConsulta()
-    {
+    public function closeAddConsulta() {
         $this->vetChanged = '';
         $this->addConsulta = false;
     }
@@ -467,8 +433,7 @@ class Consultas extends Component
     /**
      * funcion que actualiza el estado desde la vista principal de las consultas, <select>
      */
-    public function updateEstado($consultaID, $estadoNuevo)
-    {
+    public function updateEstado($consultaID, $estadoNuevo) {
         try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
@@ -498,8 +463,7 @@ class Consultas extends Component
     /**
      * funciton para cambiar veterinario
      */
-    public function updateVet()
-    {
+    public function updateVet() {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
@@ -524,9 +488,7 @@ class Consultas extends Component
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta()
-    {
-
+    public function updateConsulta() {
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             try {
@@ -572,8 +534,7 @@ class Consultas extends Component
     /**
      * function para eliminar una consultaProdcutos     
      */
-    public function EliminarProductoConsulta($cpId)
-    {
+    public function EliminarProductoConsulta($cpId) {
         try {
             $cp = ConsultaProducto::find($cpId)?->delete();
         } catch (\Exception $e) {
@@ -586,8 +547,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function filtarPorEstados()
-    {
+    public function filtarPorEstados() {
         if ($this->estadofiltrado == 1) {
             $this->consultas = Consulta::orderByRaw("
                             CASE 
@@ -609,8 +569,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function mount()
-    {
+    public function mount() {
         Helper::check();
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%vet%")->first();
@@ -651,6 +610,8 @@ class Consultas extends Component
         $this->tipoConsultas = TipoConsulta::all();
         $this->grupoVet = ConsultaVeterinario::all();
         $this->pagos = Pago::all();
+        $this->hora = now()->addHour()->addMinutes(2)->format('H:i');
+
 
         $this->comprobarSession();
         Session::forget('caja');
@@ -661,8 +622,7 @@ class Consultas extends Component
         }
     }
 
-    public function render()
-    {
+    public function render() {
         return view('livewire.consultas');
     }
 }

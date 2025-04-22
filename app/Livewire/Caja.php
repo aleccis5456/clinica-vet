@@ -307,6 +307,7 @@ class Caja extends Component
                     'forma_pago' => $this->formaPago,
                     'pagado' => true,
                     'estado' => 'pagado',
+                    'dueno_id' => null,
                     'cliente_id' => $cliente->id,
                 ]);                                                             
             }            

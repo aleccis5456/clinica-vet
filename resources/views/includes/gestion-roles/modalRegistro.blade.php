@@ -14,7 +14,7 @@
         <form wire:submit='crearUsuario'
             class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg  rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Registar Usuario</p>
-            <!--  Campo para relacionar don una persona -->
+            <!--  Campo para relacionar con una persona -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Nombre</label>
                 <input type="text" wire:model='name'

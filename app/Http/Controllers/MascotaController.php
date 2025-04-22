@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Mascota;
 use Exception;
 
-class MascotaController extends Controller
-{
+class MascotaController extends Controller {
     public function crearMascota(Request $request){                  
         try{            
             $request->validate([
