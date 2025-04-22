@@ -1,6 +1,5 @@
-<div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="py-10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-[1000px] mx-auto items-center">
     @foreach ($consultas as $consulta)
-
         <div class="max-w-[270px] shadow-md rounded-lg overflow-hidden transition-all duration-200 hover:scale-101 hover:shadow-lg relative 
             border {{ $estadosf[$consulta->estado] ?? 'bg-gray-200 border-gray-300' }}"
             id="consulta-{{ $consulta->id }}">

@@ -74,7 +74,7 @@
                                     <div class="flex">
                                         <p class="font-semibold mr-1">{{ $producto->cantidad }}</p>
                                         <p>{{ $producto->producto->nombre ?? '' }}</p>
-                                        <p>{{ $producto->consulta->nombre ?? '' }}</p>
+                                        <p>{{ $producto->tipoConsulta->nombre ?? '' }}</p>
                                     </div>
                                 @endif
                             @endforeach

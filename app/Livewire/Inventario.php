@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 #[Title('Inventario')]
 class Inventario extends Component {
-    public  $productoToEdit = '';
+    public $productoToEdit = '';
     public string $productoId = '';
     public string $categoria = '';
     public string $search = '';
@@ -58,7 +58,9 @@ class Inventario extends Component {
         }
     }
 
-
+    /**
+     * 
+     */
     public function alertaTrue($productoId) : void {
         $this->productoId = $productoId;
         $this->alertaDelete = true;
@@ -98,7 +100,6 @@ class Inventario extends Component {
         $this->modalProveedor = false;        
     }
 
-
     /**
      * 
      */
@@ -112,7 +113,6 @@ class Inventario extends Component {
         $this->detallesTrue($productoId);
         $this->historial = false;              
     }
-
 
     /**
      * 
@@ -198,7 +198,7 @@ class Inventario extends Component {
 
     public function deleteProducto(){
         try{
-            $producto = Producto::find($this->productoId)->delete();
+            Producto::find($this->productoId)->delete();
         }catch(\Exception $e){
             DB::commit();
             throw new \Exception($e->getMessage());

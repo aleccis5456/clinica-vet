@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('mascotas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dueno_id')->constrained('duenos');
-            $table->string('nombre');
-            $table->string('especie')->nullable();
+            $table->string('nombre');            
             $table->string('raza')->nullable();
             $table->date('nacimiento');
             $table->enum('genero', ['Macho', 'Hembra']);

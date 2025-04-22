@@ -70,7 +70,7 @@ class EntradasTable extends Component
                                         ->toArray();
             $consultasIds = TipoConsulta::where('nombre', 'like', '%'.$this->search.'%')
                                             ->pluck('id')
-                                            ->toArray();
+                                            ->toArray();            
             $clientesIds = DatosFactura::where('nombre_rs', 'like', '%'.$this->search.'%')
                                             ->orWhere('ruc_ci', 'like', '%'.$this->search.'%')
                                             ->pluck('id')

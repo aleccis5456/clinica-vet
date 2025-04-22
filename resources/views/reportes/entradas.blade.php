@@ -8,20 +8,32 @@
     <title>Reporte de Ventas</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
             text-align: center;
             padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1100px; /* Aumentamos el ancho para más espacio */
+            max-width: 1200px;
             margin: 0 auto;
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             text-align: left;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 5px 0;
+            color: #555;
         }
 
         table {
@@ -30,40 +42,41 @@
             margin-top: 20px;
         }
 
-        th,
-        td {
-            padding: 15px; /* Aumentamos el padding para más separación */
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
         th {
             background: #007BFF;
             color: white;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
         }
 
         td {
-            color: #333;
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
             vertical-align: top;
         }
 
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
         .cliente-info {
-            margin-bottom: 8px; /* Separación entre líneas del cliente */
+            margin-bottom: 8px;
         }
 
         .producto {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Separación entre elementos */
-            margin-bottom: 6px; /* Espacio entre productos */
+            margin-bottom: 6px;
         }
 
-        .producto p {
-            margin: 0; /* Eliminamos márgenes extras */
+        .producto strong {
+            display: block;
+            margin-bottom: 2px;
+            color: #333;
+        }
+
+        .producto span {
+            display: block;
+            color: #666;
         }
     </style>
 </head>
@@ -75,37 +88,40 @@
             {{ \Carbon\Carbon::parse($hasta)->format('d/m/Y') }}</p>
         <p><strong>Usuario:</strong> {{ Auth::user()->name }}</p>
         <table>
-            <tr>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Productos</th>
-                <th>Monto Gs.</th>
-            </tr>
-            @foreach ($ventas as $venta)
+            <thead>
                 <tr>
-                    <td>{{ $venta->created_at->format('d/m/Y') }}</td>
-                    <td>
-                        <div class="cliente-info">
-                            <strong>Nombre:</strong> {{ $venta->cliente->nombre_rs }}
-                        </div>
-                        <div class="cliente-info">
-                            <strong>RUC:</strong> {{ $venta->cliente->ruc_ci }}
-                        </div>
-                    </td>
-                    <td>
-                        @foreach ($movimientoP as $producto)
-                            @if ($producto->venta_id == $venta->id)
-                                <div class="producto">
-                                    <strong>{{ $producto->cantidad }}</strong>
-                                    <p>{{ $producto->producto->nombre ?? '' }}</p>
-                                    <p>{{ $producto->consulta->nombre ?? '' }}</p>
-                                </div>
-                            @endif
-                        @endforeach
-                    </td>
-                    <td>{{ number_format($venta->monto, 0, ',', '.') }}</td>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Productos</th>
+                    <th>Monto Gs.</th>
                 </tr>
-            @endforeach
+            </thead>
+            <tbody>
+                @foreach ($ventas as $venta)
+                    <tr>
+                        <td>{{ $venta->created_at->format('d/m/Y') }}</td>
+                        <td>
+                            <div class="cliente-info">
+                                <strong>Nombre:</strong> {{ $venta->cliente->nombre_rs }}
+                            </div>
+                            <div class="cliente-info">
+                                <strong>RUC:</strong> {{ $venta->cliente->ruc_ci }}
+                            </div>
+                        </td>
+                        <td>
+                            @foreach ($movimientoP as $producto)
+                                @if ($producto->venta_id == $venta->id)
+                                    <div class="producto">
+                                        <strong>{{ $producto->cantidad }} {{ $producto->producto->nombre ?? '' }}</strong>
+                                        <span>{{ $producto->tipoConsulta->nombre ?? '' }}</span>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </td>
+                        <td>{{ number_format($venta->monto, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
         </table>
     </div>
 </body>

@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
-class ReportsController extends Controller
-{
+class ReportsController extends Controller {
     public function exportarPdf(Request $request) {            
         if($request->filtroPor == 1){        
             $desde = $request->desde . ' 00:00:00' ?? now()->startOfDay();
