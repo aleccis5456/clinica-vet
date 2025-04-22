@@ -614,7 +614,7 @@ class Consultas extends Component
         Helper::check();
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%vet%")->first();
-        $vetId = $rol->id;
+        $vetId = $rol->id ?? null;
         $this->veterinarios = User::where('rol_id', $vetId)->get();
 
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
@@ -625,7 +625,7 @@ class Consultas extends Component
             ->orWhereLike('name', "%este%")
             ->orWhereLike('name', "%tica%")
             ->first();
-        $userId = $rol->id;
+        $userId = $rol->id ?? null;
         $this->users = User::where('rol_id', $userId)->get();
 
         $this->vaciarVariables();
