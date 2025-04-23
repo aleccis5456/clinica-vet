@@ -12,7 +12,8 @@ class Movimiento extends Model
         'codigo', 	
         'monto', 	
         'cliente_id', 	
-        'forma_pago'
+        'forma_pago',
+        'owner_id'
     ];
 
     public function cliente(){

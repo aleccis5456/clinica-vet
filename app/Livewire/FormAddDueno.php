@@ -8,6 +8,7 @@ use App\Models\Mascota;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 #[Title('Agregar Dueno')]
 class FormAddDueno extends Component
@@ -47,7 +48,8 @@ class FormAddDueno extends Component
         Dueno::create([
             'nombre' => $this->nombre,
             'telefono' => $this->telefono,
-            'email' => $this->email
+            'email' => $this->email,
+            'owner_id' => Auth::user()->id
         ]);
 
         return redirect('/')->with('agregado', "$this->nombre, se agrego correctamente");

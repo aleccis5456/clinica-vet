@@ -14,6 +14,7 @@ class RolSeeder extends Seeder {
     public function run(): void {
         DB::table('roles')->insert([
             'name' => 'admin',
+            'owner_id' => null,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

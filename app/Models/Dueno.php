@@ -11,7 +11,8 @@ class Dueno extends Model
     protected $fillable = [
         'nombre', 	
         'telefono', 	
-        'email'
+        'email',
+        'owner_id'
     ];
     
     public function mascotas(){

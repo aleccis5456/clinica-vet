@@ -10,7 +10,8 @@ class ConsultaVeterinario extends Model
 
     protected $fillable = [
         'veterinario_id',
-        'consulta_id'
+        'consulta_id',
+        'owner_id'
     ];
 
     public function veterinario(){

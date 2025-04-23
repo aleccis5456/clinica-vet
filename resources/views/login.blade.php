@@ -1,16 +1,13 @@
 <div class="backdrop-blur-xs fixed top-0 right-0 left-0 z-40 flex justify-center items-center w-full h-full bg-black/10">
-    <div class="">
-
+    <div class="">    
         <div class=" w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
             <!-- Imagen -->
             <div class="hidden md:block ">
                 <img src="{{ asset('images/tests/bg.jpg') }}" alt="Imagen de login" class="w-full h-full object-cover">
-            </div>
-
+            </div>            
             <!-- Formulario -->
             <div class="p-8 flex flex-col justify-center ">
-               
-
+                               
                 <h2 class="text-2xl font-semibold text-gray-700 text-center">Iniciar sesión</h2>
 
                 <form action="{{ route('auth.login') }}" method="POST" class="mt-6">

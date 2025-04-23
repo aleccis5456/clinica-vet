@@ -8,7 +8,7 @@ class Especie extends Model
 {
     protected $table = 'especies';
 
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'owner_id'];
 
 
     public function mascotas(){

@@ -14,7 +14,8 @@ class MovimientoProduct extends Model
         'cantidad', 	
         'precio_unitario', 	
         'precio_total',
-        'consulta_id'
+        'consulta_id',
+        'owner_id',
     ];    
     
     public function producto(){

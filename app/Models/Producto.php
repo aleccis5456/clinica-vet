@@ -22,6 +22,7 @@ class Producto extends Model
         'codigo',
         'codigo_barras',
         'proveedor_id',
+        'owner_id'
     ];
 
     public function movimientos() : BelongsToMany {

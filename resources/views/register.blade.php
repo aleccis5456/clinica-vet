@@ -12,6 +12,7 @@
 <body
     class="backdrop-blur-xs flex items-center justify-center min-h-screen bg-white bg-hero bg-no-repeat bg-cover bg-center bg-fixed"
     style="background-image: url('{{ asset('bg/bg1.png') }}')">
+    <x-alertas />
     <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
         <!-- Imagen -->
         <div class="hidden md:block">

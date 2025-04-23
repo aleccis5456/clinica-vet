@@ -10,7 +10,8 @@ class DatosFactura extends Model
 
     protected $fillable = [
         'nombre_rs', 	
-        'ruc_ci'
+        'ruc_ci',
+        'owner_id'
     ];
 
     public function compras(){

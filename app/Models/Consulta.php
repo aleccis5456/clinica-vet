@@ -20,7 +20,8 @@ class Consulta extends Model
         'notas',
         'estado',        
         'hora',
-        'codigo'
+        'codigo',
+        'owner_id',
     ];
 
     public function mascota(){

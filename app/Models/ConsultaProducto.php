@@ -12,7 +12,8 @@ class ConsultaProducto extends Model
         'producto_id', 	
         'consulta_id', 	
         'cantidad', 	
-        'descripcion'
+        'descripcion',
+        'owner_id'
     ];
 
     public function producto(){

@@ -20,7 +20,8 @@ class Mascota extends Model
         'genero', 	
         'historial_medico',
         'foto',
-        'especie_id'
+        'especie_id',
+        'owner_id'
     ];
 
     // protected $casts = [

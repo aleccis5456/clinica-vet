@@ -8,10 +8,9 @@ class Categoria extends Model
 {
     protected $table = 'categorias';
 
-    protected $fillable = ['nombre'];   
+    protected $fillable = ['nombre', 'owner_id'];   
 
-    public function productos()
-    {
+    public function productos() {
         return $this->hasMany(Producto::class);
     }   
 }

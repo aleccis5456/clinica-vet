@@ -573,12 +573,14 @@ class Consultas extends Component
     public function mount() {
         Helper::check();
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
-        $rol = Rol::whereLike('name', "%vet%")->first();
+        $rol = Rol::whereLike('name', "%Vet%")
+                    ->where('owner_id', Auth::user()->id)
+                    ->first();
         $vetId = $rol->id ?? null;
         $this->veterinarios = User::where('rol_id', $vetId)
-                                    ->where('admin_id', Auth::user()->id)
-                                    ->get();
-
+                                    ->where('admin', Auth::user()->id)
+                                    ->get();        
+        //dd($this->veterinarios);
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereNotLike('name', "%vet%")
             ->whereNotLike('name', "%user%")

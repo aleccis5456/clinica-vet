@@ -49,11 +49,15 @@ class GestionRoles extends Component
      */
     public function mount(){
         Helper::check();
-        $this->roles = Rol::where('id', '!=', 1)->get();            
-        $this->users = User::where('admin', '!=', true)
+        
+        $this->roles = Rol::where('id', '!=', 1)
+                            ->where('owner_id', Auth::user()->id)
+                            ->get();         
+                        //   dd($this->roles);
+        $this->users = User::where('admin', '==', false)                            
                             ->where('admin_id', Auth::user()->id)->get();        
-        $this->permisosRolesObject = PermisoRol::all();
-
+        $this->permisosRolesObject = PermisoRol::where('owner_id', Auth::user()->id)->get();
+        
         if(empty(session('modulos')['gestionUsuario'])){
             return redirect('/');
         }
@@ -201,14 +205,15 @@ class GestionRoles extends Component
         $this->modalRegistro = false;
     }  
 
-    public function crearRol(){
+    public function crearRol()  {
         
         $this->validate([
             'rolName' => 'required'
         ]);
 
         Rol::create([
-            'name' => $this->rolName
+            'name' => $this->rolName,
+            'owner_id' => Auth::user()->id
         ]);
        
         $this->rolName = '';
@@ -242,7 +247,8 @@ class GestionRoles extends Component
                 'rol.required' => 'El rol es requerido',
                 'rol.exists' => 'El rol no existe'
             ]);
-    
+            
+
             $user = User::create([
                 'name' => $this->name,
                 'email' => $this->email,
