@@ -15,6 +15,7 @@ use App\Models\Mascota;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 #[Title('Consultas')]
@@ -574,7 +575,9 @@ class Consultas extends Component
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%vet%")->first();
         $vetId = $rol->id ?? null;
-        $this->veterinarios = User::where('rol_id', $vetId)->get();
+        $this->veterinarios = User::where('rol_id', $vetId)
+                                    ->where('admin_id', Auth::user()->id)
+                                    ->get();
 
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereNotLike('name', "%vet%")
@@ -582,10 +585,13 @@ class Consultas extends Component
             ->whereNotLike('name', "%admin%")
             ->WhereLike('name', "%pelu%")
             ->orWhereLike('name', "%este%")
-            ->orWhereLike('name', "%tica%")
+            ->orWhereLike('name', "%tica%")            
+
             ->first();
         $userId = $rol->id ?? null;
-        $this->users = User::where('rol_id', $userId)->get();
+        $this->users = User::where('rol_id', $userId)
+                            ->where('admin_id', Auth::user()->id)
+                            ->get();
 
         $this->vaciarVariables();
 

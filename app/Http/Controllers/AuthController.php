@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\PermisoRol;
-use App\Models\Rol;
 use App\Models\Permiso;
+use App\Models\Rol;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -48,6 +48,20 @@ class AuthController extends Controller {
                 'permiso_id' => $permiso->id,
             ]);
         }
+        try{
+            $rolVetId = Rol::where('name', 'like',"%eterinario%")->first()->id;        
+
+            User::create([
+                'name' => 'Sin Definir',
+                'email' => 'sin@definir2.com',
+                'password' => Hash::make('12345678'),
+                'rol_id' => $rolVetId,
+                'admin' => $user->id,
+                'admin_id' => null,
+            ]);        
+        }catch(\Exception $e){            
+            return back()->with('error', 'Error al crear el usuario por defecto.');
+        }        
 
         return redirect()->route('index')->with('agregado', 'El registro se completó');
     }
