@@ -24,6 +24,7 @@ class GestionRoles extends Component
     public string $password;
     public string $rol;
     public array $permisosRoles = [];
+    public string $requestUserId = '';
 
     public object $permisos;
     public object $roles;
@@ -116,12 +117,24 @@ class GestionRoles extends Component
 
         foreach($permisosIds as $permisoId){
             PermisoRol::where('rol_id', $permisoId)->delete();
-        }                                            
+        } 
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
+                 
         try{
             foreach($this->permisosRoles as $permiso){                
                 PermisoRol::create([
                     'rol_id' => $this->rolToConf->id,
-                    'permiso_id' => $permiso
+                    'permiso_id' => $permiso,
+                    'owner_id' => $admin_id,
                 ]);   
             }            
         }catch(\Exception $e){

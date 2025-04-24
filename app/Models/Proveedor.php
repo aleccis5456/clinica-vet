@@ -14,7 +14,8 @@ class Proveedor extends Model {
         'telefono',
         'direccion',
         'email',
-        'ruc'
+        'ruc',
+        'owner_id',
     ];
 
     public function productos() :HasMany {

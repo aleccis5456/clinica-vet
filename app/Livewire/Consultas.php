@@ -295,12 +295,22 @@ class Consultas extends Component
             'descripcion' => 'nullable',
             'precio' => 'required',
         ]);
-
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
         try {
             TipoConsulta::create([
                 'nombre' => $this->nombre,
                 'descripcion' => $this->descripcion,
                 'precio' => $this->precio,
+                'owner_id' => $admin_id,
             ]);
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
@@ -400,6 +410,16 @@ class Consultas extends Component
             if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
                 $this->estado = 'Agendado';
             }
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if($user->admin){
+            $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
+            }
+            if($admin_id == null){
+                return back()->with('error', 'No tienes permisos para agregar una mascota');
+            }                                  
 
             $consulta = Consulta::create([
                 'mascota_id' => $this->mascota_id,
@@ -413,6 +433,7 @@ class Consultas extends Component
                 'hora' => $this->hora,
                 'estado' => $this->estado ?? 'Pendiente',
                 'codigo' => $this->codigo(6),
+                'owner_id' => $admin_id,
             ]);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
@@ -462,9 +483,9 @@ class Consultas extends Component
 
 
     /**
-     * funciton para cambiar veterinario
+     * function para cambiar veterinario
      */
-    public function updateVet() {
+    public function updateVet() : \Illuminate\Http\RedirectResponse {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
@@ -489,20 +510,31 @@ class Consultas extends Component
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta() {
+    public function updateConsulta() : \Illuminate\Http\RedirectResponse {
+        //esta parte agrega los productos a la consulta
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             try {
+                $requestUserId = Auth::user()->id;
+                $user = User::find($requestUserId);
+                if($user->admin){
+                    $admin_id = $user->id;
+                }else{
+                    $admin_id = $user->admin_id;
+                }
+
                 foreach ($consumo[$this->consultaToEdit->id] as $item) {
                     ConsultaProducto::create([
                         'producto_id' => $item['productoId'],
                         'consulta_id' => $item['consultaId'],
                         'cantidad' => $item['cantidad'],
                         'descripcion' => null,
+                        'owner_id' => $admin_id
                     ]);
                 }
             } catch (\Exception $e) {
-                throw new \Exception($e->getMessage());
+                return redirect()->route('consultas')->with('error', 'Error al agregar productos a la consulta');
+                //throw new \Exception($e->getMessage());
             }
         }
         $consulta = Consulta::find($this->consultaToEdit->id);
@@ -566,19 +598,28 @@ class Consultas extends Component
         }
     }
 
-
     /**
      * 
      */
     public function mount() {
         Helper::check();
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%Vet%")
-                    ->where('owner_id', Auth::user()->id)
+                    ->where('owner_id', $admin_id)
                     ->first();
         $vetId = $rol->id ?? null;
         $this->veterinarios = User::where('rol_id', $vetId)
-                                    ->where('admin', Auth::user()->id)
+                                    ->where('admin_id', $admin_id)
                                     ->get();        
         //dd($this->veterinarios);
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta

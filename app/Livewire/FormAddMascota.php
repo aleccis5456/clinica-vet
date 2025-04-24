@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\Helper;
+use App\Models\User;
 use App\Models\Dueno;
 use App\Models\Especie;
 use App\Models\Mascota;
@@ -10,11 +11,11 @@ use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 #[Title('Gestion Mascotas')]
-class FormAddMascota extends Component
-{
+class FormAddMascota extends Component {
     use WithFileUploads;
 
     #[Rule('nullable')]
@@ -164,11 +165,22 @@ class FormAddMascota extends Component
      */
     public function crearEspecie(){
         $this->validate([
-            'especie' => 'required'            
+            'especie' => 'required',            
         ]);
-
+        
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
         Especie::create([
-            'nombre' => $this->especie
+            'nombre' => $this->especie,
+            'owner_id' => $admin_id,
         ]);
 
         return redirect('/registrar/mascota')->with('agregado', "$this->especie, se agrego correctamente");

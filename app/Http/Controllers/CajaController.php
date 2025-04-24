@@ -17,7 +17,6 @@ class CajaController extends Controller
         if(!$consulta){
             return back()->with('error', 'Ocurrio un error');
         }
-
         $consultaProductos = ConsultaProducto::where('consulta_id', $consultaId)->get();
         
         $productos = [];
@@ -29,7 +28,8 @@ class CajaController extends Controller
                 "productoId" => $producto->id,
                 "producto" => $producto->nombre,
                 "cantidad" => $cProducto->cantidad,                
-                "precio" => $producto->precio,            ];            
+                "precio" => $producto->precio,            
+            ];            
         }                                
 
         $caja = session('caja', []);    
@@ -66,7 +66,9 @@ class CajaController extends Controller
             'pagoEstado' => $pago->estado,
             'montoTotal' => $total,
         ];
-
+        $consulta->update([
+            'estado' => 'Pendiente'
+        ]);
         session(['caja' => $caja]);
         
         return redirect()->back()->with('caja_creada', 'Se ha creado una nueva caja.');

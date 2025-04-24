@@ -68,6 +68,10 @@ return new class extends Migration {
         Schema::table('veterinarios_consulta', function (Blueprint $table) {
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
         });
+
+        Schema::table('proveedores', function (Blueprint $table) {
+            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
+        });
     }
 
     /**
@@ -75,7 +79,7 @@ return new class extends Migration {
      */
     public function down() :void {
         Schema::table('tables', function (Blueprint $table) {
-            //
+            
         });
     }
 };

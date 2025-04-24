@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Mascota;
+use App\Models\User;
 use Exception;
 
 class MascotaController extends Controller {
@@ -14,15 +15,27 @@ class MascotaController extends Controller {
                 'nombre' => 'required',                        
                 'nacimiento' => 'date|required',
                 'genero' => 'required',     
-                'especie_id' => 'required|exists:especies,id'
-            ]);        
+                'especie_id' => 'required|exists:especies,id',                
+            ]);   
+
             if ($request->hasFile('foto')) {
                 $image_path = $request->file('foto');
                 $imageName = time()."$request->nombre" . '.' . $image_path->getClientOriginalExtension();
                 $destinationPath = public_path('uploads/mascotas');
                 $image_path->move($destinationPath, $imageName);
             }
-                
+            
+            $requestUserId = $request->user()->id;
+            $user = User::find($requestUserId);            
+            if($user->admin){                
+                $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
+            }
+            if($admin_id == null){
+                return back()->with('error', 'No tienes permisos para agregar una mascota');
+            }
+            
             Mascota::create([
                 'dueno_id' => $request->dueno_id,
                 'nombre' => $request->nombre,            
@@ -31,12 +44,12 @@ class MascotaController extends Controller {
                 'genero' => $request->genero,
                 'historial_medico' => $request->historial_medico,
                 'foto' => $imageName ?? null,
-                'especie_id' => $request->especie_id
+                'especie_id' => $request->especie_id,
+                'owner_id' => $admin_id,
             ]);
         }catch(\Exception $e){
-            throw new \Exception($e->getMessage());
+            return redirect()->route('add.mascota')->with('error', $e->getMessage());
         }
-
         
         return redirect()->route('add.mascota')->with('agregado', "$request->nombre, se agrego correctamente");        
     }

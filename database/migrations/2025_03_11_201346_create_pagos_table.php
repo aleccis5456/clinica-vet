@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('dueno_id')->constrained('duenos')->nullable();
-            $table->foreignId('consulta_id')->constrained('consultas')->nullable();
+            $table->foreignId('dueno_id')->nullable()->constrained('duenos');
+            $table->foreignId('consulta_id')->nullable()->constrained('consultas');
             $table->integer('monto')->nullable();
             $table->enum('forma_pago', ['efectivo', 'tarjeta', 'transferencia', 'otro'])->nullable();
             $table->string('notas')->nullable();

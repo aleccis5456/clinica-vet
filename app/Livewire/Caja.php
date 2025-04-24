@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\User;
 use App\Helpers\Helper;
 use App\Models\MovimientoProduct;
 use App\Models\Movimiento;
@@ -16,6 +17,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 #[Title('Caja')]
 class Caja extends Component
@@ -125,16 +127,28 @@ class Caja extends Component
         $this->validate([
             'rNombre' => 'required|string',
             'rRuc' => 'required|string|unique:datos_facturas,ruc_ci'
-        ], [
+        ],[
             'rNombre.required' => 'Tienes que agregar un nombre',
             'rRuc.required' => 'Tienes que agregar un numero de RUC o CI',
             'rRuc.unique' => 'El número de RUC o CI ya está registrado. Intente con otro'
         ]);
 
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
+
         try{
             DatosFactura::create([
                 'nombre_rs' => $this->rNombre,
-                'ruc_ci' => $this->rRuc
+                'ruc_ci' => $this->rRuc,
+                'owner_id' => $admin_id,
             ]);
         }catch(\Exception $e){
             return redirect()->route('caja')->with('error', $e->getMessage());
@@ -291,7 +305,17 @@ class Caja extends Component
             return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
         }        
         DB::beginTransaction();
-        try{                                    
+        try{                      
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if($user->admin){
+                $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
+            }
+            if($admin_id == null){
+                return back()->with('error', 'No tienes permisos para agregar una mascota');
+            }                                                
             $pago = Pago::where('consulta_id', $consultaId)->where('pagado', 0)->first();                        
             if ($pago) {    
                 $pago->update([
@@ -316,6 +340,7 @@ class Caja extends Component
                 'monto' => Helper::total(),
                 'cliente_id' => $cliente->id,                        
                 'forma_pago' => $this->formaPago,
+                'owner_id' => $admin_id,
             ]);
 
             foreach($cobro as $item){                
@@ -326,6 +351,7 @@ class Caja extends Component
                     'cantidad' => $item['cantidad'],
                     'precio_unitario' => $item['precio'],
                     'precio_total' => $item['precio'] * $item['cantidad'],
+                    'owner_id' => $admin_id,
                 ]);                
                 if($item['opcion'] == '1'){
                     $producto = Producto::find($item['productoId']);
@@ -399,7 +425,7 @@ class Caja extends Component
         return $randomString;
     }
 
-    public function mount(){
+    public function mount()  {
         Helper::check();
         if(empty(session('modulos')['caja'])){
             return redirect('/');
@@ -408,8 +434,7 @@ class Caja extends Component
         $this->duenos = Dueno::all();                   
     }    
 
-    public function render()
-    {
+    public function render() {
         return view('livewire.caja');
     }
 }

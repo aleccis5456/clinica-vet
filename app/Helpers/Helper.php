@@ -164,10 +164,10 @@ class Helper
                     }
                 }
             }
-        } catch (\Exception $e) {            
-            throw new \Exception('Error al cambiar el estado de la consulta: ' . $e->getMessage());
+        } catch (\Exception $e) {          
+            return redirect()->route('consultas')->with('error', 'Error al cambiar el estado de la consulta: ' . $e->getMessage());
+            //throw new \Exception('Error al cambiar el estado de la consulta: ' . $e->getMessage());
         }        
         return $estadoNuevo;
     }
-
 }

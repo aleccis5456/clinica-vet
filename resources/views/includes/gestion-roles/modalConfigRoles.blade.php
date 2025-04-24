@@ -14,6 +14,7 @@
         <form wire:submit='establecerPermisos'
             class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg  rounded-lg outline-none overflow-x-hidden overflow-y-auto">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Configurar Rol: {{ $rolToConf->name }}</p>
+            <input type="hidden" name="">
             @foreach ($permisos as $permiso)
                 <div class="flex">
                     <label for="permiso-{{ $permiso->id }}"

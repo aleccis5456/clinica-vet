@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Models\Categoria;
+use App\Models\User;
 use App\Models\Producto;
+use Illuminate\Support\Facades\Auth;
 
-class InventarioController extends Controller
-{
+class InventarioController extends Controller {
     public function store(Request $request){                   
         try{        
             $request->validate([
@@ -29,8 +30,18 @@ class InventarioController extends Controller
                 $destinationPath = public_path('uploads/productos');
                 $image_path->move($destinationPath, $imageName);
             }
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if($user->admin){
+                $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
+            }
+            if($admin_id == null){
+                return back()->with('error', 'No tienes permisos para agregar una mascota');
+            }                                  
 
-            $producto = Producto::create([
+            Producto::create([
                 'nombre' => $request->nombre,
                 'codigo' => $request->flagCodigo ? $this->codigo(6) : ($request->codigo ?? null),
                 'proveedor_id' => $request->proveedor_id ?? null,
@@ -40,9 +51,10 @@ class InventarioController extends Controller
                 'precio_compra' => $request->precio_compra,
                 'stock_actual' => $request->stock_actual,
                 'foto' => $imageName ?? null,
+                'owner_id' => $admin_id,
             ]);
             
-        }catch(\Exception $e){
+        }catch(\Exception $e){            
             return redirect()->route('inventario')->with('error', $e->getMessage());
         }
 
@@ -75,8 +87,7 @@ class InventarioController extends Controller
                 if (file_exists($rutaFoto)) {
                     unlink($rutaFoto);
                 }
-            }
-            
+            }            
 
             $producto->update([
                 'nombre' => $request->nombre,

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Proveedor;
 use App\Models\MovimientoProduct;
+use App\Models\User;
 use App\Helpers\Helper;
 use App\Models\Categoria;
 use App\Models\Producto;
@@ -11,6 +12,8 @@ use Illuminate\Http\RedirectResponse;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
 
 #[Title('Inventario')]
 class Inventario extends Component {
@@ -81,6 +84,16 @@ class Inventario extends Component {
 
     public function crearProveedor(){
         try{
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if($user->admin){
+                $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
+            }
+            if($admin_id == null){
+                return back()->with('error', 'No tienes permisos para agregar una mascota');
+            }                                  
             $this->validate([
                 'nombreP' => 'required',                                
             ]);
@@ -90,11 +103,12 @@ class Inventario extends Component {
                 'telefono' => $this->telefonoP ?? null,
                 'direccion' => $this->direccionP ?? null,
                 'email' => $this->email ?? null,
-                'ruc' => $this->ruc ?? null,
+                'ruc' => $this->ruc ?? null,  
+                'owner_id' => $admin_id,
             ]);
         }catch(\Exception $e){
             DB::commit();
-            throw new \Exception($e->getMessage());
+            return redirect()->route('inventario')->with('error', 'Error al agregar el proveedor '. $e->getMessage());
         }
         return redirect()->route('inventario')->with('agregado', 'Proveedor agregado correctamente');            
         $this->modalProveedor = false;        
@@ -186,9 +200,19 @@ class Inventario extends Component {
         $this->validate([
             'categoria' => 'required'
         ]);
-
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
         Categoria::create([
-            'nombre' => $this->categoria
+            'nombre' => $this->categoria,
+            'owner_id' => $admin_id,
         ]);
 
         $this->categoria = '';
