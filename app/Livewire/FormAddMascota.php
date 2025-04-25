@@ -56,14 +56,31 @@ class FormAddMascota extends Component {
      * 
      */
     public function mount(){
-        Helper::check();
-        $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
-        $this->duenos = Dueno::all();
-        $this->especies = Especie::all();          
-
         if(empty(session('modulos')['gestionPaciente'])){
             return redirect('/');
         }
+        Helper::check();                
+       
+        $this->mascotas = Mascota::orderBy('id', 'desc')
+                                ->where('owner_id', $this->ownerId())
+                                ->take(10)
+                                ->get();     
+        $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
+        $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
+    }
+
+    public function ownerId() :mixed {
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        }                                  
+        return $admin_id;
     }
 
     /**
@@ -91,7 +108,9 @@ class FormAddMascota extends Component {
             'dueno' => 'required'
         ]);
 
-        $this->duenosEcontrados = Dueno::where('nombre', 'like', "%$this->dueno%")->get();                        
+        $this->duenosEcontrados = Dueno::where('nombre', 'like', "%$this->dueno%")
+                                        ->where('owner_id', $this->ownerId())
+                                        ->get();                        
         $this->buscarDuenoTrue();        
     } 
 
@@ -99,7 +118,9 @@ class FormAddMascota extends Component {
      * 
      */
     public function openModalEdit($mascotaId){
-        $mascotaToEdit = Mascota::find($mascotaId);
+        $mascotaToEdit = Mascota::where('id', $mascotaId)
+                                ->where('owner_id', $this->ownerId())
+                                ->first();
         if(!$mascotaToEdit){
             $this->redirect('/registrar/mascota');
         }
@@ -126,7 +147,9 @@ class FormAddMascota extends Component {
      * 
      */
     public function eliminar($mascotaId){
-        $mascota = Mascota::find($mascotaId);
+        $mascota = Mascota::where('id', $mascotaId)
+                            ->where('owner_id', $this->ownerId())
+                            ->first();
         if(!$mascota){
             $this->redirect('/registrar/mascota');
         }
@@ -147,7 +170,9 @@ class FormAddMascota extends Component {
     }
 
     public function eliminarEspecie($especie){                 
-        $especie = Especie::find($especie);
+        $especie = Especie::where('id', $especie)
+                            ->where('owner_id', $this->ownerId())
+                            ->first();
         if(!$especie){
             $this->redirect('/registrar/mascota');
         }
@@ -167,20 +192,10 @@ class FormAddMascota extends Component {
         $this->validate([
             'especie' => 'required',            
         ]);
-        
-        $requestUserId = Auth::user()->id;
-        $user = User::find($requestUserId);
-        if($user->admin){
-            $admin_id = $user->id;
-        }else{
-            $admin_id = $user->admin_id;
-        }
-        if($admin_id == null){
-            return back()->with('error', 'No tienes permisos para agregar una mascota');
-        }                                  
+                                                  
         Especie::create([
             'nombre' => $this->especie,
-            'owner_id' => $admin_id,
+            'owner_id' => $this->ownerId(),
         ]);
 
         return redirect('/registrar/mascota')->with('agregado', "$this->especie, se agrego correctamente");
@@ -207,19 +222,26 @@ class FormAddMascota extends Component {
      */
     public function filtrar(){
         if(empty($this->search)){
-            $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
+            $this->mascotas = Mascota::orderBy('id', 'desc')
+                                    ->where('owner_id', $this->ownerId())
+                                    ->take(10)
+                                    ->get();     
         }else{
-            $this->mascotas = Mascota::whereLike('nombre', "%$this->search%")->get();
+            $this->mascotas = Mascota::whereLike('nombre', "%$this->search%")
+                                    ->where('owner_id', $this->ownerId())
+                                    ->get();
         }
     }
 
     public function flag(){
         $this->search = '';
-        $this->mascotas = Mascota::orderBy('id', 'desc')->take(10)->get();     
+        $this->mascotas = Mascota::orderBy('id', 'desc')
+                                ->where('owner_id', $this->ownerId())
+                                ->take(10)
+                                ->get();     
     }
 
-    public function render()
-    {
+    public function render() {
         return view('livewire.form-add-mascota');
     }
 }

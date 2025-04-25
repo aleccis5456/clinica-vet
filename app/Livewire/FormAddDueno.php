@@ -8,6 +8,7 @@ use App\Models\Mascota;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 #[Title('Agregar Dueno')]
@@ -29,15 +30,46 @@ class FormAddDueno extends Component
     /**
      * 
      */
-    public $duenos;
-    public $mascotas;
-    public $duenoToEdit;
-    public $modalEdit = false;   
-    public $duenoId = ''; 
-    public $modalEliminar = false;
-    public $duenoToDelete = '';
-    public $search = '';
-    public $modalAddDueno = false;
+    public object $duenos;
+    public object $mascotas;
+    public object $duenoToEdit;
+    public bool $modalEdit = false;   
+    public string $duenoId = ''; 
+    public bool $modalEliminar = false;
+    public string $duenoToDelete = '';
+    public string $search = '';
+    public bool $modalAddDueno = false;
+
+
+    /**
+     * 
+     */
+    public function mount(){
+        if(empty(session('modulos')['gestionPaciente'])){
+            return redirect('/');
+        }
+        Helper::check();
+                                             
+        $this->duenos = Dueno::orderBy('id', 'desc')
+                            ->where('owner_id', $this->ownerId())
+                            ->take(10)
+                            ->get();                       
+        $this->mascotas = Mascota::where('owner_id', $this->ownerId())->get();                                    
+    }
+
+    public function ownerId(){
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
+    }
 
     /***
      * 
@@ -49,30 +81,19 @@ class FormAddDueno extends Component
             'nombre' => $this->nombre,
             'telefono' => $this->telefono,
             'email' => $this->email,
-            'owner_id' => Auth::user()->id
+            'owner_id' => $this->ownerId()
         ]);
 
         return redirect('/')->with('agregado', "$this->nombre, se agrego correctamente");
     }
-
-    /**
-     * 
-     */
-    public function mount(){
-        Helper::check();
-        $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
-        $this->mascotas = Mascota::all();
-
-
-        if(empty(session('modulos')['gestionPaciente'])){
-            return redirect('/');
-        }
-    }
+    
     /**
      * 
      */
     public function borrarDueno($duenoId){        
-        $dueno = Dueno::find($duenoId);
+        $dueno = Dueno::where('id', $duenoId)
+                        ->where('owner_id', $this->ownerId())
+                        ->first();
 
         $dueno->delete();
         
@@ -83,7 +104,9 @@ class FormAddDueno extends Component
      */
     public function openModalEdit($duenoId){
         $this->modalEdit = true;        
-        $this->duenoToEdit = Dueno::find($duenoId);
+        $this->duenoToEdit = Dueno::where('id', $duenoId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->first();
         $this->duenoId = $duenoId;
     }
 
@@ -101,7 +124,10 @@ class FormAddDueno extends Component
             'email' => 'sometimes',
             'duenoId' => 'required'
         ]);                
-        $dueno = Dueno::find($this->duenoId);                
+        $dueno = Dueno::where('id', $this->duenoId)
+                        ->where('owner_id', $this->ownerId())
+                        ->first();   
+
         $dueno->update([
             'nombre' => empty($this->nombre) ? $dueno->nombre : $this->nombre,
             'telefono' => empty($this->telefono) ? $dueno->telefono : $this->telefono,
@@ -129,16 +155,24 @@ class FormAddDueno extends Component
      */
     public function filtrar(){
         if(empty($this->search)){
-            $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
+            $this->duenos = Dueno::orderBy('id', 'desc')
+                                ->where('owner_id', $this->ownerId())
+                                ->take(10)
+                                ->get();                       
         }else{
-            $this->duenos = Dueno::whereLike('nombre', '%' . $this->search . '%')->get();                                  
+            $this->duenos = Dueno::whereLike('nombre', '%' . $this->search . '%')
+                                ->where('owner_id', $this->ownerId())
+                                ->get();                                  
         }
         
         //
     }  
     public function flag(){
         $this->search = '';
-        $this->duenos = $this->duenos = Dueno::orderBy('id', 'desc')->take(10)->get();                       
+        $this->duenos = $this->duenos = Dueno::orderBy('id', 'desc')
+                                            ->take(10)
+                                            ->where('owner_id', $this->ownerId())
+                                            ->get();                       
     }
 
     /**
@@ -151,8 +185,7 @@ class FormAddDueno extends Component
         $this->modalAddDueno = false;
     }  
     
-    public function render()
-    {                                    
+    public function render() {                                    
         return view('livewire.form-add-dueno');
     }
 }

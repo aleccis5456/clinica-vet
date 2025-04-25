@@ -70,8 +70,27 @@ class Consultas extends Component
     /**
      * 
      */
+    public function ownerId(){
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
+    }
+
+    /** 
+     * 
+     */     
     public function mascotasBusquedaTrue() {
-        $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")->get();
+        $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")
+                                        ->where('owner_id', $this->ownerId())
+                                        ->get();
         $this->mascotasBusqueda = true;
     }
     public function mascotasBusquedaFalse() {
@@ -93,9 +112,14 @@ class Consultas extends Component
      */
     public function busqueda() {
         if (empty($this->search)) {
-            $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+            $this->consultas = Consulta::orderBy('id', 'desc')
+                                        ->where('owner_id', $this->ownerId())
+                                        ->take(12)
+                                        ->get();
         } else {
-            $mascotas = Mascota::whereLike('nombre', "%$this->search%")->pluck('id');
+            $mascotas = Mascota::whereLike('nombre', "%$this->search%")
+                                ->where('owner_id', $this->ownerId())
+                                ->pluck('id');
             $this->consultas = Consulta::whereIn('mascota_id', $mascotas)
                 ->orWhereLike('codigo', "%$this->search%")
                 ->get();
