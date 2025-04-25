@@ -17,10 +17,11 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 #[Title('Consultas')]
-class Consultas extends Component
-{
+class Consultas extends Component {
     public $search = '';
     public $mascotas;
     public $veterinarios;
@@ -70,7 +71,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function ownerId(){
+    public function ownerId(): mixed{
         $requestUserId = Auth::user()->id;
         $user = User::find($requestUserId);
         if($user->admin){
@@ -87,20 +88,20 @@ class Consultas extends Component
     /** 
      * 
      */     
-    public function mascotasBusquedaTrue() {
+    public function mascotasBusquedaTrue(): void {
         $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")
                                         ->where('owner_id', $this->ownerId())
                                         ->get();
         $this->mascotasBusqueda = true;
     }
-    public function mascotasBusquedaFalse() {
+    public function mascotasBusquedaFalse(): void {
         $this->mascotasBusqueda = false;
     }
 
     /**
      * 
      */
-    public function selectMascota($mascotaId) {
+    public function selectMascota($mascotaId): void {
         $this->mascota_id = $mascotaId;
         $this->mascotasBusqueda = false;
         $this->mascotaSearch = '';
@@ -110,7 +111,7 @@ class Consultas extends Component
     /**
      * function para la busqueda
      */
-    public function busqueda() {
+    public function busqueda(): void {
         if (empty($this->search)) {
             $this->consultas = Consulta::orderBy('id', 'desc')
                                         ->where('owner_id', $this->ownerId())
@@ -121,21 +122,24 @@ class Consultas extends Component
                                 ->where('owner_id', $this->ownerId())
                                 ->pluck('id');
             $this->consultas = Consulta::whereIn('mascota_id', $mascotas)
-                ->orWhereLike('codigo', "%$this->search%")
-                ->get();
+                                        ->orWhereLike('codigo', "%$this->search%")
+                                        ->where('owner_id', $this->ownerId())
+                                        ->get();
         }
     }
-    public function flagC() {
+    public function flagC(): void {
         $this->search = '';
-        $this->consultas = Consulta::orderBy('id', 'desc')->take(12)->get();
+        $this->consultas = Consulta::orderBy('id', 'desc')
+                                    ->where('owner_id', $this->ownerId())
+                                    ->take(12)->get();
     }
 
     /**
      * function para elimiar un veterinario del grupo
      */
-    public function eliminarVetGrupo($vetId) {
+    public function eliminarVetGrupo($vetId): RedirectResponse {
         try {
-            $vet = ConsultaVeterinario::find($vetId)?->delete();
+            ConsultaVeterinario::find($vetId)?->delete();
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
@@ -146,7 +150,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function vaciarVariables() {
+    public function vaciarVariables(): void {
         $this->mascota_id = null;
         $this->veterinario_id = null;
         $this->fecha = null;
@@ -162,18 +166,18 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openProductoConsulta($cpId) {
+    public function openProductoConsulta($cpId): void {
         $this->cpId = $cpId;
         $this->modalProductoConsulta = true;
     }
-    public function closeProductoConsulta() {
+    public function closeProductoConsulta(): void {
         $this->modalProductoConsulta = false;
     }
 
     /**
      * comprueba que hay ningun array vacio 
      */
-    public function comprobarSession() {
+    public function comprobarSession(): void {
         $sessionConsumo = session('consumo', []);
 
         // Filtrar los valores vacíos
@@ -202,26 +206,27 @@ class Consultas extends Component
     /**
      * 
      */
-    public function filtrarProductos() {
+    public function filtrarProductos(): void {
         $this->openProductoConsumido();
         if (empty($this->q)) {
             $this->productos = Producto::take(0)->get();
         } else {
             $this->openProductoConsumido();
             $this->productos = Producto::whereLike('nombre', "%$this->q%")
+                ->where('owner_id', $this->ownerId())
                 ->where('stock_actual', '>', 1)
                 ->get();
         }
     }
 
-    public function flag() {
+    public function flag(): void {
         $this->q = '';
     }
 
     /**
      * creacion de la sesion de productos
      */
-    public function addProducto($productoId, $consultaId) {
+    public function addProducto($productoId, $consultaId)  {
         $producto = Producto::find($productoId);
 
         if (!$producto) {
@@ -346,20 +351,20 @@ class Consultas extends Component
     /**
      * 
      */
-    public function openCambiarVet() {
+    public function openCambiarVet(): void {
         $this->cambiarVet = true;
     }
-    public function closeCambiarVet() {
+    public function closeCambiarVet(): void {
         $this->vetChanged = '';
         $this->cambiarVet = false;
     }
-    public function setVetChanged($vetId) {
+    public function setVetChanged($vetId): void {
         $this->vetChanged = $vetId;
     }
-    public function showMessage() {
+    public function showMessage(): void {
         $this->message = true;
     }
-    public function closeMessage() {
+    public function closeMessage(): void {
         $this->message = false;
     }
 
@@ -377,7 +382,9 @@ class Consultas extends Component
         $this->diagnostico = $this->consultaToEdit->diagnostico;
         $this->tratamiento = $this->consultaToEdit->tratamiento;
 
-        $this->consultasProductos = ConsultaProducto::where('consulta_id', $consultaId)->get();
+        $this->consultasProductos = ConsultaProducto::where('consulta_id', $consultaId)
+                                                    ->where('owner_id', $this->ownerId())
+                                                    ->get();
         $this->modalConfig = true;
     }
 
@@ -403,7 +410,7 @@ class Consultas extends Component
     /**
      * funcion que crea las consultas
      */
-    public function crearConsulta() {
+    public function crearConsulta(): RedirectResponse {
         $this->validate([
             'mascota_id' => 'required',
             'veterinario_id' => 'required',
@@ -435,7 +442,9 @@ class Consultas extends Component
                 $this->estado = 'Agendado';
             }
             $requestUserId = Auth::user()->id;
-            $user = User::find($requestUserId);
+            $user = User::where('id', $requestUserId)
+                        ->where('owner_id', $this->ownerId())
+                        ->first();
             if($user->admin){
             $admin_id = $user->id;
             }else{
@@ -468,10 +477,10 @@ class Consultas extends Component
     /**
      * 
      */
-    public function opneAddConsulta() {
+    public function opneAddConsulta(): void {
         $this->addConsulta = true;
     }
-    public function closeAddConsulta() {
+    public function closeAddConsulta(): void {
         $this->vetChanged = '';
         $this->addConsulta = false;
     }
@@ -479,7 +488,7 @@ class Consultas extends Component
     /**
      * funcion que actualiza el estado desde la vista principal de las consultas, <select>
      */
-    public function updateEstado($consultaID, $estadoNuevo) {
+    public function updateEstado($consultaID, $estadoNuevo): RedirectResponse {
         try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
@@ -509,7 +518,7 @@ class Consultas extends Component
     /**
      * function para cambiar veterinario
      */
-    public function updateVet() : \Illuminate\Http\RedirectResponse {
+    public function updateVet() :RedirectResponse {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
@@ -522,9 +531,11 @@ class Consultas extends Component
             ]);
             $consulta->save();
 
-            ConsultaVeterinario::where('consulta_id', $consulta->id)->update([
-                'veterinario_id' => $this->cambiarVetId,
-            ]);
+            ConsultaVeterinario::where('consulta_id', $consulta->id)
+                                ->where('owner_id', $this->ownerId())
+                                ->update([
+                                    'veterinario_id' => $this->cambiarVetId,
+                                ]);
 
             return redirect()->route('consultas')->with('editado', 'Consulta actualizada con éxito');
         } catch (\Exception $e) {
@@ -534,18 +545,12 @@ class Consultas extends Component
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta() : \Illuminate\Http\RedirectResponse {
+    public function updateConsulta() : RedirectResponse {
         //esta parte agrega los productos a la consulta
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             try {
-                $requestUserId = Auth::user()->id;
-                $user = User::find($requestUserId);
-                if($user->admin){
-                    $admin_id = $user->id;
-                }else{
-                    $admin_id = $user->admin_id;
-                }
+                $admin_id = $this->ownerId();
 
                 foreach ($consumo[$this->consultaToEdit->id] as $item) {
                     ConsultaProducto::create([
@@ -591,9 +596,11 @@ class Consultas extends Component
     /**
      * function para eliminar una consultaProdcutos     
      */
-    public function EliminarProductoConsulta($cpId) {
+    public function EliminarProductoConsulta($cpId): RedirectResponse {
         try {
-            $cp = ConsultaProducto::find($cpId)?->delete();
+            ConsultaProducto::where('id', $cpId)
+                            ->where('owner_id', $this->ownerId())
+                            ?->delete();
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
         }
@@ -615,10 +622,13 @@ class Consultas extends Component
                                 ELSE 5
                             END")
             ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
+            ->where('owner_id', $this->ownerId())
             ->take(12)
             ->get();
         } else {
-            $this->consultas = Consulta::where('estado', $this->estadofiltrado)->get();
+            $this->consultas = Consulta::where('estado', $this->estadofiltrado)
+                                        ->where('owner_id', $this->ownerId())
+                                        ->get();
         }
     }
 
@@ -627,23 +637,14 @@ class Consultas extends Component
      */
     public function mount() {
         Helper::check();
-        $requestUserId = Auth::user()->id;
-        $user = User::find($requestUserId);
-        if($user->admin){
-            $admin_id = $user->id;
-        }else{
-            $admin_id = $user->admin_id;
-        }
-        if($admin_id == null){
-            return back()->with('error', 'No tienes permisos para agregar una mascota');
-        }                                  
+                                 
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%Vet%")
-                    ->where('owner_id', $admin_id)
+                    ->where('owner_id', $this->ownerId() )
                     ->first();
         $vetId = $rol->id ?? null;
         $this->veterinarios = User::where('rol_id', $vetId)
-                                    ->where('admin_id', $admin_id)
+                                    ->where('admin_id', $this->ownerId())
                                     ->get();        
         //dd($this->veterinarios);
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
@@ -653,11 +654,11 @@ class Consultas extends Component
             ->WhereLike('name', "%pelu%")
             ->orWhereLike('name', "%este%")
             ->orWhereLike('name', "%tica%")            
-
+            ->where('owner_id', $this->veterinarios->id)
             ->first();
         $userId = $rol->id ?? null;
         $this->users = User::where('rol_id', $userId)
-                            ->where('admin_id', Auth::user()->id)
+                            ->where('admin_id', $this->ownerId())
                             ->get();
 
         $this->vaciarVariables();
@@ -667,7 +668,7 @@ class Consultas extends Component
         //inicializa la hora de la consulta. para que la fecha sea la actual automaticamente
         $this->hora = now()->format('H:i');
 
-        $this->mascotas = Mascota::all();
+        $this->mascotas = Mascota::where('owner_id', $this->veterinarios->id)->get();
         $this->consultas = Consulta::orderByRaw("
                             CASE 
                                 WHEN estado = 'Internado' THEN 1
@@ -677,14 +678,14 @@ class Consultas extends Component
                                 ELSE 5
                             END")
             ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
+            ->where('owner_id', $this->ownerId())
             ->take(12)
             ->get();
 
-        $this->tipoConsultas = TipoConsulta::all();
-        $this->grupoVet = ConsultaVeterinario::all();
-        $this->pagos = Pago::all();
+        $this->tipoConsultas = TipoConsulta::where('owner_id', $this->veterinarios->id)->get();
+        $this->grupoVet = ConsultaVeterinario::where('owner_id', $this->veterinarios->id)->get();
+        $this->pagos = Pago::where('owner_id', $this->veterinarios->id)->get();
         $this->hora = now()->addHour()->addMinutes(2)->format('H:i');
-
 
         $this->comprobarSession();
         Session::forget('caja');
@@ -695,7 +696,7 @@ class Consultas extends Component
         }
     }
 
-    public function render() {
+    public function render(): View {
         return view('livewire.consultas');
     }
 }
