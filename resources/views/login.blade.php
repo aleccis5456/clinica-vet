@@ -3,7 +3,7 @@
         <div class=" w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
             <!-- Imagen -->
             <div class="hidden md:block ">
-                <img src="{{ asset('images/tests/bg.jpg') }}" alt="Imagen de login" class="w-full h-full object-cover">
+                <img src="{{ asset('images/tests/bg-login.webp') }}" alt="Imagen de login" class="w-full h-full object-cover">
             </div>            
             <!-- Formulario -->
             <div class="p-8 flex flex-col justify-center ">

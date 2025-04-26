@@ -42,7 +42,29 @@ class Caja extends Component
     public bool $tablaClientes = false;    
     public int $total = 0;
     public bool $confirmar = false;
-    public string $formaPago = '';    
+    public string $formaPago = ''; 
+    
+    public function mount()  {
+        Helper::check();
+        if(empty(session('modulos')['caja'])){
+            return redirect('/');
+        }
+        $this->duenos = Dueno::all();                   
+    } 
+
+    public function ownerId(): mixed{
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
+    }
 
     public function confirmarTrue(){
         $this->validate([
@@ -59,7 +81,7 @@ class Caja extends Component
     }
 
     public function tablaClientesTrue(){
-        $this->clientesf = DatosFactura::orderByDesc('id')->get();
+        $this->clientesf = DatosFactura::where('owner_id', $this->ownerId())->orderByDesc('id')->get();
         $this->tablaClientes = true;
     }
     public function tablaClientesFalse(){
@@ -113,7 +135,9 @@ class Caja extends Component
      */
     public function eliminarCliente($clienteId){
         try{
-            $cliente = DatosFactura::find($clienteId)?->delete();
+            $cliente = DatosFactura::where('id', $clienteId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ?->delete();
         }catch(\Exception $e){
             return redirect()->route('caja')->with('error', 'Ocurrió un error');
         }        
@@ -133,22 +157,11 @@ class Caja extends Component
             'rRuc.unique' => 'El número de RUC o CI ya está registrado. Intente con otro'
         ]);
 
-        $requestUserId = Auth::user()->id;
-        $user = User::find($requestUserId);
-        if($user->admin){
-            $admin_id = $user->id;
-        }else{
-            $admin_id = $user->admin_id;
-        }
-        if($admin_id == null){
-            return back()->with('error', 'No tienes permisos para agregar una mascota');
-        }                                  
-
         try{
             DatosFactura::create([
                 'nombre_rs' => $this->rNombre,
                 'ruc_ci' => $this->rRuc,
-                'owner_id' => $admin_id,
+                'owner_id' => $this->ownerId(),
             ]);
         }catch(\Exception $e){
             return redirect()->route('caja')->with('error', $e->getMessage());
@@ -170,9 +183,14 @@ class Caja extends Component
             $this->alertaFalse();
             $this->tablaTrue();
             if ($this->opcion == '1') {
-                $this->productos = Producto::whereLike('nombre', "%$this->search%")->get();
+                $this->productos = Producto::whereLike('nombre', "%$this->search%")
+                                           ->where('stock_actual', '>', 0)
+                                           ->where('owner_id', $this->ownerId())
+                                            ->get();
             } else {
-                $this->productos = TipoConsulta::whereLike('nombre', "%$this->search%")->get();
+                $this->productos = TipoConsulta::whereLike('nombre', "%$this->search%")
+                                                ->where('owner_id', $this->ownerId())
+                                                ->get();
             }
         }        
     }
@@ -205,9 +223,14 @@ class Caja extends Component
             }            
         }
         if ($this->opcion == '1') {
-            $producto = Producto::find($id);
+            $producto = Producto::where('id',$id)->where('stock_actual', '>', 0)
+                                ->where('owner_id', $this->ownerId())
+                                ->first();
         } else {            
-            $producto = TipoConsulta::find($id);            
+            $producto = TipoConsulta::where('id', $id)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->first();
+                   
         }
         if (!$producto) {
             return redirect()->route('caja');
@@ -251,6 +274,7 @@ class Caja extends Component
         }else{
             $this->clientes = DatosFactura::whereLike('nombre_rs', "%$filtro%")
                                         ->orWhereLike('ruc_ci', "%$filtro%")
+                                        ->where('owner_id', $this->ownerId())
                                         ->get();
             $this->resultadosTrue();
         }        
@@ -298,24 +322,17 @@ class Caja extends Component
             }
         }
                
-        $consulta = Consulta::find($consultaId);                    
+        $consulta = Consulta::where('id', $consultaId)
+                            ->where('owner_id', $this->ownerId())
+                            ->first();
+
         $cliente = DatosFactura::where('ruc_ci', $this->rucCI)->first();
         
         if (!$cliente) {
             return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
         }        
         DB::beginTransaction();
-        try{                      
-            $requestUserId = Auth::user()->id;
-            $user = User::find($requestUserId);
-            if($user->admin){
-                $admin_id = $user->id;
-            }else{
-                $admin_id = $user->admin_id;
-            }
-            if($admin_id == null){
-                return back()->with('error', 'No tienes permisos para agregar una mascota');
-            }                                                
+        try{                                                             
             $pago = Pago::where('consulta_id', $consultaId)->where('pagado', 0)->first();                        
             if ($pago) {    
                 $pago->update([
@@ -340,7 +357,7 @@ class Caja extends Component
                 'monto' => Helper::total(),
                 'cliente_id' => $cliente->id,                        
                 'forma_pago' => $this->formaPago,
-                'owner_id' => $admin_id,
+                'owner_id' => $this->ownerId(),
             ]);
 
             foreach($cobro as $item){                
@@ -351,7 +368,7 @@ class Caja extends Component
                     'cantidad' => $item['cantidad'],
                     'precio_unitario' => $item['precio'],
                     'precio_total' => $item['precio'] * $item['cantidad'],
-                    'owner_id' => $admin_id,
+                    'owner_id' => $this->ownerId(),
                 ]);                
                 if($item['opcion'] == '1'){
                     $producto = Producto::find($item['productoId']);
@@ -423,16 +440,7 @@ class Caja extends Component
         }
 
         return $randomString;
-    }
-
-    public function mount()  {
-        Helper::check();
-        if(empty(session('modulos')['caja'])){
-            return redirect('/');
-        }
-
-        $this->duenos = Dueno::all();                   
-    }    
+    }   
 
     public function render() {
         return view('livewire.caja');

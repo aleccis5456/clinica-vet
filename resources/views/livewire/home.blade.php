@@ -19,7 +19,7 @@
     </nav>
     
     <!-- Contenedor principal -->
-    <div class="container mx-auto p-4">        
+    <div class="container mx-auto pt-24 ">        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Gestión de pacientes -->
             @if (session('modulos'))                            

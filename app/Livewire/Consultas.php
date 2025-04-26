@@ -410,7 +410,7 @@ class Consultas extends Component {
     /**
      * funcion que crea las consultas
      */
-    public function crearConsulta(): RedirectResponse {
+    public function crearConsulta() {
         $this->validate([
             'mascota_id' => 'required',
             'veterinario_id' => 'required',
@@ -441,19 +441,7 @@ class Consultas extends Component {
             if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
                 $this->estado = 'Agendado';
             }
-            $requestUserId = Auth::user()->id;
-            $user = User::where('id', $requestUserId)
-                        ->where('owner_id', $this->ownerId())
-                        ->first();
-            if($user->admin){
-            $admin_id = $user->id;
-            }else{
-                $admin_id = $user->admin_id;
-            }
-            if($admin_id == null){
-                return back()->with('error', 'No tienes permisos para agregar una mascota');
-            }                                  
-
+        
             $consulta = Consulta::create([
                 'mascota_id' => $this->mascota_id,
                 'veterinario_id' => $this->veterinario_id,
@@ -466,7 +454,7 @@ class Consultas extends Component {
                 'hora' => $this->hora,
                 'estado' => $this->estado ?? 'Pendiente',
                 'codigo' => $this->codigo(6),
-                'owner_id' => $admin_id,
+                'owner_id' => $this->ownerId(),
             ]);
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
@@ -486,9 +474,9 @@ class Consultas extends Component {
     }
 
     /**
-     * funcion que actualiza el estado desde la vista principal de las consultas, <select>
+     * function que actualiza el estado desde la vista principal de las consultas, <select>
      */
-    public function updateEstado($consultaID, $estadoNuevo): RedirectResponse {
+    public function updateEstado($consultaID, $estadoNuevo) {
         try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
@@ -545,7 +533,7 @@ class Consultas extends Component {
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta() : RedirectResponse {
+    public function updateConsulta()  {
         //esta parte agrega los productos a la consulta
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
@@ -611,7 +599,7 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function filtarPorEstados() {
+    public function filtarPorEstados(): void {
         if ($this->estadofiltrado == 1) {
             $this->consultas = Consulta::orderByRaw("
                             CASE 
@@ -649,13 +637,13 @@ class Consultas extends Component {
         //dd($this->veterinarios);
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereNotLike('name', "%vet%")
-            ->whereNotLike('name', "%user%")
-            ->whereNotLike('name', "%admin%")
-            ->WhereLike('name', "%pelu%")
-            ->orWhereLike('name', "%este%")
-            ->orWhereLike('name', "%tica%")            
-            ->where('owner_id', $this->veterinarios->id)
-            ->first();
+                    ->whereNotLike('name', "%user%")
+                    ->whereNotLike('name', "%admin%")
+                    ->WhereLike('name', "%pelu%")
+                    ->orWhereLike('name', "%este%")
+                    ->orWhereLike('name', "%tica%")            
+                    ->where('owner_id', $this->ownerId())
+                    ->first();
         $userId = $rol->id ?? null;
         $this->users = User::where('rol_id', $userId)
                             ->where('admin_id', $this->ownerId())
@@ -668,7 +656,7 @@ class Consultas extends Component {
         //inicializa la hora de la consulta. para que la fecha sea la actual automaticamente
         $this->hora = now()->format('H:i');
 
-        $this->mascotas = Mascota::where('owner_id', $this->veterinarios->id)->get();
+        $this->mascotas = Mascota::where('owner_id', $this->ownerId())->get();
         $this->consultas = Consulta::orderByRaw("
                             CASE 
                                 WHEN estado = 'Internado' THEN 1
@@ -682,9 +670,9 @@ class Consultas extends Component {
             ->take(12)
             ->get();
 
-        $this->tipoConsultas = TipoConsulta::where('owner_id', $this->veterinarios->id)->get();
-        $this->grupoVet = ConsultaVeterinario::where('owner_id', $this->veterinarios->id)->get();
-        $this->pagos = Pago::where('owner_id', $this->veterinarios->id)->get();
+        $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
+        $this->grupoVet = ConsultaVeterinario::where('owner_id', $this->ownerId())->get();
+        $this->pagos = Pago::all();
         $this->hora = now()->addHour()->addMinutes(2)->format('H:i');
 
         $this->comprobarSession();

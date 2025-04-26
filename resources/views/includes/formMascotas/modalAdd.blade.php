@@ -19,13 +19,13 @@
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Mascota</p>            
 
             <!--  Campo para relacionar al dueno -->
-            <div class="mb-4">
-                <label class="block text-gray-800 font-medium mb-2">Buscar y/o Seleccionar Dueño</label>                
+            <div class="mb-4 border-b border-gray-800 pb-6">
+                <label class="block text-gray-800 font-semibold mb-2">Buscar y/o Seleccionar Dueño</label>                
                 <!-- muestra el dueno seleccionado -->                                        
                 <div class="flex relative">
                     <input type="text" wire:model='dueno' wire:keydown.enter="searchDueno"
                     class="transition duration-300 {{ empty($dueno_id) ? 'w-[70%]' : 'w-[30%]' }}  px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                    placeholder="Nombre o email" value="{{ $duenoSet->nombre ?? '' }}">
+                    placeholder="Buscar Dueño" value="{{ $duenoSet->nombre ?? '' }}">
 
                     <button type="button" wire:click="searchDueno"
                             class="absolute {{ empty($dueno_id) ? 'right-26' : 'left-15' }} top-[3px] bg-gray-200 hover:bg-gray-300 transition p-2 rounded-lg">

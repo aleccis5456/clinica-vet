@@ -10,7 +10,7 @@
     <title>{{ $title ?? 'Page Title' }}</title>
     <title>Document</title>
 </head>
-<body>
+<body >
     <div>
         @include('includes.sidebar-add-dueno')
     </div>

@@ -12,7 +12,7 @@
             <span class="sr-only">Cerrar</span>
         </button>
         <form wire:submit.prevent="crearConsulta"
-            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto"
+            class="bg-white border border-gray-100 p-8 max-w-md mx-auto shadow-lg rounded-lg max-h-screen outline-none overflow-x-hidden overflow-y-auto"
             onkeydown="return event.key !== 'Enter';">
             <!-- Título -->
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Agregar Consulta</p>
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Diagnóstico -->
-            <div class="mb-4">
+            {{-- <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Diagnóstico</label>
                 <textarea wire:model="diagnostico"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
@@ -132,7 +132,7 @@
                 @error('tratamiento')
                     <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
-            </div>
+            </div> --}}
 
             <!-- Notas -->
             <div class="mb-4">
