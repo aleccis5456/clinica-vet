@@ -68,8 +68,14 @@ class User extends Authenticatable
     public function admin(){
         return $this->belongsTo(User::class, 'admin_id');
     }
+    public function owner(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+    public function cajas(){
+        return $this->hasMany(Caja::class);
+    }
 
-    public function subordinados(){
+    public function usuarios(){
         return $this->hasMany(User::class, 'admin_id');
     }
 }

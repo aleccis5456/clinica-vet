@@ -23,4 +23,11 @@ class ConsultaProducto extends Model
     public function consulta(){
         return $this->belongsTo(Consulta::class, 'consulta_id');
     }
+
+    public function owner(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+    public function caja(){
+        return $this->hasMany(Caja::class);
+    }
 }

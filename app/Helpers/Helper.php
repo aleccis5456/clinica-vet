@@ -9,24 +9,29 @@ use App\Models\Consulta;
 use App\Models\Producto;
 use App\Models\ConsultaProducto;
 use App\Models\Pago;
+use App\Models\Caja;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class Helper
 {
-    public static function formatearFecha($fecha) {
+    public static function formatearFecha($fecha)
+    {
         return Carbon::parse($fecha)->format('d-m-Y');
     }
 
-    public static function formatearMonto($monto) {
+    public static function formatearMonto($monto)
+    {
         return number_format(round($monto, -2), 0, ',', '.');
     }
 
-    public static function edad($fecha) {
+    public static function edad($fecha)
+    {
         return Carbon::parse($fecha)->age;
     }
 
-    public static function total(): int {
+    public static function total(): int
+    {
         $total = 0;
         $cobro = session('cobro');
         foreach ($cobro as &$item) {
@@ -35,7 +40,7 @@ class Helper
         return $total;
     }
 
-    public static function crearCajas(): void {
+    public static function crearCajas(): void{
         $pagos = Pago::all();
         $caja = session('caja', []);
         $cortar = false;
@@ -43,18 +48,20 @@ class Helper
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
 
-        if(Auth::check()){
+        if (Auth::check()) {
             $requestUserId = Auth::user()->id;
             $user = User::find($requestUserId);
-            if($user->admin){
+            if ($user->admin) {
                 $admin_id = $user->id;
-            }else{
+            } else {
                 $admin_id = $user->admin_id;
             }
 
-            foreach ($pagos as $pago) {
-                if ($pago->pagado) {
-                    continue;
+            $cajaDB = Caja::where('owner_id', $admin_id)->get();
+            if ($cajaDB->count() > 0) {
+                foreach ($pagos as $pago) {
+                    if ($pago->pagado) {
+                        continue;
                 }
                 foreach ($caja as $item) {
                     if ($item['consultaId'] == $pago->consulta_id) {
@@ -66,23 +73,23 @@ class Helper
                     continue;
                 }
                 $consultaProductos = ConsultaProducto::where('consulta_id', $pago->consulta_id)->get();
-    
+
                 $productos = [];
-    
+
                 foreach ($consultaProductos as $cProducto) {
                     $producto = Producto::find($cProducto->producto_id);
-    
+
                     $productos[] = [
                         "productoId" => $producto->id,
                         "producto" => $producto->nombre,
                         "cantidad" => $cProducto->cantidad,
                         "precio" => $producto->precio,
-                        "owner_id" => $admin_id  
+                        "owner_id" => $admin_id
                     ];
                 }
-    
+
                 $consulta = Consulta::find($pago->consulta_id);
-    
+
                 $pagoSumar = 0;
                 foreach ($productos as $producto) {
                     $pagoSumar += $producto['precio'] * $producto['cantidad'];
@@ -90,8 +97,7 @@ class Helper
                 $pagoSumar += $consulta->tipoConsulta->precio;
                 $pago->monto = $pagoSumar;
                 $pago->save();
-    
-                dd(gettype($pago->estado));
+                
                 $caja[] = [
                     'consultaId' => $pago->consulta_id,
                     'cliente' => $consulta->mascota->dueno,
@@ -103,24 +109,20 @@ class Helper
                     'ownerId' => $admin_id,
                 ];
                 session(['caja' => $caja]);
+                }
             }
         }
-
-        if(session('caja')){
-            if(session('caja')[0]['ownerId'] != $admin_id){
-                session(['caja' => []]);
-            }
-        }
-       
     }
 
-    public static function check(){
+    public static function check()
+    {
         if (!Auth::check()) {
             return redirect('/');
         }
     }
 
-    public static function checkRol($rol) : void {
+    public static function checkRol($rol): void
+    {
         $permisos = PermisoRol::where('rol_id', $rol)->get();
         $permisosRol = [];
         foreach ($permisos as $permiso) {
@@ -135,10 +137,11 @@ class Helper
         session(['permisos' => $permisosUsuario]);
     }
 
-    public static function checkPermisos() : void {
-        $modulos = session('modulos', []);                
+    public static function checkPermisos(): void
+    {
+        $modulos = session('modulos', []);
 
-        if (Auth::user()) {                             
+        if (Auth::user()) {
             $permisosIds = session('permisos');
 
             foreach ($permisosIds as $permisoId) {
@@ -168,17 +171,18 @@ class Helper
         }
     }
 
-    public static function updateEstado($consultaID, $estadoNuevo) {        
+    public static function updateEstado($consultaID, $estadoNuevo)
+    {
         $consultas = Consulta::all();
         try {
-            $consulta = Consulta::find($consultaID);            
+            $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
 
             foreach ($consultas as $consultaC) {
                 if ($consultaC->mascota_id == $consulta->mascota_id) {
                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
                         if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
-                            if($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió'){
+                            if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
                                 return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
                             }
                             return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
@@ -186,10 +190,10 @@ class Helper
                     }
                 }
             }
-        } catch (\Exception $e) {          
+        } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', 'Error al cambiar el estado de la consulta: ' . $e->getMessage());
             //throw new \Exception('Error al cambiar el estado de la consulta: ' . $e->getMessage());
-        }        
+        }
         return $estadoNuevo;
     }
 }

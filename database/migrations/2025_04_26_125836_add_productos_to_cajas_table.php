@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('caja_productos', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('cajas', function (Blueprint $table) {
+            $table->boolean('productos')->nullable();
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('caja_productos');
+        Schema::table('cajas', function (Blueprint $table) {
+            //
+        });
     }
 };

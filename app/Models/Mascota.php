@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Mascota extends Model
 {
     use SoftDeletes;
-
     protected $table = 'mascotas';
 
     protected $fillable = [
@@ -34,5 +33,11 @@ class Mascota extends Model
 
     public function especieN(){
         return $this->belongsTo(Especie::class, 'especie_id');
+    }
+    public function owner(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+    public function cajas(){
+        return $this->hasMany(Caja::class);
     }
 }

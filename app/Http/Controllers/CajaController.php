@@ -8,8 +8,8 @@ use App\Models\Pago;
 use App\Models\ConsultaProducto;
 use App\Models\Producto;
 use App\Models\Consulta;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use App\Models\Caja;
+use App\Models\CajaProductos;
 
 class CajaController extends Controller {
     public function store($consultaId) : mixed{
@@ -35,14 +35,18 @@ class CajaController extends Controller {
             ];            
         }                                
 
-        $caja = session('caja', []);    
+        // $caja = session('caja', []);    
+        $caja = Caja::where('owner_id', $this->ownerId())
+                    ->where('consulta_id', $consultaId)
+                    ->first();
+        if($caja){
+            return back()->with('error', 'Esta consulta ya se envió a caja');
+        }
 
-        foreach($caja as $item){            
-            if($item['consultaId'] == $consultaId){
-                return back()->with('error', 'Esta consulta ya se envió a caja');
-            }
-        }    
-        
+        $productoConsulta = ConsultaProducto::where('owner_id', $this->ownerId())
+                        ->where('consulta_id', $consultaId)
+                        ->first();
+
         $totalConsulta = $consulta->tipoConsulta->precio;
         $totalProductos = 0;        
         foreach($productos as $producto){                  
@@ -60,20 +64,30 @@ class CajaController extends Controller {
             'estado' => 'pendiente'
         ]);
         
-        $caja[] = [
-            'consultaId' => $consultaId,
-            'cliente' => $consulta->mascota->dueno,
-            'mascota' => $consulta->mascota,
-            'productos' => $productos,
-            'consulta' => $consulta,
-            'pagoEstado' => $pago->estado,
-            'montoTotal' => $total,
-            'ownerId' => $this->ownerId(),
-        ];
+        Caja::create([
+            'consulta_id' => $consultaId,
+            'dueno_id' => $consulta->mascota->dueno->id,
+            'mascota_id' => $consulta->mascota->id,
+            'pago_estado' => $pago->estado,
+            'monto_total' => $total,
+            'owner_id' => $this->ownerId(),
+            'producto_consulta_id' => $productoConsulta ? $productoConsulta->id : null,
+        ]);
+
+        // $caja[] = [
+        //     'consultaId' => $consultaId,
+        //     'cliente' => $consulta->mascota->dueno,
+        //     'mascota' => $consulta->mascota,
+        //     'productos' => $productos,
+        //     'consulta' => $consulta,
+        //     'pagoEstado' => $pago->estado,
+        //     'montoTotal' => $total,
+        //     'ownerId' => $this->ownerId(),
+        // ];
         $consulta->update([
             'estado' => 'Pendiente'
         ]);
-        session(['caja' => $caja]);
+        // session(['caja' => $caja]);
         
         return redirect()->back()->with('caja_creada', 'Se ha creado una nueva caja.');
     }

@@ -44,4 +44,10 @@ class Consulta extends Model
         return $this->belongsToMany(Movimiento::class, 'movimiento_productos', 'consulta_id', 'movimiento_id');
     }
 
-}
+    public function owner(){
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+    public function caja(){
+        return $this->hasMany(Caja::class);
+    }
+}   
