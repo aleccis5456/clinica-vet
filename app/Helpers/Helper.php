@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
 use App\Models\PermisoRol;
 use App\Models\Permiso;
 use App\Models\Consulta;
@@ -34,62 +35,83 @@ class Helper
         return $total;
     }
 
-    public static function crearCajas(): void
-    {
+    public static function crearCajas(): void {
         $pagos = Pago::all();
         $caja = session('caja', []);
         $cortar = false;
 
-        foreach ($pagos as $pago) {
-            if ($pago->pagado) {
-                continue;
+        // Verificar si el usuario es admin y obtener su id
+        // Si no es admin, obtener el id del admin al que pertenece
+
+        if(Auth::check()){
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if($user->admin){
+                $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
             }
-            foreach ($caja as $item) {
-                if ($item['consultaId'] == $pago->consulta_id) {
-                    $cortar = true;
+
+            foreach ($pagos as $pago) {
+                if ($pago->pagado) {
+                    continue;
                 }
-            }
-            //para cortar el foreach de pagos         
-            if ($cortar) {
-                continue;
-            }
-            $consultaProductos = ConsultaProducto::where('consulta_id', $pago->consulta_id)->get();
-
-            $productos = [];
-
-            foreach ($consultaProductos as $cProducto) {
-                $producto = Producto::find($cProducto->producto_id);
-
-                $productos[] = [
-                    "productoId" => $producto->id,
-                    "producto" => $producto->nombre,
-                    "cantidad" => $cProducto->cantidad,
-                    "precio" => $producto->precio
+                foreach ($caja as $item) {
+                    if ($item['consultaId'] == $pago->consulta_id) {
+                        $cortar = true;
+                    }
+                }
+                //para cortar el foreach de pagos         
+                if ($cortar) {
+                    continue;
+                }
+                $consultaProductos = ConsultaProducto::where('consulta_id', $pago->consulta_id)->get();
+    
+                $productos = [];
+    
+                foreach ($consultaProductos as $cProducto) {
+                    $producto = Producto::find($cProducto->producto_id);
+    
+                    $productos[] = [
+                        "productoId" => $producto->id,
+                        "producto" => $producto->nombre,
+                        "cantidad" => $cProducto->cantidad,
+                        "precio" => $producto->precio,
+                        "owner_id" => $admin_id  
+                    ];
+                }
+    
+                $consulta = Consulta::find($pago->consulta_id);
+    
+                $pagoSumar = 0;
+                foreach ($productos as $producto) {
+                    $pagoSumar += $producto['precio'] * $producto['cantidad'];
+                }
+                $pagoSumar += $consulta->tipoConsulta->precio;
+                $pago->monto = $pagoSumar;
+                $pago->save();
+    
+                dd(gettype($pago->estado));
+                $caja[] = [
+                    'consultaId' => $pago->consulta_id,
+                    'cliente' => $consulta->mascota->dueno,
+                    'mascota' => $consulta->mascota,
+                    'productos' => $productos,
+                    'consulta' => $consulta,
+                    'pagoEstado' => $pago->estado,
+                    'montoTotal' => $pagoSumar,
+                    'ownerId' => $admin_id,
                 ];
+                session(['caja' => $caja]);
             }
-
-            $consulta = Consulta::find($pago->consulta_id);
-
-            $pagoSumar = 0;
-            foreach ($productos as $producto) {
-                $pagoSumar += $producto['precio'] * $producto['cantidad'];
-            }
-            $pagoSumar += $consulta->tipoConsulta->precio;
-            $pago->monto = $pagoSumar;
-            $pago->save();
-
-
-            $caja[] = [
-                'consultaId' => $pago->consulta_id,
-                'cliente' => $consulta->mascota->dueno,
-                'mascota' => $consulta->mascota,
-                'productos' => $productos,
-                'consulta' => $consulta,
-                'pagoEstado' => $pago->estado,
-                'montoTotal' => $pagoSumar,
-            ];
-            session(['caja' => $caja]);
         }
+
+        if(session('caja')){
+            if(session('caja')[0]['ownerId'] != $admin_id){
+                session(['caja' => []]);
+            }
+        }
+       
     }
 
     public static function check(){

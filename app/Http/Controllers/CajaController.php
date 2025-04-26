@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Pago;
 use App\Models\ConsultaProducto;
 use App\Models\Producto;
@@ -9,9 +11,9 @@ use App\Models\Consulta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-class CajaController extends Controller
-{
+class CajaController extends Controller {
     public function store($consultaId) : mixed{
+        
         $consulta = Consulta::find($consultaId); 
 
         if(!$consulta){
@@ -28,7 +30,8 @@ class CajaController extends Controller
                 "productoId" => $producto->id,
                 "producto" => $producto->nombre,
                 "cantidad" => $cProducto->cantidad,                
-                "precio" => $producto->precio,            
+                "precio" => $producto->precio,     
+                "owner_id" => $this->ownerId(),  
             ];            
         }                                
 
@@ -65,6 +68,7 @@ class CajaController extends Controller
             'consulta' => $consulta,
             'pagoEstado' => $pago->estado,
             'montoTotal' => $total,
+            'ownerId' => $this->ownerId(),
         ];
         $consulta->update([
             'estado' => 'Pendiente'
@@ -72,5 +76,19 @@ class CajaController extends Controller
         session(['caja' => $caja]);
         
         return redirect()->back()->with('caja_creada', 'Se ha creado una nueva caja.');
+    }
+
+    public function ownerId(): mixed{
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
     }
 }
