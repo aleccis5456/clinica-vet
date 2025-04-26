@@ -52,13 +52,30 @@ class Inventario extends Component {
      */
     public function mount() {
         Helper::check();
-        $this->productos = Producto::all();
-        $this->categorias = Categoria::all();
-        $this->proveedores = Proveedor::all();
+        $this->productos = Producto::where('owner_id', $this->ownerId())->get();
+        $this->categorias = Categoria::where('owner_id', $this->ownerId())->get();
+        $this->proveedores = Proveedor::where('owner_id', $this->ownerId())->get();
 
         if(empty(session('modulos')['inventario'])){
             return redirect('/');
         }
+    }
+
+    /**
+     * 
+     */
+    public function ownerId(): mixed{
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
     }
 
     /**
@@ -83,17 +100,7 @@ class Inventario extends Component {
     }
 
     public function crearProveedor(){
-        try{
-            $requestUserId = Auth::user()->id;
-            $user = User::find($requestUserId);
-            if($user->admin){
-                $admin_id = $user->id;
-            }else{
-                $admin_id = $user->admin_id;
-            }
-            if($admin_id == null){
-                return back()->with('error', 'No tienes permisos para agregar una mascota');
-            }                                  
+        try{                          
             $this->validate([
                 'nombreP' => 'required',                                
             ]);
@@ -104,14 +111,14 @@ class Inventario extends Component {
                 'direccion' => $this->direccionP ?? null,
                 'email' => $this->email ?? null,
                 'ruc' => $this->ruc ?? null,  
-                'owner_id' => $admin_id,
+                'owner_id' => $this->ownerId(),
             ]);
         }catch(\Exception $e){
             DB::commit();
             return redirect()->route('inventario')->with('error', 'Error al agregar el proveedor '. $e->getMessage());
         }
-        return redirect()->route('inventario')->with('agregado', 'Proveedor agregado correctamente');            
         $this->modalProveedor = false;        
+        return redirect()->route('inventario')->with('agregado', 'Proveedor agregado correctamente');            
     }
 
     /**
@@ -132,7 +139,9 @@ class Inventario extends Component {
      * 
      */
     public function detallesTrue($productoId) : void {
-        $this->detalleProducto = Producto::find($productoId);
+        $this->detalleProducto = Producto::where('id', $productoId)
+                                         ->where('owner_id', $this->ownerId())
+                                         ->first();
         $this->detalles = true;
     }
     public function detallesFalse() : void {
@@ -144,7 +153,9 @@ class Inventario extends Component {
      * 
      */
     public function editarTrue($productoId) : void {        
-        $this->productoToEdit = Producto::find($productoId);
+        $this->productoToEdit = Producto::where('id', $productoId)
+                                        ->where('owner_id', $this->ownerId())
+                                        ->first();
         $this->editar = true;
     }
     public function editarFalse() : void {
@@ -199,20 +210,10 @@ class Inventario extends Component {
     public function agregarCategoria() {
         $this->validate([
             'categoria' => 'required'
-        ]);
-        $requestUserId = Auth::user()->id;
-        $user = User::find($requestUserId);
-        if($user->admin){
-            $admin_id = $user->id;
-        }else{
-            $admin_id = $user->admin_id;
-        }
-        if($admin_id == null){
-            return back()->with('error', 'No tienes permisos para agregar una mascota');
-        }                                  
+        ]);                               
         Categoria::create([
             'nombre' => $this->categoria,
-            'owner_id' => $admin_id,
+            'owner_id' => $this->ownerId(),
         ]);
 
         $this->categoria = '';
@@ -222,7 +223,9 @@ class Inventario extends Component {
 
     public function deleteProducto(){
         try{
-            Producto::find($this->productoId)->delete();
+            Producto::where('id', $this->productoId)
+                    ->where('owner_id', $this->ownerId())
+                    ->delete();
         }catch(\Exception $e){
             DB::commit();
             throw new \Exception($e->getMessage());

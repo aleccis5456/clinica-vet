@@ -45,9 +45,12 @@ class Helper
         $caja = session('caja', []);
         $cortar = false;
 
+        foreach ($pagos as $pago) {
+            if ($pago->pagado) {
+                continue;
+        }
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
-
         if (Auth::check()) {
             $requestUserId = Auth::user()->id;
             $user = User::find($requestUserId);
@@ -57,12 +60,12 @@ class Helper
                 $admin_id = $user->admin_id;
             }
 
-            $cajaDB = Caja::where('owner_id', $admin_id)->get();
+            // Verificar si el admin tiene una caja abierta
+            $cajaDB = Caja::where('owner_id', $admin_id)
+                            ->where('pago_estado',  'pendiente')
+                            ->get();
             if ($cajaDB->count() > 0) {
-                foreach ($pagos as $pago) {
-                    if ($pago->pagado) {
-                        continue;
-                }
+               
                 foreach ($caja as $item) {
                     if ($item['consultaId'] == $pago->consulta_id) {
                         $cortar = true;
@@ -73,12 +76,10 @@ class Helper
                     continue;
                 }
                 $consultaProductos = ConsultaProducto::where('consulta_id', $pago->consulta_id)->get();
-
                 $productos = [];
 
                 foreach ($consultaProductos as $cProducto) {
                     $producto = Producto::find($cProducto->producto_id);
-
                     $productos[] = [
                         "productoId" => $producto->id,
                         "producto" => $producto->nombre,
@@ -114,15 +115,13 @@ class Helper
         }
     }
 
-    public static function check()
-    {
+    public static function check() {
         if (!Auth::check()) {
             return redirect('/');
         }
     }
 
-    public static function checkRol($rol): void
-    {
+    public static function checkRol($rol): void{
         $permisos = PermisoRol::where('rol_id', $rol)->get();
         $permisosRol = [];
         foreach ($permisos as $permiso) {
@@ -137,8 +136,7 @@ class Helper
         session(['permisos' => $permisosUsuario]);
     }
 
-    public static function checkPermisos(): void
-    {
+    public static function checkPermisos(): void{
         $modulos = session('modulos', []);
 
         if (Auth::user()) {
@@ -171,8 +169,7 @@ class Helper
         }
     }
 
-    public static function updateEstado($consultaID, $estadoNuevo)
-    {
+    public static function updateEstado($consultaID, $estadoNuevo){
         $consultas = Consulta::all();
         try {
             $consulta = Consulta::find($consultaID);
