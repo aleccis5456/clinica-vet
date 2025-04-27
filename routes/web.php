@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\Helper;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\GestionUsuarioController;
@@ -66,4 +67,12 @@ Route::get('ver-sessiones/{session}', function($session){
 
 Route::get('ver-sessiones/all', function(){
     dd(session()->all(), Auth::user());
+});
+
+Route::get('ver-caja', function(){
+   $caja = session('caja', []);
+
+    foreach ($caja as $item) {
+        dd(Helper::caja($item['ownerId'], $item['consultaId']));
+    }
 });

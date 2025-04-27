@@ -45,10 +45,10 @@ class Caja extends Component
     public string $formaPago = ''; 
     
     public function mount()  {
-        Helper::check();
         if(empty(session('modulos')['caja'])){
             return redirect('/');
         }
+        Helper::check();
         $this->duenos = Dueno::all();                   
     } 
 
@@ -322,11 +322,14 @@ class Caja extends Component
             }
         }
                
-        $consulta = Consulta::where('id', $consultaId)
+       Consulta::where('id', $consultaId)
                             ->where('owner_id', $this->ownerId())
                             ->first();
 
-        $cliente = DatosFactura::where('ruc_ci', $this->rucCI)->first();
+        $cliente = DatosFactura::where('ruc_ci', $this->rucCI)
+                                ->where('owner_id', $this->ownerId())
+                                ->first();
+                  
         
         if (!$cliente) {
             return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
@@ -377,24 +380,26 @@ class Caja extends Component
                     $producto->save();
                 }
                 if($item['opcion'] == '2'){                       
-                    $tipo = TipoConsulta::find($item['productoId']);                                        
+                    $tipo = TipoConsulta::find($item['productoId']);                                    
+
                     $tipo->veces_realizadas += 1;                    
                     $tipo->save();
-                }                               
+                }                                                
             }
+            $cajaDB = Helper::caja($this->ownerId(), $consultaId);
+            $cajaDB->pago_estado = 'pagado';
+            $cajaDB->save();
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
             throw new \Exception($e->getMessage());
         }
-        
         Session::forget('caja');
         Session::forget('cobro');
         Session::forget('activo');
         Helper::crearCajas();
         return redirect()->route('caja')->with('pago', 'Pago confirmado.');
     }
-
     /**
      * funcion para cobrar las consultas que están en las alertas
      */
@@ -419,7 +424,6 @@ class Caja extends Component
                 $this->opcion = '1';
             }                              
         }   
-        
         session(['activo' => true]);
     }
 

@@ -15,23 +15,19 @@ use Carbon\Carbon;
 
 class Helper
 {
-    public static function formatearFecha($fecha)
-    {
+    public static function formatearFecha($fecha){
         return Carbon::parse($fecha)->format('d-m-Y');
     }
 
-    public static function formatearMonto($monto)
-    {
+    public static function formatearMonto($monto){
         return number_format(round($monto, -2), 0, ',', '.');
     }
 
-    public static function edad($fecha)
-    {
+    public static function edad($fecha){
         return Carbon::parse($fecha)->age;
     }
 
-    public static function total(): int
-    {
+    public static function total(): int{
         $total = 0;
         $cobro = session('cobro');
         foreach ($cobro as &$item) {
@@ -40,15 +36,7 @@ class Helper
         return $total;
     }
 
-    public static function crearCajas(): void{
-        $pagos = Pago::all();
-        $caja = session('caja', []);
-        $cortar = false;
-
-        foreach ($pagos as $pago) {
-            if ($pago->pagado) {
-                continue;
-        }
+    public static function crearCajas(){
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
         if (Auth::check()) {
@@ -60,16 +48,23 @@ class Helper
                 $admin_id = $user->admin_id;
             }
 
+            $pagos = Pago::where('estado', 'pendiente')
+                            ->where('owner_id', $admin_id)
+                            ->get();
+            $caja = session('caja', []);
+            $cortar = false;
+            foreach ($pagos as $pago) {
+                if ($pago->pagado) {
+                    continue;
+             }
+
             // Verificar si el admin tiene una caja abierta
             $cajaDB = Caja::where('owner_id', $admin_id)
                             ->where('pago_estado',  'pendiente')
                             ->get();
-            if ($cajaDB->count() > 0) {
-               
-                foreach ($caja as $item) {
-                    if ($item['consultaId'] == $pago->consulta_id) {
-                        $cortar = true;
-                    }
+            if ($cajaDB->count() > 0) {        
+                foreach ($caja as $item) {              
+                    $item['consultaId'] = $pago->consulta_id ? $cortar = true : $cortar = false;
                 }
                 //para cortar el foreach de pagos         
                 if ($cortar) {
@@ -88,9 +83,11 @@ class Helper
                         "owner_id" => $admin_id
                     ];
                 }
-
-                $consulta = Consulta::find($pago->consulta_id);
-
+             
+                $consulta = Consulta::where('id', $pago->consulta_id)
+                                    ->where('owner_id', $admin_id)
+                                    ->first();
+            
                 $pagoSumar = 0;
                 foreach ($productos as $producto) {
                     $pagoSumar += $producto['precio'] * $producto['cantidad'];
@@ -99,16 +96,20 @@ class Helper
                 $pago->monto = $pagoSumar;
                 $pago->save();
                 
-                $caja[] = [
-                    'consultaId' => $pago->consulta_id,
-                    'cliente' => $consulta->mascota->dueno,
-                    'mascota' => $consulta->mascota,
-                    'productos' => $productos,
-                    'consulta' => $consulta,
-                    'pagoEstado' => $pago->estado,
-                    'montoTotal' => $pagoSumar,
-                    'ownerId' => $admin_id,
-                ];
+                foreach($cajaDB as $cajaItem) {              
+                    if($cajaItem->owner_id == $admin_id) {
+                        $caja[] = [
+                            'consultaId' => $pago->consulta_id,
+                            'cliente' => $consulta->mascota->dueno,
+                            'mascota' => $consulta->mascota,
+                            'productos' => $productos,
+                            'consulta' => $consulta,
+                            'pagoEstado' => $pago->estado,
+                            'montoTotal' => $pagoSumar,
+                            'ownerId' => $admin_id,
+                        ];
+                    }
+                }
                 session(['caja' => $caja]);
                 }
             }
@@ -168,7 +169,6 @@ class Helper
             session(['modulos' => $modulos]);
         }
     }
-
     public static function updateEstado($consultaID, $estadoNuevo){
         $consultas = Consulta::all();
         try {
@@ -192,5 +192,12 @@ class Helper
             //throw new \Exception('Error al cambiar el estado de la consulta: ' . $e->getMessage());
         }
         return $estadoNuevo;
+    }
+
+    public static function caja($ownerId, $consultaId): Caja{
+        return Caja::where('owner_id', $ownerId)
+            ->where('consulta_id', $consultaId)
+            ->where('pago_estado', 'pendiente')
+            ->first();
     }
 }

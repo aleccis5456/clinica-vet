@@ -92,13 +92,15 @@
                                             </div>
 
                                             <!-- Botón de cobro (aparece al pasar el mouse) -->
-                                            <div
-                                                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button wire:click='cobrarConsulta({{ $caja['consultaId'] }})'
-                                                    class="cursor-pointer  w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                                                    <i class="fas fa-cash-register mr-2"></i> Cobrar
-                                                </button>
-                                            </div>
+                                            @if (!session('activo'))
+                                                <div
+                                                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button wire:click='cobrarConsulta({{ $caja['consultaId'] }})'
+                                                        class="cursor-pointer w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                                                        Cobrar
+                                                    </button>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endforeach
                                 @endif
