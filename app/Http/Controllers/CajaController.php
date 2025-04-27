@@ -61,7 +61,8 @@ class CajaController extends Controller {
             'monto' => $total,
             'pagado' => false,
             'cuotas' => false,
-            'estado' => 'pendiente'
+            'estado' => 'pendiente',
+            'owner_id' => $this->ownerId(),
         ]);
         
         Caja::create([
@@ -73,17 +74,6 @@ class CajaController extends Controller {
             'owner_id' => $this->ownerId(),
             'producto_consulta_id' => $productoConsulta ? $productoConsulta->id : null,
         ]);
-
-        // $caja[] = [
-        //     'consultaId' => $consultaId,
-        //     'cliente' => $consulta->mascota->dueno,
-        //     'mascota' => $consulta->mascota,
-        //     'productos' => $productos,
-        //     'consulta' => $consulta,
-        //     'pagoEstado' => $pago->estado,
-        //     'montoTotal' => $total,
-        //     'ownerId' => $this->ownerId(),
-        // ];
         $consulta->update([
             'estado' => 'Pendiente'
         ]);

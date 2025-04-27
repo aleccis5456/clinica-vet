@@ -55,7 +55,7 @@ class Helper
             $cortar = false;
             foreach ($pagos as $pago) {
                 if ($pago->pagado) {
-                    continue;
+                    continue;                  
              }
 
             // Verificar si el admin tiene una caja abierta
