@@ -15,7 +15,7 @@ class CajaController extends Controller {
     public function store($consultaId) : mixed{
         
         $consulta = Consulta::find($consultaId); 
-
+   
         if(!$consulta){
             return back()->with('error', 'Ocurrio un error');
         }
@@ -61,7 +61,8 @@ class CajaController extends Controller {
             'monto' => $total,
             'pagado' => false,
             'cuotas' => false,
-            'estado' => 'pendiente'
+            'estado' => 'pendiente',
+            'owner_id' => $this->ownerId(),
         ]);
         
         Caja::create([

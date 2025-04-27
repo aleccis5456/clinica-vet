@@ -37,9 +37,11 @@ class Helper
     }
 
     public static function crearCajas(){
+      
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
         if (Auth::check()) {
+            
             $requestUserId = Auth::user()->id;
             $user = User::find($requestUserId);
             if ($user->admin) {
