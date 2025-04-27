@@ -15,7 +15,7 @@ class CajaController extends Controller {
     public function store($consultaId) : mixed{
         
         $consulta = Consulta::find($consultaId); 
-
+   
         if(!$consulta){
             return back()->with('error', 'Ocurrio un error');
         }
