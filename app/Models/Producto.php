@@ -22,7 +22,10 @@ class Producto extends Model
         'codigo',
         'codigo_barras',
         'proveedor_id',
-        'owner_id'
+        'owner_id',
+        'unidad_medida',
+        'cantidad',	
+        'precio_interno'	
     ];
 
     public function movimientos() : BelongsToMany {

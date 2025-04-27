@@ -584,7 +584,7 @@ class Consultas extends Component {
     /**
      * function para eliminar una consultaProdcutos     
      */
-    public function EliminarProductoConsulta($cpId): RedirectResponse {
+    public function EliminarProductoConsulta($cpId) {
         try {
             ConsultaProducto::where('id', $cpId)
                             ->where('owner_id', $this->ownerId())

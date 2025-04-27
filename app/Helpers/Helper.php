@@ -18,15 +18,12 @@ class Helper
     public static function formatearFecha($fecha){
         return Carbon::parse($fecha)->format('d-m-Y');
     }
-
     public static function formatearMonto($monto){
         return number_format(round($monto, -2), 0, ',', '.');
     }
-
     public static function edad($fecha){
         return Carbon::parse($fecha)->age;
     }
-
     public static function total(): int{
         $total = 0;
         $cobro = session('cobro');
@@ -35,13 +32,10 @@ class Helper
         }
         return $total;
     }
-
     public static function crearCajas(){
-      
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
         if (Auth::check()) {
-            
             $requestUserId = Auth::user()->id;
             $user = User::find($requestUserId);
             if ($user->admin) {
@@ -49,7 +43,6 @@ class Helper
             } else {
                 $admin_id = $user->admin_id;
             }
-
             $pagos = Pago::where('estado', 'pendiente')
                             ->where('owner_id', $admin_id)
                             ->get();
@@ -59,7 +52,6 @@ class Helper
                 if ($pago->pagado) {
                     continue;                  
              }
-
             // Verificar si el admin tiene una caja abierta
             $cajaDB = Caja::where('owner_id', $admin_id)
                             ->where('pago_estado',  'pendiente')
@@ -74,7 +66,6 @@ class Helper
                 }
                 $consultaProductos = ConsultaProducto::where('consulta_id', $pago->consulta_id)->get();
                 $productos = [];
-
                 foreach ($consultaProductos as $cProducto) {
                     $producto = Producto::find($cProducto->producto_id);
                     $productos[] = [
@@ -85,11 +76,9 @@ class Helper
                         "owner_id" => $admin_id
                     ];
                 }
-             
                 $consulta = Consulta::where('id', $pago->consulta_id)
                                     ->where('owner_id', $admin_id)
                                     ->first();
-            
                 $pagoSumar = 0;
                 foreach ($productos as $producto) {
                     $pagoSumar += $producto['precio'] * $producto['cantidad'];
@@ -117,13 +106,11 @@ class Helper
             }
         }
     }
-
     public static function check() {
         if (!Auth::check()) {
             return redirect('/');
         }
     }
-
     public static function checkRol($rol): void{
         $permisos = PermisoRol::where('rol_id', $rol)->get();
         $permisosRol = [];
@@ -138,13 +125,11 @@ class Helper
         $permisosUsuario = array_intersect($permisosRol, $permisosUsuario);
         session(['permisos' => $permisosUsuario]);
     }
-
     public static function checkPermisos(): void{
         $modulos = session('modulos', []);
 
         if (Auth::user()) {
             $permisosIds = session('permisos');
-
             foreach ($permisosIds as $permisoId) {
                 if ($permisoId == 1) {
                     $modulos['gestionPaciente'] = true;
@@ -176,7 +161,6 @@ class Helper
         try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
-
             foreach ($consultas as $consultaC) {
                 if ($consultaC->mascota_id == $consulta->mascota_id) {
                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
@@ -190,12 +174,10 @@ class Helper
                 }
             }
         } catch (\Exception $e) {
-            return redirect()->route('consultas')->with('error', 'Error al cambiar el estado de la consulta: ' . $e->getMessage());
-            //throw new \Exception('Error al cambiar el estado de la consulta: ' . $e->getMessage());
+            return redirect()->route('consultas')->with('error', 'Error al cambiar el estado de la consulta: ' . $e->getMessage());           
         }
         return $estadoNuevo;
     }
-
     public static function caja($ownerId, $consultaId): Caja{
         return Caja::where('owner_id', $ownerId)
             ->where('consulta_id', $consultaId)

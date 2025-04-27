@@ -27,6 +27,9 @@ class Inventario extends Component {
     public ?string $direccionP;
     public ?string $email;
     public ?string $ruc;
+    public int $cantidad = 1;
+    public string $unidades = '';
+    public int $precioInterno = 0;
     
     public object $categorias;
     public object $productos;    
@@ -52,13 +55,12 @@ class Inventario extends Component {
      */
     public function mount() {
         Helper::check();
-        $this->productos = Producto::where('owner_id', $this->ownerId())->get();
-        $this->categorias = Categoria::where('owner_id', $this->ownerId())->get();
-        $this->proveedores = Proveedor::where('owner_id', $this->ownerId())->get();
-
         if(empty(session('modulos')['inventario'])){
             return redirect('/');
         }
+        $this->productos = Producto::where('owner_id', $this->ownerId())->get();
+        $this->categorias = Categoria::where('owner_id', $this->ownerId())->get();
+        $this->proveedores = Proveedor::where('owner_id', $this->ownerId())->get();      
     }
 
     /**
@@ -231,6 +233,19 @@ class Inventario extends Component {
             throw new \Exception($e->getMessage());
         }
         return redirect()->route('inventario')->with('eliminado', 'Producto eliminado correctamente');
+    }
+
+    public function eliminarCategoria($categoriaId){
+        try{
+            Categoria::where('id', $categoriaId)
+                      ->where('owner_id', $this->ownerId())
+                      ->delete();
+        }catch(\Exception $e){
+            DB::commit();
+            throw new \Exception($e->getMessage());
+        }
+        return redirect()->route('inventario')->with('eliminado', 'Categoria eliminada correctamente');
+
     }
 
     public function render() : \Illuminate\View\View{

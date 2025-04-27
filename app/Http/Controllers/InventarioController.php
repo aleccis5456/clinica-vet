@@ -10,8 +10,8 @@ use App\Models\Producto;
 use Illuminate\Support\Facades\Auth;
 
 class InventarioController extends Controller {
-    public function store(Request $request){                   
-        try{        
+    public function store(Request $request){           
+        try{       
             $request->validate([
                 'nombre' => 'required',
                 'proveedor_id' => 'nullable|exists:proveedores,id',
@@ -52,6 +52,9 @@ class InventarioController extends Controller {
                 'stock_actual' => $request->stock_actual,
                 'foto' => $imageName ?? null,
                 'owner_id' => $admin_id,
+                'unidad_medida' => $request->unidades ?? null,
+                'cantidad' => $request->cantidad ?? null,
+                'precio_interno' => $request->precio_interno ?? null,
             ]);
             
         }catch(\Exception $e){            

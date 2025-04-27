@@ -4,25 +4,25 @@
     </div>
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-        
+
         <p class="pl-1 py-7 text-4xl font-semibold">Inventario</p>
         <div class="mb-4">
-            <div class="bg-gray-200 rounded-t-lg">            
+            <div class="bg-gray-200 rounded-t-lg">
                 <div class="p-4">
                     <button wire:click='openModalAgregar'
                         class="p-2 text-gray-200 rounded-lg bg-gray-800 cursor-pointer font-semibold transition duration hover:bg-gray-700 hover:text-white">
                         Agregar Producto <span class="">+</span>
                     </button>
                     <button wire:click='openModalCategoria'
-                    class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold transition duration hover:bg-gray-300 hover:font-bold">
+                        class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold transition duration hover:bg-gray-300 hover:font-bold">
                         Agregar Categoria <span class="">+</span>
                     </button>
                     <button wire:click='proveedorTrue'
-                    class="p-2 text-gray-900 rounded-lg bg-gray-400 cursor-pointer font-semibold transition duration-200 hover:bg-gray-500 hover:text-gray-100">
-                    Agregar Proveedor <span class="">+</span>
-                </button>
+                        class="p-2 text-gray-900 rounded-lg bg-gray-400 cursor-pointer font-semibold transition duration-200 hover:bg-gray-500 hover:text-gray-100">
+                        Agregar Proveedor <span class="">+</span>
+                    </button>
                 </div>
-                
+
                 <div class="p-3">
                     <form wire:submit.prevent=''
                         class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
@@ -72,17 +72,36 @@
                                         src="{{ asset("uploads/productos/$producto->foto") }}" alt="">
                                 </td>
                                 <td class="py-3 px-2 max-w-[120px]">{{ $producto->nombre }}</td>
-                                <td class="py-3 px-2 max-w-[280px]">                                    
+                                <td class="py-3 px-2 max-w-[280px] ">                                    
                                     @if ($producto->id == $productoId)
+                                    <div class="flex items-center gap-2">                                        
                                         {{ $producto->descripcion }}
                                         <span wire:click='closeVerTodo'
-                                            class="cursor-pointer underline text-red-300">ver menos
+                                            class="flex min-w-[90px] gap-2 cursor-pointer bg-blue-500 px-1 rounded-lg font-semibold text-white">menos
+                                            <svg class=" text-white w-4 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                              </svg>
+                                              
                                         </span>
+                                    </div>
                                     @else
-                                        {{ Str::words($producto->descripcion, 9, ' ') }}
-                                        <span wire:click='openVerTodo({{ $producto->id }})'
-                                            class="cursor-pointer underline text-blue-600">ver mas
-                                        </span>
+                                        <div class="flex items-center gap-2">
+                                            {{ Str::words($producto->descripcion, 5, ' ') }}
+                                            @if (strlen($producto->descripcion) > 50)
+                                                <span wire:click='openVerTodo({{ $producto->id }})'
+                                                    class="flex min-w-[90px] cursor-pointer bg-blue-500 px-1 rounded-lg font-semibold text-white">ver
+                                                    todo
+                                                    <svg class="text-white w-4 h-6" xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                        stroke="currentColor" class="size-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                                    </svg>
+
+                                                </span>
+                                            @endif
+
+                                        </div>
                                     @endif
 
                                 </td>
@@ -120,11 +139,11 @@
     @if ($modalCategoria)
         @include('includes.inventario.modalAddCategoria')
     @endif
-    
+
     @if ($editar)
         @include('includes.inventario.modalEditarProducto')
     @endif
-    
+
     @if ($detalles)
         @include('includes.inventario.modal-detalles')
     @endif
