@@ -21,7 +21,8 @@ class Pago extends Model
         'fecha_vencimiento', 	
         'estado', 	
         'comprobante',
-        'cliente_id'
+        'cliente_id',
+        'owner_id'
     ];
 
     public function duenos(){

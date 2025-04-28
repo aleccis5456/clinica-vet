@@ -16,7 +16,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Livewire\Attributes\On; 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -686,7 +686,23 @@ class Consultas extends Component {
             return redirect('/');
         }
     }
+    public function disminuirCantidad($consultaId){
+        $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->get();
 
+        if($consultaProducto->isEmpty()){
+            return redirect()->route('consultas')->with('error', 'No hay productos en la consulta');
+        }
+        foreach ($consultaProducto as $producto) {
+            $producto->cantidad = $producto->cantidad - 1;
+            $producto->save();
+            $this->dispatch('disminuirCantidad');
+        }
+    }
+    #[On('disminuirCantidad')]
+    public function refresh(){
+    }
     public function render(): View {
         return view('livewire.consultas');
     }

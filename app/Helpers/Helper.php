@@ -72,7 +72,7 @@ class Helper
                         "productoId" => $producto->id,
                         "producto" => $producto->nombre,
                         "cantidad" => $cProducto->cantidad,
-                        "precio" => $producto->precio,
+                        "precio" => $producto->precio_interno,
                         "owner_id" => $admin_id
                     ];
                 }
@@ -184,4 +184,18 @@ class Helper
             ->where('pago_estado', 'pendiente')
             ->first();
     }
+    public static function ownerId(): mixed{
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
+    }
+ 
 }

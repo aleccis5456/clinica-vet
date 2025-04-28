@@ -3,7 +3,7 @@
     <div class="relative p-4 w-full max-w-[550px]">
 
         <button type="button"
-            class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent {{ $consultaToEdit->estado == 'Finalizado' ? 'hover:bg-green-400' : 'hover:bg-gray-200' }}  hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             wire:click="closeModalConfig">
             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -13,7 +13,7 @@
         </button>
 
         <div
-            class="{{ $consultaToEdit->estado == 'Finalizado' ? 'bg-green-100 border-2 border-green-700' : 'bg-white border border-gray-100' }}  p-6 min-w-lg mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
+            class="bg-white border border-gray-100 p-6 min-w-lg mx-auto shadow-lg rounded-lg max-h-[620px] outline-none overflow-x-hidden overflow-y-auto">
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Actualizar Consulta</p>
 
             <!-- NOTAS -->
@@ -76,7 +76,8 @@
                             @endif
                             <!-- grupo de veterinarios -->
                             @php
-                            $veterinariosEnConsulta = App\Models\ConsultaVeterinario::where('consulta_id', $consultaToEdit->id) 
+                                $veterinariosEnConsulta = App\Models\ConsultaVeterinario::where('consulta_id', $consultaToEdit->id) 
+                                                                                    ->where('owner_id', App\Helpers\Helper::ownerId())
                                                                                     ->pluck('veterinario_id')
                                                                                     ->toArray();                            
                             @endphp
@@ -133,11 +134,14 @@
                 <div class="mt-4">
                     <p class="text-gray-700 font-medium text-sm mb-2">Insumos Consumido</p>
                     <div class="grid grid-cols-4 gap-1.5">
+                        @php
+                            $total = 0;                           
+                        @endphp
                         @foreach ($consultasProductos as $cproducto)
                             <div
                                 class="relative group bg-gray-100 shadow-lg rounded-md border border-gray-100 hover:border-red-400 transition-all">
                                 <!-- Botón de eliminación -->
-                                <button wire:click='openProductoConsulta({{ $cproducto->id }})'
+                                <button type="button" wire:click='disminuirCantidad({{ $consultaToEdit->id }})' 
                                     class="absolute hidden group-hover:flex items-center justify-center inset-0 bg-white/50 cursor-pointer">
                                     <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
@@ -164,9 +168,18 @@
                                     </div>
                                 </div>
                             </div>
+                            @php
+                                $total += $cproducto->producto->precio_interno * $cproducto->cantidad;
+                            @endphp
                         @endforeach
                     </div>
-                    
+                    <div class="flex justify-start  mt-2">
+                        <div class="text-gray-700 font-medium text-sm">
+                            Total: {{ App\Helpers\Helper::formatearMonto($total) }} Gs.
+
+                        </div>
+
+                    </div>
                 </div>
             @endif
 

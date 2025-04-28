@@ -249,7 +249,7 @@ class Caja extends Component
             $cobro[] = [
                 'consultaId' => $consultaId,
                 'productoId' => $producto->id,
-                'precio' => $producto->precio,
+                'precio' => $producto->precio_interno ?? $producto->precio,
                 'producto' => $producto->nombre,
                 'cantidad' => $cantidad ?? 1,
                 'opcion' => $this->opcion,
@@ -320,12 +320,7 @@ class Caja extends Component
                 $consultaId = $item['consultaId'];
                 break;
             }
-        }
-               
-       Consulta::where('id', $consultaId)
-                            ->where('owner_id', $this->ownerId())
-                            ->first();
-
+        }            
         $cliente = DatosFactura::where('ruc_ci', $this->rucCI)
                                 ->where('owner_id', $this->ownerId())
                                 ->first();
@@ -389,6 +384,13 @@ class Caja extends Component
             $cajaDB = Helper::caja($this->ownerId(), $consultaId);
             $cajaDB->pago_estado = 'pagado';
             $cajaDB->save();
+            $consulta = Consulta::where('id', $consultaId)
+                                ->where('owner_id', $this->ownerId())
+                                ->first();
+            $consulta->update([
+                'estado' => 'Finalizado'
+            ]);
+
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
