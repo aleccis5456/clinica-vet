@@ -227,23 +227,20 @@ class Consultas extends Component {
      * creacion de la sesion de productos
      */
     public function addProducto($productoId, $consultaId)  {
-        $producto = Producto::find($productoId);
-
+        $producto = Producto::where('id', $productoId)
+                            ->where('owner_id', $this->ownerId())
+                            ->first();
         if (!$producto) {
             return redirect()->route('consultas')->with('error', 'Hubo un error al procesar el producto');
         }
-
         $consumo = session('consumo', []);
-
         if (!isset($consumo[$consultaId])) {
             $consumo[$consultaId] = [];
         }
-
         $contador = 0;
-
         foreach ($consumo[$consultaId] as &$item) {
             if ($item['productoId'] == $producto->id) {
-                if ($item['productoCompleto']['precio'] == $item['precio']) {
+                if ($item['productoCompleto']['precio_interno'] == $item['precio']) {                    
                     $item['cantidad']++;
                     $contador++;
                     break;
@@ -256,15 +253,13 @@ class Consultas extends Component {
             $consumo[$consultaId][] = [
                 'consultaId' => $consultaId,
                 'productoId' => $producto->id,
-                'precio' => $producto->precio,
+                'precio' => $producto->precio_interno,
                 'nombre' => $producto->nombre,
                 'foto' => $producto->foto,
                 'productoCompleto' => $producto,
                 'cantidad' => 1 // Agregar clave 'cantidad'
             ];
         }
-
-        // Guarda la sesión actualizada
         session(['consumo' => $consumo]);
     }
 
@@ -539,15 +534,23 @@ class Consultas extends Component {
         if (!empty($consumo)) {
             try {
                 $admin_id = $this->ownerId();
-
                 foreach ($consumo[$this->consultaToEdit->id] as $item) {
-                    ConsultaProducto::create([
-                        'producto_id' => $item['productoId'],
-                        'consulta_id' => $item['consultaId'],
-                        'cantidad' => $item['cantidad'],
-                        'descripcion' => null,
-                        'owner_id' => $admin_id
-                    ]);
+                    $consultaProducto = ConsultaProducto::where('producto_id', $item['productoId'])
+                                                        ->where('consulta_id', $item['consultaId'])
+                                                        ->where('owner_id', $admin_id)
+                                                        ->first();
+                    if($consultaProducto){
+                        $consultaProducto->cantidad += $item['cantidad'];
+                        $consultaProducto->save();
+                    }else{
+                        ConsultaProducto::create([
+                            'producto_id' => $item['productoId'],
+                            'consulta_id' => $item['consultaId'],
+                            'cantidad' => $item['cantidad'],
+                            'descripcion' => null,
+                            'owner_id' => $admin_id
+                        ]);
+                    }                    
                 }
             } catch (\Exception $e) {
                 return redirect()->route('consultas')->with('error', 'Error al agregar productos a la consulta');

@@ -156,7 +156,7 @@
                                             {{ $cproducto->producto->nombre }}
                                         </p>
                                         <p class="text-[10px] text-gray-500 font-medium">
-                                            {{ $cproducto->producto->precio }} Gs.
+                                            {{ $cproducto->producto->precio_interno }} Gs.
                                         </p>
                                         <p class="text-[10px] text-gray-500 font-medium">
                                             Cantidad: {{ $cproducto->cantidad }}
@@ -166,6 +166,7 @@
                             </div>
                         @endforeach
                     </div>
+                    
                 </div>
             @endif
 
@@ -242,12 +243,16 @@
 
                     <!-- TABLA DE RESULTADOS DE LA BUSQUEDA -->
                     @if ($q)
+                    <div>
+
+                        <p class="text-gray-700 font-medium text-md mt-3">Resultados de la búsqueda</p>
+                        <p class="text-gray-700 font-medium text-sm mb-2">Productos de uso interno, se venden por: c/u, ml, mg, g.</p>
                         <table class="min-w-full bg-white rounded-lg shadow-md text-xs mt-2">
                             <thead class="bg-gray-200 text-gray-800 rounded-lg">
                                 <tr>
                                     <th class="py-1 px-2 text-left text-semibold sr-only">foto</th>
                                     <th class="py-1 px-2 text-left text-semibold">Producto</th>
-                                    <th class="py-1 px-2 text-left text-semibold">Precio</th>
+                                    <th class="py-1 px-2 text-left text-semibold">Precio Gs.</th>
                                     <th class="py-1 px-2 text-left text-semibold sr-only">acction</th>
                                 </tr>
                             </thead>
@@ -261,8 +266,8 @@
                                                 srcset=""></td>
                                         <td class="py-1 px-2">{{ $producto->nombre }}</td>
                                         <td class="py-1 px-2">
-                                            {{ App\Helpers\Helper::formatearMonto($producto->precio) }}
-                                            Gs.</td>
+                                            {{ App\Helpers\Helper::formatearMonto($producto->precio_interno) }}
+                                        </td>
                                         <td class="py-1 px-2">
                                             <span
                                                 wire:click='addProducto({{ $producto->id }}, {{ $consultaToEdit->id }})'
@@ -274,6 +279,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
                     @endif
                 </div>
             </form>
