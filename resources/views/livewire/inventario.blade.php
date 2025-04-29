@@ -130,6 +130,7 @@
                 </table>
             </div>
         </div>
+        <livewire:alertas-events />
     </main>
 
     @if ($modalAgregar)

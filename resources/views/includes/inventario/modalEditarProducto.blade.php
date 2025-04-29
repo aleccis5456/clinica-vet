@@ -87,6 +87,28 @@
                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 @error('foto') <span class="text-red-700 underline">{{ $message }}</span> @enderror
             </div>
+
+            <div class="mb-4">
+                <div class="border-t-4 border-gray-700 my-4 pt-5">
+                    <label class="block text-gray-800 font-medium mb-2">Precios para uso interno</label>
+                    <div class="flex items-center mb-4 gap-2">
+                        <select name="unidades" id="unidades"
+                            class="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                            <option value="cu" {{ $productoToEdit->unidad_medida == 'cu' ? 'selected' : '' }}>c/u</option>
+                            <option value="ml" {{ $productoToEdit->unidad_medida == 'ml' ? 'selected' : '' }}>ml</option>
+                            <option value="mg" {{ $productoToEdit->unidad_medida == 'mg' ? 'selected' : '' }}>mg</option>
+                            <option value="gr" {{ $productoToEdit->unidad_medida == 'gr' ? 'selected' : '' }}>gr</option>
+                        </select>
+    
+                        <input value="{{ $productoToEdit->cantidad }}" type="number" name="cantidad" 
+                                class="py-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                        <input
+                            class="py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
+                            type="number" name="precio_interno" value="{{ $productoToEdit->precio_interno }}">
+                    </div>
+                </div>
+    
+            </div>
         
             <!-- Botón de enviar -->
             <button type="submit"

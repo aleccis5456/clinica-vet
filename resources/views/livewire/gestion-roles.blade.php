@@ -76,9 +76,9 @@
                                 class="hover:bg-gray-100 transition duration-300">
                                 <td class="py-3 px-4">{{ $user->name }}</td>
                                 <td class="py-3 px-4">                                    
-                                    @if ($user->email != "sin@definir"."$user->admin_id".".com")                                                                        
+                                    
                                         {{ $user->email }}
-                                    @endif                                     
+                                                                         
                                 </td>
                                 <td class="py-3 px-4">                                    
                                     {{-- {{ json_encode(dd($roles)) }} --}}
@@ -90,7 +90,7 @@
                                     @endforeach
                                 </td>                                
                                 <td class="py-3 px-4 font-semibold">
-                                    @if ($user->email != "sin@definir"."$user->admin_id".".com")
+                                   
                                     <button wire:click="editUserTrue({{ $user->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
@@ -100,7 +100,7 @@
                                         class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                         Eliminar
                                     </button>                                                                    
-                                    @endif                                     
+                                   
                                 </td>
                             </tr>  
                         @endforeach                      

@@ -1,7 +1,6 @@
 <div id="confirmarModal" tabindex="-1"
     class=" fixed top-0 right-0 left-0 z-40 flex justify-center items-center w-full h-full bg-black/50">
     <div class="relative p-4 w-full max-w-[550px]">
-
         <button type="button"
             class="m-2 absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
             wire:click="closeModalConfig">
@@ -33,7 +32,7 @@
 
             <!-- FORMULARIO PARA CAMBIAR DE VETERINARIO -->
             <form wire:submit.prevent='updateVet'>
-                <div class="shadow-lg rounded-lg p-2 bg-gray-100 mt-3">
+                <div class="shadow-lg rounded-lg p-2 bg-gray-100 mt-3 relative">                    
                     <div class="grid grid-cols-2 rounded-lg gap-4 mt-2 hover:bg-gray-100">
                         <!-- grid de foto -->
                         <div class="">
@@ -160,7 +159,7 @@
                                             {{ $cproducto->producto->nombre }}
                                         </p>
                                         <p class="text-[10px] text-gray-500 font-medium">
-                                            {{ $cproducto->producto->precio_interno }} Gs.
+                                            {{ $cproducto->producto->precio_interno }} Gs. {{ $cproducto->producto->unidad_medida }}
                                         </p>
                                         <p class="text-[10px] text-gray-500 font-medium">
                                             Cantidad: {{ $cproducto->cantidad }}

@@ -30,7 +30,7 @@
     </div>
     <!-- HISTOTIAL COMPLETO -->
     <div class="flex justify-center">
-        <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->id]) }}"
+        <a wire:navigate href="{{ route('historial.completo', ['id' => $consulta->mascota->id]) }}"
             class="flex items-center gap-5 text-xs md:text-sm font-semibold px-4 py-2 
                                 bg-gradient-to-r from-blue-400 to-blue-500 
                                 hover:from-blue-600 hover:to-blue-700 

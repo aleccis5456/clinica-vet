@@ -54,9 +54,7 @@
             @endphp
             <!-- cards de las consultas -->
             @include('includes.consultas.card')
-
     </main>
-
     @if ($addConsulta)
         @include('includes.consultas.modalAdd')
     @endif
@@ -64,15 +62,12 @@
     @if ($modalConfig)
         @include('includes.consultas.modalConfig')
     @endif
-
     @if ($tipoConsulta)
         @include('includes.consultas.modalTipoConsulta')
     @endif
-
     @if ($mascotasBusqueda)
         @include('includes.consultas.mascotas')
     @endif
-
     <script>
         function cambiarColor(select) {
             let colores = @json($estados);
@@ -80,7 +75,6 @@
                 "estado-select absolute top-2 left-2 z-10 px-4 py-2 text-xs font-semibold text-white rounded-lg bg-gradient-to-r " +
                 (colores[select.value] || "from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500");
         }
-
         function cambiarColorCard(id, estado) {
             let coloresf = @json($estadosf);
             let card = document.getElementById(`consulta-${id}`);

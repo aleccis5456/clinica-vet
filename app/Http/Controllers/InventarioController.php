@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Models\Categoria;
+
 use App\Models\User;
 use App\Models\Producto;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +22,17 @@ class InventarioController extends Controller {
                 'precio_compra' => 'nullable',
                 'stock_actual' => 'required',
                 'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',            
+            ],[
+                'nombre.required' => 'El campo nombre es obligatorio.',
+                'proveedor_id.exists' => 'El proveedor seleccionado no es válido.',
+                'codigo.unique' => 'El código del producto ya existe.',
+                'categoria_id.required' => 'El campo categoría es obligatorio.',
+                'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+                'precio.required' => 'El campo precio es obligatorio.',
+                'stock_actual.required' => 'El campo stock actual es obligatorio.',
+                'foto.image' => 'El archivo debe ser una imagen.',
+                'foto.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif, svg, webp.',
+                'foto.max' => 'La imagen no debe pesar más de 2MB.',
             ]);
 
             if ($request->hasFile('foto')) {
@@ -60,7 +71,6 @@ class InventarioController extends Controller {
         }catch(\Exception $e){            
             return redirect()->route('inventario')->with('error', $e->getMessage());
         }
-
         return back()->with('agregado', 'Producto Agregado');
     }
 
@@ -100,6 +110,9 @@ class InventarioController extends Controller {
                 'precio_compra' => $request->precio_compra,
                 'stock_actual' => $request->stock_actual,
                 'foto' => $imageName ?? (isset($request->deleteFoto) ? null : $producto->foto), 
+                'unidad_medida' => $request->unidades ?? null,
+                'cantidad' => $request->cantidad ?? null,
+                'precio_interno' => $request->precio_interno ?? null,
             ]);
             
         }catch(\Exception $e){

@@ -191,8 +191,6 @@ class Consultas extends Component {
             session(['consumo' => $sessionConsumo]);
         }
     }
-
-
     /**
      * 
      */
@@ -215,6 +213,7 @@ class Consultas extends Component {
             $this->productos = Producto::whereLike('nombre', "%$this->q%")
                 ->where('owner_id', $this->ownerId())
                 ->where('stock_actual', '>', 1)
+                ->where('precio_interno','!=',null)
                 ->get();
         }
     }
@@ -337,10 +336,10 @@ class Consultas extends Component {
                 'owner_id' => $admin_id,
             ]);
         } catch (\Exception $e) {
-            return redirect()->route('consultas')->with('error', $e->getMessage());
+            $this->dispatch('tipoconsulta-notadd');
         }
 
-        return redirect()->route('consultas')->with('agregado', 'Tipo de consulta creado con éxito');
+        $this->dispatch('tipoconsulta-add');
     }
 
     /**
@@ -627,8 +626,7 @@ class Consultas extends Component {
      * 
      */
     public function mount() {
-        Helper::check();
-                                 
+        Helper::check();                      
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%Vet%")
                     ->where('owner_id', $this->ownerId() )
@@ -695,13 +693,28 @@ class Consultas extends Component {
             return redirect()->route('consultas')->with('error', 'No hay productos en la consulta');
         }
         foreach ($consultaProducto as $producto) {
-            $producto->cantidad = $producto->cantidad - 1;
-            $producto->save();
+            if($producto->cantidad == 1){
+                $producto->delete();
+            }else{
+                $producto->cantidad = $producto->cantidad - 1;
+                $producto->save();
+            }            
             $this->dispatch('disminuirCantidad');
         }
     }
+
+    public function eliminarTipoConsulta($tipoConsultaId){
+        TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
+        return redirect()->route('consultas')->with('eliminado', 'Tipo de consulta eliminado correctamente');
+    }
+
     #[On('disminuirCantidad')]
     public function refresh(){
+    }
+
+    #[On('tipoconsulta-add')]
+    public function tipoconsultaAdd(){
+        $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
     }
     public function render(): View {
         return view('livewire.consultas');

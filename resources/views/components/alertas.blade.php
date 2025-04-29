@@ -328,7 +328,7 @@
                 </div>
             </div>
         </div>
-        <script>
+        {{-- <script>
             function closeAlert() {
                 const modal = document.getElementById('alerta');
                 if (modal) {
@@ -338,7 +338,7 @@
                 }
             }
             setTimeout(() => closeAlert(), 5000);
-        </script>
+        </script> --}}
     @endif
 </div>
 
@@ -398,5 +398,7 @@
         </script>
     @endif
 </div>
+
+
 
 </div>

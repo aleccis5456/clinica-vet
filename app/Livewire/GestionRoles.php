@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Auth;
 #[Title('Gestion de usuarios')]
 class GestionRoles extends Component
 {
-
     public string $search = '';
     public string $rolName = '';    
     public string $name;
@@ -55,7 +54,8 @@ class GestionRoles extends Component
                             ->where('owner_id', Auth::user()->id)
                             ->get();         
                         //   dd($this->roles);
-        $this->users = User::where('admin', '==', false)                            
+        $this->users = User::where('admin', '==', false)   
+                            ->where('name', '!=', 'Sin Definir')                         
                             ->where('admin_id', Auth::user()->id)->get();        
         $this->permisosRolesObject = PermisoRol::where('owner_id', Auth::user()->id)->get();
         

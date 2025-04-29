@@ -135,6 +135,7 @@
                 @endforeach                
             </div>
         </div>
+        <livewire:alertas-events />
         <!-- modal para agregar mascota -->
         @if ($modalAdd)
             @include('includes.formMascotas.modalAdd')
@@ -151,9 +152,11 @@
         @if ($modalEdit)
             @include('includes.formMascotas.modalEdit')
         @endif
-
         @if ($buscarDueno)
             @include('includes.formMascotas.duenos')
+        @endif
+        @if ($modalDueno)
+            @include('includes.formMascotas.add-dueno')
         @endif
     </main>
 </div>

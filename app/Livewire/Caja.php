@@ -313,8 +313,7 @@ class Caja extends Component
             'formaPago' => 'Selecciona un método de pago'
         ]);
         $cobro = session('cobro', []);
-        $consultaId = null;
-        
+        $consultaId = null;        
         foreach ($cobro as $item) {
             if (isset($item['consultaId'])) {
                 $consultaId = $item['consultaId'];
@@ -323,15 +322,16 @@ class Caja extends Component
         }            
         $cliente = DatosFactura::where('ruc_ci', $this->rucCI)
                                 ->where('owner_id', $this->ownerId())
-                                ->first();
-                  
-        
+                                ->first();                          
         if (!$cliente) {
             return redirect()->route('caja')->with('error', 'Cliente no encontrado.');
         }        
         DB::beginTransaction();
         try{                                                             
-            $pago = Pago::where('consulta_id', $consultaId)->where('pagado', 0)->first();                        
+            $pago = Pago::where('consulta_id', $consultaId)
+                        ->where('pagado', false)
+                        ->where('owner_id', $this->ownerId())
+                        ->first();                        
             if ($pago) {    
                 $pago->update([
                     'forma_pago' => $this->formaPago,
@@ -339,7 +339,6 @@ class Caja extends Component
                     'cliente_id' => $cliente->id,
                     'estado' => 'pagado',
                 ]);              
-
             } else {                        
                 Pago::create([                                     
                     'monto' => Helper::total(),
@@ -384,13 +383,14 @@ class Caja extends Component
             $cajaDB = Helper::caja($this->ownerId(), $consultaId);
             $cajaDB->pago_estado = 'pagado';
             $cajaDB->save();
-            $consulta = Consulta::where('id', $consultaId)
-                                ->where('owner_id', $this->ownerId())
-                                ->first();
-            $consulta->update([
-                'estado' => 'Finalizado'
-            ]);
-
+            if($consultaId){
+                $consulta = Consulta::where('id', $consultaId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->first();
+                $consulta->update([
+                                'estado' => 'Finalizado'
+                            ]);
+            }            
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();

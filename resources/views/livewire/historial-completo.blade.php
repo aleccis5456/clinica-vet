@@ -66,7 +66,7 @@
                                     <td class="py-3 px-4">{{ $consultaf->codigo }}</td>
                                     <td class="py-3 px-4">{{ $consultaf->tipoConsulta->nombre }}</td>
                                     <td class="py-3 px-4 hover:underline cursor-pointer">
-                                        <button wire:click='' type="button"
+                                        <button wire:click='eliminarConsulta({{ $consultaf->id }})' type="button"
                                             class="cursor-pointer ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                             Eliminar
                                         </button>
@@ -102,7 +102,6 @@
                         <div class="p-4 bg-gray-100 rounded-lg shadow-sm">
                             <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-200 pb-2">Detalles
                                 de la Consulta</h2>
-
                             <!-- Información de veterinarios -->
                             <div class="mb-6">
                                 <div class="bg-white p-4 rounded-lg shadow-xs mb-3">
@@ -161,9 +160,9 @@
                                                 <p class="text-xs font-medium text-gray-800 line-clamp-2">
                                                     {{ $producto->producto->nombre }}</p>
                                                 <p class="text-[10px] text-gray-500 mt-1">
-                                                    {{ $producto->producto->precio }} Gs.</p>
+                                                    {{ $producto->producto->precio_interno}} Gs. por {{ $producto->producto->unidad_medida }}</p>
                                                 <p class="text-[10px] text-gray-500">Cantidad:
-                                                    {{ $producto->cantidad }}</p>
+                                                    {{ $producto->cantidad }} {{ $producto->producto->unidad_medida }} </p>
                                             </div>
                                         </div>
                                     @endforeach
@@ -176,7 +175,7 @@
                                 $totalProducto = 0;
                                 foreach ($productos as $producto) {
                                     $precioProducto[] = [
-                                        'precio' => $producto->producto->precio,
+                                        'precio' => $producto->producto->precio_interno,
                                         'cantidad' => $producto->cantidad
                                     ];
                                 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('productos', function (Blueprint $table) {
             $table->string('unidad_medida')->nullable();
-            $table->integer('cantiad')->nullable();
+            $table->integer('cantidad')->nullable();
             $table->float('precio_interno')->nullable();
         });
     }

@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Helpers\Helper;
 use App\Models\User;
 use App\Models\Dueno;
+use Livewire\Attributes\On; 
 use App\Models\Especie;
 use App\Models\Mascota;
 use Livewire\Attributes\Rule;
@@ -48,6 +49,18 @@ class FormAddMascota extends Component {
     public string $dueno = '';
     public ?object $duenosEcontrados;
 
+    //variables para duenos
+    #[Rule('required', message: 'Ingrese un nombre')]
+    public $nombredueno = '';
+
+    #[Rule('required', message: 'Ingrese un numero de telefono')]
+    #[Rule('numeric', message: 'Ingrese un numero valido')]
+    public $telefonodueno = '';
+
+    #[Rule('required', message: 'Ingrese un email')]
+    public $emaildueno = '';
+    public bool $modalDueno = false;
+
       /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
      */
@@ -67,6 +80,31 @@ class FormAddMascota extends Component {
                                 ->get();     
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
+    }
+    /**
+     * 
+    */
+    public function mostrarDuenoTrue(): void{
+        $this->modalDueno = true;
+    }
+    public function mostrarDuenoFalse(): void{
+        $this->modalDueno = false;
+    }
+    public function crearDuenoMascota(){
+        $this->validate();
+        
+        Dueno::create([
+            'nombre' => $this->nombredueno,
+            'telefono' => $this->telefonodueno,
+            'email' => $this->emaildueno,
+            'owner_id' => $this->ownerId()
+        ]);
+        $this->dispatch('dueno-add');
+    }
+
+    #[On('dueno-add')]
+    public function refreshDueno(){
+        $this->mostrarDuenoFalse();
     }
 
     public function ownerId() :mixed {
@@ -107,7 +145,6 @@ class FormAddMascota extends Component {
         $this->validate([
             'dueno' => 'required'
         ]);
-
         $this->duenosEcontrados = Dueno::where('nombre', 'like', "%$this->dueno%")
                                         ->where('owner_id', $this->ownerId())
                                         ->get();                        
@@ -124,7 +161,6 @@ class FormAddMascota extends Component {
         if(!$mascotaToEdit){
             $this->redirect('/registrar/mascota');
         }
-
         $this->mascotaToEdit = $mascotaToEdit;
         $this->modalEdit = true;
     }
@@ -197,8 +233,7 @@ class FormAddMascota extends Component {
             'nombre' => $this->especie,
             'owner_id' => $this->ownerId(),
         ]);
-
-        return redirect('/registrar/mascota')->with('agregado', "$this->especie, se agrego correctamente");
+        $this->dispatch('especie-add');
     }
 
     public function openModalEspecies(){
@@ -240,7 +275,11 @@ class FormAddMascota extends Component {
                                 ->take(10)
                                 ->get();     
     }
-
+    #[On('especie-add')]
+    public function refresh(): void{
+        $this->especie = '';
+        $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
+    }
     public function render() {
         return view('livewire.form-add-mascota');
     }

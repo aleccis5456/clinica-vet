@@ -28,7 +28,7 @@ Route::post('/registro/save', [AuthController::class, 'register'])->name('auth.r
 Route::post('/iniciar-sesion', [AuthController::class, 'login'])->name('auth.login');
 
 
-Route::middleware(Login::class)->group(function () {    
+Route::middleware(Login::class)->group(function () {
     Route::get('/', Home::class)->name('index');
     Route::get('/registrar/dueno', FormAddDueno::class)->name('add.dueno');
     Route::get('/registrar/mascota', FormAddMascota::class)->name('add.mascota');
@@ -43,34 +43,49 @@ Route::middleware(Login::class)->group(function () {
 
     Route::post('/registrar/mascota', [MascotaController::class, 'crearMascota'])->name('mascota.crear');
     Route::post('/editar/mascota', [MascotaController::class, 'editSave'])->name('mascota.editsave');
-    Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');    
+    Route::get('/crear-caja/{consultaId}', [CajaController::class, 'store'])->name('caja.store');
     Route::get('/caja', Caja::class)->name('caja');
-    Route::get('/reportes', Reportes::class)->name('reportes');    
+    Route::get('/reportes', Reportes::class)->name('reportes');
 
     Route::post('/actualizar-user', [GestionUsuarioController::class, 'update'])->name('user.update');
 
-    Route::get('/reporte-pdf/ventas', [ReportsController::class, 'exportarPdf'])->name('reporte.pdf');  
+    Route::get('/reporte-pdf/ventas', [ReportsController::class, 'exportarPdf'])->name('reporte.pdf');
     Route::post('/reporte-pdf/entradas', [ReportsController::class, 'reporteEntradas'])->name('reporte.entradas');
 
     Route::get('/alertas', Alertas::class)->name('alertas');
 });
 
 
-Route::get('borrar-session/{session}', function($session){
+Route::get('/redis', function () {
+    $redis = new Redis();
+
+    try {
+        $redis->connect('127.0.0.1', 6379);
+        echo "✅ Conectado a Redis\n";
+
+        $redis->set('clave_prueba', 'Hola Redis');
+        echo "Valor almacenado: " . $redis->get('clave_prueba');
+    } catch (Exception $e) {
+        echo "❌ Error: " . $e->getMessage();
+    }
+});
+
+
+Route::get('borrar-session/{session}', function ($session) {
     Session::forget($session);
     return back();
 });
 
-Route::get('ver-sessiones/{session}', function($session){
+Route::get('ver-sessiones/{session}', function ($session) {
     dd(session($session), Auth::user());
 });
 
-Route::get('ver-sessiones/all', function(){
+Route::get('ver-sessiones/all', function () {
     dd(session()->all(), Auth::user());
 });
 
-Route::get('ver-caja', function(){
-   $caja = session('caja', []);
+Route::get('ver-caja', function () {
+    $caja = session('caja', []);
 
     foreach ($caja as $item) {
         dd(Helper::caja($item['ownerId'], $item['consultaId']));

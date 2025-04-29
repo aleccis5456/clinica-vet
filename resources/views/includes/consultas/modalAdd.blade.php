@@ -30,14 +30,7 @@
                             stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
                 </button>
-                {{-- <select wire:model="mascota_id"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                    <option value="">Selecciona una mascota</option>                    
-                    @foreach ($mascotas as $mascota)                        
-                        <option value="{{ $mascota->id }}">{{ $mascota->nombre }} | {{ $mascota->dueno->nombre }}
-                        </option>
-                    @endforeach
-                </select> --}}
+                
                 @error('mascota_id')
                     <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
@@ -46,14 +39,24 @@
             <!-- Tipo -->
             <div class="mb-4">
                 <label class="block text-gray-800 font-medium mb-2">Tipo de Consulta</label>
-                <select wire:model="tipo"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                    <option value="">Selecciona un tipo</option>
-                    @foreach ($tipoConsultas as $tipoConsulta)
-                        <option value="{{ $tipoConsulta->id }}">{{ $tipoConsulta->nombre }} |
-                            {{ App\Helpers\Helper::formatearMonto($tipoConsulta->precio) }}Gs.</option>
-                    @endforeach
-                </select>
+                <div class="flex gap-2">                                    
+                    <select wire:model="tipo"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                        <option value="">Selecciona un tipo</option>
+                        @foreach ($tipoConsultas as $tipoConsulta)
+                            <option value="{{ $tipoConsulta->id }}">{{ $tipoConsulta->nombre }} |
+                                {{ App\Helpers\Helper::formatearMonto($tipoConsulta->precio) }}Gs.</option>
+                        @endforeach
+                    </select>
+                    <button wire:click='openTipoConsulta'
+                            type="button"
+                            class="bg-gray-800 px-3 py-1 rounded-lg cursor-pointer text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
+                </div>
                 @error('tipo')
                     <span class="rounded-lg px-2 py-1 text-red-700 font-semibold text-sm">{{ $message }}</span>
                 @enderror
