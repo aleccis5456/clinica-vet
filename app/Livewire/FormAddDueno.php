@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use App\Helpers\Helper;
 use App\Models\Dueno;
 use App\Models\Mascota;
@@ -26,10 +27,6 @@ class FormAddDueno extends Component
 
     #[Rule('required', message: 'Ingrese un email')]
     public $email = '';
-
-    /**
-     * 
-     */
     public object $duenos;
     public object $mascotas;
     public object $duenoToEdit;
@@ -50,11 +47,35 @@ class FormAddDueno extends Component
         }
         Helper::check();
                                              
-        $this->duenos = Dueno::orderBy('id', 'desc')
-                            ->where('owner_id', $this->ownerId())
-                            ->take(10)
-                            ->get();                       
-        $this->mascotas = Mascota::where('owner_id', $this->ownerId())->get();                                    
+        $this->duenos =  $this->getDuenos();                   
+        $this->mascotas = $this->getMascotas();
+    }
+    /**
+     * 
+     */
+    public function getDuenos(){
+        return Dueno::orderBy('id', 'desc')
+                    ->where('owner_id', $this->ownerId())
+                    ->take(10)
+                    ->get();   
+    }
+    /**
+     * 
+     */
+    public function getMascotas(){
+        return Mascota::where('owner_id', $this->ownerId())->get();   
+    }   
+
+    /**
+     * 
+     */
+    #[On('success')]
+    public function refreshSuccess(){
+        $this->closeModalAddDueno();    
+        $this->duenos = $this->getDuenos();
+    }
+    #[On('error')]
+    public function refreshError(){
     }
 
     public function ownerId(){
@@ -76,15 +97,17 @@ class FormAddDueno extends Component
      */
     public function crearDueno(){
         $this->validate();
-        
-        Dueno::create([
-            'nombre' => $this->nombre,
-            'telefono' => $this->telefono,
-            'email' => $this->email,
-            'owner_id' => $this->ownerId()
-        ]);
-
-        return redirect('/')->with('agregado', "$this->nombre, se agrego correctamente");
+        try{
+            Dueno::create([
+                'nombre' => $this->nombre,
+                'telefono' => $this->telefono,
+                'email' => $this->email,
+                'owner_id' => $this->ownerId()
+            ]);
+        }catch(\Exception $e){
+            $this->dispatch('error', $e->getMessage());
+        }
+        $this->dispatch('success', 'Dueno creado correctamente');
     }
     
     /**
@@ -97,7 +120,8 @@ class FormAddDueno extends Component
 
         $dueno->delete();
         
-        return redirect('/registrar/dueno')->with('eliminado', '.');
+        $this->dispatch('success', 'Dueno eliminado correctamente');
+        $this->closeModalEliminar();
     }  
     /**
      * 

@@ -9,14 +9,19 @@
         <div class="mb-4 rounded-lg">
             <div class="bg-gray-200 rounded-lg relative">
 
-                <div id="confUser" class="absolute top-0 right-0 group hover:bg-gray-400/60 p-2 m-2 rounded-full cursor-pointer"> 
+                <div id="confUser"
+                    class="absolute top-0 right-0 group hover:bg-gray-400/60 p-2 m-2 rounded-full cursor-pointer">
                     <span class="">
-                        <svg class="w-6 h-6 text-gray-900 group-hover:rotate-45 transition duration-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13v-2a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L14 4.757V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L4.929 6.343a1 1 0 0 0 0 1.414l.536.536L4.757 10H4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0 1.414l1.414 1.414a1 1 0 0 0 1.414 0l.536-.535 1.707.707V20a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H20a1 1 0 0 0 1-1Z"/>
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-                          </svg>                                      
-                    </span>                    
-                </div>  
+                        <svg class="w-6 h-6 text-gray-900 group-hover:rotate-45 transition duration-300"
+                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 13v-2a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L14 4.757V4a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L4.929 6.343a1 1 0 0 0 0 1.414l.536.536L4.757 10H4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0 1.414l1.414 1.414a1 1 0 0 0 1.414 0l.536-.535 1.707.707V20a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H20a1 1 0 0 0 1-1Z" />
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                        </svg>
+                    </span>
+                </div>
                 <i id="tooltip" class="hidden absolute -top-8 right-5 bg-gray-300 px-1 py-0.5 rounded-lg">
                     <p id="tooltiptext" class="text-gray-800 font-semibold text-sm">Configuración de usuario</p>
                 </i>
@@ -26,7 +31,7 @@
                         Registrar Usuario <span class="">+</span>
                     </button>
                     <button wire:click='openModalRol'
-                    class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold hover:bg-gray-300 hover:font-bold">
+                        class="p-2 border border-gray-700 text-gray-900 rounded-lg bg-gray-200 cursor-pointer font-semibold hover:bg-gray-300 hover:font-bold">
                         Registrar Rol <span class="">+</span>
                     </button>
                 </div>
@@ -65,45 +70,42 @@
                         <tr>
                             <th class="py-3 px-4 text-left text-semibold">Nombre</th>
                             <th class="py-3 px-4 text-left text-semibold">Email</th>
-                            <th class="py-3 px-4 text-left text-semibold">Rol</th>                            
+                            <th class="py-3 px-4 text-left text-semibold">Rol</th>
                             <th class="py-3 px-4 text-left text-semibold">Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody class="text-gray-800">
-                        @foreach ($users as $user)                                                                                                                
-                            <tr wire:key='{{ $user->id }}'
-                                class="hover:bg-gray-100 transition duration-300">
+                        @foreach ($users as $user)
+                            <tr wire:key='{{ $user->id }}' class="hover:bg-gray-100 transition duration-300">
                                 <td class="py-3 px-4">{{ $user->name }}</td>
-                                <td class="py-3 px-4">                                    
-                                    
-                                        {{ $user->email }}
-                                                                         
+                                <td class="py-3 px-4">
+
+                                    {{ $user->email }}
+
                                 </td>
-                                <td class="py-3 px-4">                                    
+                                <td class="py-3 px-4">
                                     {{-- {{ json_encode(dd($roles)) }} --}}
-                                    @foreach ($roles as $rol)                                    
-                                    
+                                    @foreach ($roles as $rol)
                                         @if ($rol->id == $user->rol_id)
                                             {{ $rol->name }}
                                         @endif
                                     @endforeach
-                                </td>                                
+                                </td>
                                 <td class="py-3 px-4 font-semibold">
-                                   
+
                                     <button wire:click="editUserTrue({{ $user->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
                                     </button>
-                                    <button wire:click='eliminarUserTrue({{ $user->id }})' 
-                                        type="button"
+                                    <button wire:click='eliminarUserTrue({{ $user->id }})' type="button"
                                         class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                         Eliminar
-                                    </button>                                                                    
-                                   
+                                    </button>
+
                                 </td>
-                            </tr>  
-                        @endforeach                      
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -111,18 +113,19 @@
             <!-- Muestra los datos en dispositivos móviles -->
             <div class="md:hidden">
                 @foreach ($users as $user)
-                    <div  wire:key='{{ $user->id }}'class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
+                    <div
+                        wire:key='{{ $user->id }}'class="border border-gray-300 rounded-lg shadow-md mb-4 p-4 bg-white">
                         <div class="flex justify-between mb-2 bg-white p-1">
                             <span class="font-medium text-gray-800">Nombre:</span>
                             <span class="text-gray-600">{{ $user->nombre }}</span>
                         </div>
                         <div class="flex justify-between mb-2 bg-gray-200 p-1">
                             <span class="font-medium text-gray-800">Email:</span>
-                            <span class="text-gray-600">                                
-                                @if ($user->mail == "sin@definir"."{{ Auth::user()->id }}".".com")
+                            <span class="text-gray-600">
+                                @if ($user->mail == 'sin@definir' . '{{ Auth::user()->id }}' . '.com')
                                     sad
-                                @endif 
-                                f;sdljk 
+                                @endif
+                                f;sdljk
                             </span>
                         </div>
                         <div class="flex justify-between mb-2">
@@ -131,24 +134,21 @@
                         </div>
                         <div class="flex justify-between mb-2 bg-gray-200 p-1">
                             <span class="font-medium text-gray-800">Mascota:</span>
-                            
-                                <span class="text-gray-600"></span>
-                            
+
+                            <span class="text-gray-600"></span>
+
                         </div>
                         <div class="flex justify-end space-x-2 ">
-                            <button wire:click="editUserTrue({{ $user->id }})"
-                                type="button"
+                            <button wire:click="editUserTrue({{ $user->id }})" type="button"
                                 class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                 Editar
                             </button>
-                            <button wire:click='eliminarUserTrue({{ $user->id }})'
-                                type="button"
+                            <button wire:click='eliminarUserTrue({{ $user->id }})' type="button"
                                 class="cursor-pointer ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                 Eliminar
                             </button>
                         </div>
                     </div>
-                    {{-- wire:click='borrarDueno({{ $dueno->id }})' --}}
                 @endforeach
             </div>
     </main>
@@ -157,7 +157,7 @@
     @endif
 
     @if ($modalRegistro)
-        @include('includes.gestion-roles.modalRegistro')        
+        @include('includes.gestion-roles.modalRegistro')
     @endif
 
     @if ($configRoles)
@@ -177,16 +177,10 @@
         const tooltip = document.getElementById('tooltip');
 
         confUser.addEventListener('mouseover', function() {
-            console.log('hover');
-            setTimeout(() => {
-                tooltip.classList.remove('hidden');
-            }, 1000);            
+            tooltip.classList.remove('hidden');
         });
         confUser.addEventListener('mouseout', function() {
-            console.log('out');
-            setTimeout(() => {
-                tooltip.classList.add('hidden');
-            }, 1000 );            
+            tooltip.classList.add('hidden');
         });
     </script>
 </div>

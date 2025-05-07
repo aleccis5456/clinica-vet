@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use App\Helpers\Helper;
 use App\Models\Consulta;
 use App\Models\PermisoRol;
@@ -49,21 +50,24 @@ class GestionRoles extends Component
      */
     public function mount(){
         Helper::check();
-        
-        $this->roles = Rol::where('id', '!=', 1)
-                            ->where('owner_id', Auth::user()->id)
-                            ->get();         
-                        //   dd($this->roles);
-        $this->users = User::where('admin', '==', false)   
-                            ->where('name', '!=', 'Sin Definir')                         
-                            ->where('admin_id', Auth::user()->id)->get();        
+        $this->roles = $this->getRoles();                 
+        $this->users = $this->getUsers();
         $this->permisosRolesObject = PermisoRol::where('owner_id', Auth::user()->id)->get();
         
         if(empty(session('modulos')['gestionUsuario'])){
             return redirect('/');
         }
     }
-
+    public function getRoles(){
+        return Rol::where('id', '!=', 1)
+                            ->where('owner_id', Auth::user()->id)
+                            ->get();         
+    }
+    public function getUsers(){
+        return User::where('admin', false)   
+                            ->where('name', '!=', 'Sin Definir')                         
+                            ->where('admin_id', Auth::user()->id)->get();        
+    }
     /**
      * funciones para mostrar el modal de eliminar usuario
      */
@@ -140,14 +144,21 @@ class GestionRoles extends Component
         }catch(\Exception $e){
             throw new \Exception($e->getMessage());
         }
-
-
-        return redirect()->route('gestion.roles')->with('editado', 'Configuracion completada');
+        $this->dispatch('success', 'Permisos asignados con éxito');
+        //return redirect()->route('gestion.roles')->with('editado', 'Configuracion completada');
+    }
+    #[On('success')]
+    public function success(){
+        $this->roles = $this->getRoles();
+        $this->users = $this->getUsers();
+    }
+    #[On('error')]
+    public function error(){
+     
     }
 
-
     /**
-     * function para mostrar el div seleccionado en la vista modalCoigRole. 
+     * function para mostrar el div seleccionado en la vista modalCofigRole. 
      * lo único que hace es recargar :D     
      */
     public function setPermisos() :void {        
@@ -231,38 +242,37 @@ class GestionRoles extends Component
        
         $this->rolName = '';
         $this->closeModalRol();
-        return redirect('/Gestion/usuario')->with('agregado', 'Rol creado con éxito');
+        $this->dispatch('success', 'Rol creado con éxito');
     }
 
 
     public function eliminarRol($id){
         $rol = Rol::find($id);
         $rol->delete();
-        return redirect('/Gestion/usuario')->with('eliminado', 'Rol eliminado con éxito');
+        $this->dispatch('success', 'Rol eliminado con éxito');
     }
 
     /**
      * 
      */
     public function crearUsuario() {        
+        $this->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'rol' => 'required|exists:roles,id'
+        ],[
+            'name.required' => 'El nombre es requerido',
+            'email.required' => 'El email es requerido',
+            'email.email' => 'El email no es válido',
+            'email.unique' => 'El email ya está en uso',
+            'password.required' => 'La contraseña es requerida',
+            'rol.required' => 'El rol es requerido',
+            'rol.exists' => 'El rol no existe'
+        ]);
+                
         try{
-            $this->validate([
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:6',
-                'rol' => 'required|exists:roles,id'
-            ],[
-                'name.required' => 'El nombre es requerido',
-                'email.required' => 'El email es requerido',
-                'email.email' => 'El email no es válido',
-                'email.unique' => 'El email ya está en uso',
-                'password.required' => 'La contraseña es requerida',
-                'rol.required' => 'El rol es requerido',
-                'rol.exists' => 'El rol no existe'
-            ]);
-            
-
-            $user = User::create([
+            User::create([
                 'name' => $this->name,
                 'email' => $this->email,
                 'password' => Hash::make($this->password),
@@ -272,7 +282,7 @@ class GestionRoles extends Component
             ]);
     
         }catch(\Exception $e){
-            return redirect('/Gestion/usuario')->with('error', $e->getMessage());
+            $this->dispatch('error', 'Error al crear el usuario');
         }          
        
         $this->name = '';
@@ -280,7 +290,7 @@ class GestionRoles extends Component
         $this->password = '';
         $this->rol = '';
         $this->closeModalRegistro();
-        return redirect('/Gestion/usuario')->with('agregado', 'Usuario creado con éxito');
+        $this->dispatch('success', 'Usuario creado con éxito');
     }
     
     public function render() {

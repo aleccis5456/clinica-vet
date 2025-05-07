@@ -20,8 +20,8 @@
                 <input type="text" wire:model='name'
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
-                    @error('rolName')
-                        <span class="text-red-700 underline">{{ $message }}</span>
+                    @error('name')
+                        <span class="text-red-700 font-semibold">{{ $message }}</span>
                     @enderror
                 </p>
             </div>
@@ -31,8 +31,8 @@
                 <input type="email" wire:model='email'
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
-                    @error('rolName')
-                        <span class="text-red-700 underline">{{ $message }}</span>
+                    @error('email')
+                        <span class="text-red-700 font-semibold">{{ $message }}</span>
                     @enderror
                 </p>
             </div>
@@ -42,8 +42,8 @@
                 <input type="password" wire:model='password'
                     class="select2 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 <p>
-                    @error('rolName')
-                        <span class="text-red-700 underline">{{ $message }}</span>
+                    @error('password')
+                        <span class="text-red-700 font-semibold">{{ $message }}</span>
                     @enderror
                 </p>
             </div>
@@ -59,8 +59,8 @@
                     @endforeach
                 </select>                
                 <p>
-                    @error('rolName')
-                        <span class="text-red-700 underline">{{ $message }}</span>
+                    @error('rol')
+                        <span class="text-red-700 font-semibold">{{ $message }}</span>
                     @enderror
                 </p>
             </div>

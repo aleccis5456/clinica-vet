@@ -13,12 +13,12 @@
 
 <body>
     <x-alertas />
+    <livewire:alertas-events />
     {{ $slot }}
 
     @if (!Auth::check())
         @include('login')        
-    @endif          
-        
+    @endif        
 </body>
 
 </html>
