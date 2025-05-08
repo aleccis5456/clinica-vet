@@ -71,20 +71,21 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function ownerId(): mixed{
-        $requestUserId = Auth::user()->id;
-        $user = User::find($requestUserId);
-        if($user->admin){
-            $admin_id = $user->id;
-        }else{
-            $admin_id = $user->admin_id;
+    public function ownerId(){
+        if(Auth::user()){
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if($user->admin){
+                $admin_id = $user->id;
+            }else{
+                $admin_id = $user->admin_id;
+            }
+            if($admin_id == null){
+                return back()->with('error', 'No tienes permisos para agregar una mascota');
+            } 
+            return $admin_id;
         }
-        if($admin_id == null){
-            return back()->with('error', 'No tienes permisos para agregar una mascota');
-        } 
-        return $admin_id;
     }
-
     /** 
      * 
      */     
@@ -367,7 +368,7 @@ class Consultas extends Component {
      * 
      */
     public function openModalConfig($consultaId) {
-        $this->consultaToEdit = Consulta::find($consultaId);
+        $this->consultaToEdit = Consulta::where('id',$consultaId)->where('owner_id', $this->ownerId())->first();
         $this->horaN = $this->consultaToEdit->hora;
         $this->fechaN = $this->consultaToEdit->fecha;
         $this->tipo = $this->consultaToEdit->tipo_id;
@@ -375,7 +376,6 @@ class Consultas extends Component {
         $this->sintomas = $this->consultaToEdit->sintomas;
         $this->diagnostico = $this->consultaToEdit->diagnostico;
         $this->tratamiento = $this->consultaToEdit->tratamiento;
-
         $this->consultasProductos = ConsultaProducto::where('consulta_id', $consultaId)
                                                     ->where('owner_id', $this->ownerId())
                                                     ->get();
@@ -471,6 +471,7 @@ class Consultas extends Component {
      * function que actualiza el estado desde la vista principal de las consultas, <select>
      */
     public function updateEstado($consultaID, $estadoNuevo) {
+        $cambiar = true;
         try {
             $consulta = Consulta::find($consultaID);
             $nombre = $consulta->mascota->nombre;
@@ -480,34 +481,43 @@ class Consultas extends Component {
                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
                         if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
                             if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
-                                return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
+                                $this->mount();
+                                $this->dispatch('error', 'No se puede cambiar el estado de una consulta finalizada');
+                                $cambiar = false;
+                                break;
                             }
-                            return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
+                            $this->mount();
+                            $this->dispatch('error', 'Ya existe una consulta activa para: ' . "$nombre");
+                            $cambiar = false;
+                            break;
                         }
                     }
                 }
             }
-
-            $consulta->estado = $estadoNuevo;
-            $consulta->save();
+            if ($cambiar) {
+                $consulta->estado = $estadoNuevo;
+                $consulta->save();
+            }
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
         }
-        return redirect()->route('consultas')->with('editado', 'Estado de la consulta actualizado con éxito');
+        if ($cambiar) {
+            $this->mount();
+            $this->dispatch('success', 'Estado de la consulta actualizado con éxito');
+        }
     }
 
 
     /**
      * function para cambiar veterinario
      */
-    public function updateVet() :RedirectResponse {
+    public function updateVet() {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
 
         try {
-            $consulta = Consulta::find($this->consultaToEdit->id);
-
+            $consulta = Consulta::find($this->consultaToEdit->id);            
             $consulta->update([
                 'veterinario_id' => $this->cambiarVetId,
             ]);
@@ -519,7 +529,10 @@ class Consultas extends Component {
                                     'veterinario_id' => $this->cambiarVetId,
                                 ]);
 
-            return redirect()->route('consultas')->with('editado', 'Consulta actualizada con éxito');
+            $this->openModalConfig($consulta->id);
+            //dd($this->consultaToEdit);
+            $this->dispatch('success', 'Veterinario actualizado con éxito');
+            //$this->consultaToEdit = null;
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
         }
@@ -553,11 +566,20 @@ class Consultas extends Component {
                 }
             } catch (\Exception $e) {
                 return redirect()->route('consultas')->with('error', 'Error al agregar productos a la consulta');
-                //throw new \Exception($e->getMessage());
             }
         }
-        $consulta = Consulta::find($this->consultaToEdit->id);
 
+        $consulta = Consulta::where('id', $this->consultaToEdit->id)->where('owner_id', $this->ownerId())->first();
+        $getEstado = gettype(Helper::updateEstado($this->consultaToEdit->id, $this->estado));
+        // if ($getEstado == 'object') {
+        //     $this->dispatch('Error', 'No puedes cambiar el estado de una consulta que ya fue finalizada');
+        // }
+        $estadoNuevo = '';
+        if($getEstado == 'object') { 
+            $estadoNuevo = $consulta->estado;
+        }else{ 
+            $estadoNuevo = Helper::updateEstado($this->consultaToEdit->id, $this->estado);
+        }
         $consulta->update([
             'fecha' => $this->fechaN ?? $consulta->fecha,
             'tipo_id' => $this->tipo ?? $consulta->tipo_id,
@@ -566,15 +588,16 @@ class Consultas extends Component {
             'tratamiento' => $this->flagTratamiento ? null : $this->tratamiento,
             'notas' => $this->flagNotas ? null : $this->notas,
             'hora' => $this->horaN ?? $consulta->hora,
-            'estado' => Helper::updateEstado($this->consultaToEdit->id, $this->estado) ?? $consulta->estado,
+            'estado' => $estadoNuevo,
         ]);
-        $consulta->save();
 
         if (!empty($this->veterinariosAgg)) {
             foreach ($this->veterinariosAgg as $vetId) {
                 ConsultaVeterinario::create([
                     'consulta_id' => $consulta->id,
-                    'veterinario_id' => $vetId
+                    'veterinario_id' => $vetId,
+                    'owner_id' => $this->ownerId(),
+                    
                 ]);
             }
         }
@@ -625,6 +648,40 @@ class Consultas extends Component {
     /**
      * 
      */
+   
+    public function disminuirCantidad($consultaId){
+        $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->get();
+
+        if($consultaProducto->isEmpty()){
+            return redirect()->route('consultas')->with('error', 'No hay productos en la consulta');
+        }
+        foreach ($consultaProducto as $producto) {
+            if($producto->cantidad == 1){
+                $producto->delete();
+            }else{
+                $producto->cantidad = $producto->cantidad - 1;
+                $producto->save();
+            }            
+            $this->dispatch('disminuirCantidad');
+        }
+    }
+
+    public function eliminarTipoConsulta($tipoConsultaId){
+        TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
+        return redirect()->route('consultas')->with('eliminado', 'Tipo de consulta eliminado correctamente');
+    }
+
+    #[On('disminuirCantidad')]
+    public function refresh(){
+    }
+
+    #[On('tipoconsulta-add')]
+    public function tipoconsultaAdd(){
+        $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
+    }
+
     public function mount() {
         Helper::check();                      
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
@@ -683,38 +740,6 @@ class Consultas extends Component {
         if (empty(session('modulos')['consulta'])) {
             return redirect('/');
         }
-    }
-    public function disminuirCantidad($consultaId){
-        $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
-                                    ->where('owner_id', $this->ownerId())
-                                    ->get();
-
-        if($consultaProducto->isEmpty()){
-            return redirect()->route('consultas')->with('error', 'No hay productos en la consulta');
-        }
-        foreach ($consultaProducto as $producto) {
-            if($producto->cantidad == 1){
-                $producto->delete();
-            }else{
-                $producto->cantidad = $producto->cantidad - 1;
-                $producto->save();
-            }            
-            $this->dispatch('disminuirCantidad');
-        }
-    }
-
-    public function eliminarTipoConsulta($tipoConsultaId){
-        TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
-        return redirect()->route('consultas')->with('eliminado', 'Tipo de consulta eliminado correctamente');
-    }
-
-    #[On('disminuirCantidad')]
-    public function refresh(){
-    }
-
-    #[On('tipoconsulta-add')]
-    public function tipoconsultaAdd(){
-        $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
     }
     public function render(): View {
         return view('livewire.consultas');

@@ -344,11 +344,12 @@
     <div>
         <div x-data="{ mostrar: false }" 
             x-show="mostrar" 
+            x-transition
             x-on:error.window="
             mostrar = true;
             setTimeout(() => mostrar = false, 3000);
             "
-            class="fixed top-0 right-0 left-0 z-[999] flex justify-center items-center w-full h-full bg-black/40 shadow-xl">
+            class="fixed top-0 right-0 left-0 z-[999] flex justify-center items-center w-full h-full bg-black/10 shadow-xl">
             <div class="relative p-4 w-full max-w-md">
                 <div class="relative bg-white rounded-lg shadow">
                     <!-- Botón para cerrar -->
@@ -372,7 +373,7 @@
                             <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="2" />
                         </svg>
                         <h3 class="mb-5 text-lg font-semibold text-gray-800">
-                            Exito!
+                            Error!
                         </h3>
                         <p id="title" class="mb-5 text-sm text-gray-600">
                             <!-- Aca se mostrara el mensaje de la alerta -->
@@ -389,6 +390,7 @@
             document.addEventListener('livewire:init', () => {
                Livewire.on('error', (event) => {
                    const title = document.getElementById('title');
+                   console.log(event[0]);
                    title.textContent = event[0];
                });
             });

@@ -16,6 +16,7 @@
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Actualizar Consulta</p>
 
             <!-- NOTAS -->
+            {{-- @dd(json_encode($consultaToEdit)) --}}
             @if ($consultaToEdit->notas != null)
                 <div class="p-2 flex w-auto rounded-md bg-blue-100  text-blue-800 shadow-sm">
                     <div class="flex">

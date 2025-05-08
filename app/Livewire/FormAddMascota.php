@@ -28,7 +28,8 @@ class FormAddMascota extends Component {
     public ?string $nacimiento = null;
     public string $historial_medico = '';
     public string $flagEliminarHM = '';
-    public string $flagElimiarFoto = '';    
+    public string $flagElimiarFoto = '';  
+    public $duenoSeleccionado;  
 
     #[Rule('image', message: 'Usar un formato correcto')]
     #[Rule('nullable')]
@@ -130,7 +131,6 @@ class FormAddMascota extends Component {
         $this->dueno = '';
         $this->duenosEcontrados = null;
     }
-
     /**
      * 
      */
@@ -145,7 +145,7 @@ class FormAddMascota extends Component {
         $this->validate([
             'dueno' => 'required'
         ]);
-        $this->duenosEcontrados = Dueno::where('nombre', 'like', "%$this->dueno%")
+        $this->duenosEcontrados = Dueno::where('nombre', 'ilike', "%$this->dueno%")
                                         ->where('owner_id', $this->ownerId())
                                         ->get();                        
         $this->buscarDuenoTrue();        

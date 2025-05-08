@@ -135,7 +135,6 @@
                 @endforeach                
             </div>
         </div>
-        {{-- <livewire:alertas-events /> --}}
         <!-- modal para agregar mascota -->
         @if ($modalAdd)
             @include('includes.formMascotas.modalAdd')

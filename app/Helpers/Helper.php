@@ -182,8 +182,10 @@ class Helper
             session(['modulos' => $modulos]);
         }
     }
-    public static function updateEstado($consultaID, $estadoNuevo)
-    {
+    /**
+     * 
+     */
+    public static function updateEstado($consultaID, $estadoNuevo) {
         $consultas = Consulta::all();
         try {
             $consulta = Consulta::find($consultaID);
@@ -205,6 +207,9 @@ class Helper
         }
         return $estadoNuevo;
     }
+    /**
+     * 
+     */
     public static function caja($ownerId, $consultaId)
     {
         return $caja = Caja::where('owner_id', $ownerId)
@@ -215,6 +220,9 @@ class Helper
             ->first();
 
     }
+    /**
+     * 
+     */
     public static function ownerId(): mixed
     {
         $requestUserId = Auth::user()->id;

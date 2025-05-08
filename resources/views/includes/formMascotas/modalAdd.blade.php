@@ -50,7 +50,7 @@
                 <div>
 
                     <select wire:model='dueno_id' name="dueno_id"
-                        class="transition duration-300 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                        class="transition opa duration-300 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                         <option value="">-Elegir-</option>
                         @foreach ($duenos as $dueno)
                         <option value="{{ $dueno->id }}">{{ $dueno->nombre }} | {{ $dueno->email }}</option>
