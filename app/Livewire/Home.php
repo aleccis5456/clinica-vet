@@ -54,6 +54,7 @@ class Home extends Component
             Helper::checkRol(Auth::user()->rol_id);
             Helper::checkPermisos();
         }
+        
         Helper::crearCajas();       
     }
 

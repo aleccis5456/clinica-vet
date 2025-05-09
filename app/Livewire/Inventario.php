@@ -60,6 +60,7 @@ class Inventario extends Component
     public $stock_actual;
     public $foto;
     public $imagePreview;
+    public $precio_interno;
 
     /**
      * 
@@ -291,8 +292,7 @@ class Inventario extends Component
             $this->imagePreview = $this->foto->temporaryUrl(); // Genera una URL temporal
         }
     }
-    public function store()
-    {
+    public function store(){
             $this->validate([
                 'nombre' => 'required',
                 'proveedor_id' => 'nullable|exists:proveedores,id',
@@ -339,7 +339,6 @@ class Inventario extends Component
             if(!$producto){
                 $this->dispatch('error-store');
             }
-            //return redirect('/Inventario')->with('error', $e->getMessage());
         $this->dispatch('success-store');
     }
 
@@ -357,6 +356,7 @@ class Inventario extends Component
         $this->stock_actual =null;
         $this->foto = null;
         $this->imagePreview =null;
+        $this->precio_interno =null;
 
     }
     #[On('error-store')]

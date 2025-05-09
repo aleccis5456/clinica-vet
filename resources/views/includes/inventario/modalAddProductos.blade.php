@@ -141,7 +141,7 @@
                 <div class="mt-2 relative w-36 h-36">
                     <button wire:click="removeImage" 
                             type="button"
-                            class="absolute top-0 -right-6 mt-2 mr-2 text-gray-400 text-2xl cursor-pointer hover:text-gray-900">
+                            class="absolute top-0 -right-8 mt-2 mr-2 text-gray-400 text-2xl cursor-pointer hover:text-gray-900">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                           </svg>
@@ -168,7 +168,7 @@
                             class="py-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <input
                         class="py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        type="number" name="precio_interno" id="">
+                        type="number" wire:model="precio_interno" id="">
                 </div>
             </div>
             <!-- Botón de enviar -->

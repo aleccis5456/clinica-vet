@@ -37,6 +37,54 @@ class Helper
         return $total;
     }
     public static function crearCajas(){
+        if(Auth::check()){
+            $requestUserId = Auth::user()->id;
+            $user = User::find($requestUserId);
+            if ($user->admin) {
+                $admin_id = $user->id;
+            } else {
+                $admin_id = $user->admin_id;
+            }
+
+            $cajasDB = Caja::where('pago_estado', '!=' , 'pagado')
+                        ->where('owner_id', $admin_id)
+                        ->get();
+            $caja = session('caja', []);
+            $cortar = false;
+            if($cajasDB->count() == 0){
+                return;
+            }
+            foreach($cajasDB as $item2){
+                foreach($caja as $item){
+                    $item['consultaId'] = $item2->consulta_id ? $cortar = true : $cortar = false;
+                }
+            }
+
+            foreach($cajasDB as $cajadb){
+                $consultaProductos = ConsultaProducto::where('consulta_id', $cajadb->consulta_id)
+                                                    ->where('owner_id', $admin_id)
+                                                    ->get();
+                $productos = [];
+                if($consultaProductos->count() == 0){
+                    continue;
+                }
+                foreach($consultaProductos as $cProducto){
+                    $producto = Producto::where('id', $cProducto->producto_id)
+                        ->where('owner_id', $admin_id)->first();
+                    $productos[] = [
+                        "productoId" => $producto->id,
+                        "producto" => $producto->nombre,
+                        "cantidad" => $cProducto->cantidad,
+                        "precio" => $producto->precio_interno,
+                        "owner_id" => $admin_id
+                    ];
+                }                
+                //dd($productos);
+            }
+        }
+    }
+
+    public static function crearCajas2(){
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
         if (Auth::check()) {
@@ -47,15 +95,18 @@ class Helper
             } else {
                 $admin_id = $user->admin_id;
             }
-            $pagos = Pago::where('estado', 'pendiente')
+            $pagos = Pago::where('pagado', false)
                 ->where('owner_id', $admin_id)
                 ->get();
             $caja = session('caja', []);
             $cortar = false;
+            $conteo = [];
             foreach ($pagos as $pago) {
-                if ($pago->pagado) {
+                if ($pago->pagado == true) {
+                    $conteo[] = $pago;
                     continue;
-                }
+                }           
+                
                 // Verificar si el admin tiene una caja abierta
                 $cajaDB = Caja::where('owner_id', $admin_id)
                     ->where('pago_estado', 'pendiente')
@@ -65,9 +116,9 @@ class Helper
                         $item['consultaId'] = $pago->consulta_id ? $cortar = true : $cortar = false;
                     }
                     //para cortar el foreach de pagos         
-                    if ($cortar) {
-                        continue;
-                    }
+                    // if ($cortar) {
+                    //     continue;
+                    // }
                     $consultaProductos = ConsultaProducto::where('consulta_id', $pago->consulta_id)
                         ->where('owner_id', $admin_id)
                         ->get();
@@ -85,6 +136,7 @@ class Helper
                     }
                     foreach ($cajaDB as $cajaItem) {
                         if ($cajaItem->owner_id == $admin_id) {
+                            
                             $consultaProductos = ConsultaProducto::where('consulta_id', $cajaItem->consulta_id)
                                 ->where('owner_id', $admin_id)
                                 ->get();
@@ -121,12 +173,14 @@ class Helper
                                 'pagoEstado' => $pago->estado,
                                 'montoTotal' => $pagoSumar,
                                 'ownerId' => $admin_id,
-                            ];
+                            ];                            
                         }
                     }
                     session(['caja' => $caja]);
+                    
                 }
             }
+           // dd($conteo);
         }
     }
     public static function check()

@@ -16,7 +16,6 @@
             <p class="text-2xl font-semibold text-center text-gray-800 mb-6">Actualizar Consulta</p>
 
             <!-- NOTAS -->
-            {{-- @dd(json_encode($consultaToEdit)) --}}
             @if ($consultaToEdit->notas != null)
                 <div class="p-2 flex w-auto rounded-md bg-blue-100  text-blue-800 shadow-sm">
                     <div class="flex">
@@ -207,7 +206,7 @@
 
                                 <!-- Contenido del producto -->
                                 <div class="flex flex-col items-center p-2">
-                                    <img class="w-12 h-12 object-cover rounded-md mb-1"
+                                    <img class="w-12 h-12 object-cover rounded-md mb-1 text-xs"
                                         src="{{ asset('uploads/productos/' . $item['foto']) }}"
                                         alt="{{ $item['nombre'] }}">
                                     <div class="text-center">

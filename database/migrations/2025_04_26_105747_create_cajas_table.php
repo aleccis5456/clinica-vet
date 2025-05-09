@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('consulta_id')->constrained('consultas')->onDelete('cascade');
             $table->foreignId('dueno_id')->constrained('duenos')->onDelete('cascade');
             $table->foreignId('mascota_id')->constrained('mascotas')->onDelete('cascade');            
-            $table->foreignId('producto_consulta_id')->nullable()->constrained('consulta_productos')->onDelete('cascade');
+            $table->json('productos')->nullable();
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->string('pago_estado');
             $table->integer('monto_total');            

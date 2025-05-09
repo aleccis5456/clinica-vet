@@ -12,74 +12,48 @@ use App\Models\Caja;
 use App\Models\CajaProductos;
 
 class CajaController extends Controller {
-    public function store($consultaId) : mixed{
-        
-        $consulta = Consulta::find($consultaId); 
-   
+    public function store($consultaId) {
+        $consulta = Consulta::where('id', $consultaId)->where('owner_id', $this->ownerId())->first();
+    
         if(!$consulta){
-            return back()->with('error', 'Ocurrio un error');
+            return back()->with('error', 'Ocurrió un error');
         }
-        $consultaProductos = ConsultaProducto::where('consulta_id', $consultaId)->get();
         
-        $productos = [];
-
-        foreach($consultaProductos as $cProducto){
-            $producto = Producto::find($cProducto->producto_id);
-                        
-            $productos[] = [
-                "productoId" => $producto->id,
-                "producto" => $producto->nombre,
-                "cantidad" => $cProducto->cantidad,                
-                "precio" => $producto->precio,     
-                "owner_id" => $this->ownerId(),  
-            ];            
-        }                                
-
-        // $caja = session('caja', []);    
-        $caja = Caja::where('owner_id', $this->ownerId())
-                    ->where('consulta_id', $consultaId)
-                    ->first();
-        if($caja){
-            return back()->with('error', 'Esta consulta ya se envió a caja');
+        $consultaProductos = ConsultaProducto::where('consulta_id', $consultaId)
+                                            ->where('owner_id', $this->ownerId())
+                                            ->get();                                            
+        if(!$consultaProductos){
+            return back()->with('error', 'No se encontraron productos para esta consulta');
         }
 
-        $productoConsulta = ConsultaProducto::where('owner_id', $this->ownerId())
-                        ->where('consulta_id', $consultaId)
+        $cajadb = Caja::where('consulta_id', $consultaId)
+                        ->where('owner_id', $this->ownerId())
+                        ->where('pago_estado', 'Pendiente')
                         ->first();
-
-        $totalConsulta = $consulta->tipoConsulta->precio;
-        $totalProductos = 0;        
-        foreach($productos as $producto){                  
-            $totalProductos += (int)$producto['cantidad']*(int)$producto['precio'];
+        if($cajadb){
+            return back()->with('error', 'Ya existe una caja pendiente para esta consulta');
         }
-        $total = $totalConsulta + $totalProductos;
+        $productos = [];
+        $totalProductos = 0;
+        foreach($consultaProductos as $consultaProducto){
+            $productos[] = $consultaProducto->producto_id;
+            $producto = Producto::where('id', $consultaProducto->producto_id)
+                                ->where('owner_id', $this->ownerId())
+                                ->first();                    
+            $totalProductos += $consultaProducto->cantidad * (int)$producto->precio_interno;
+        }
+        $total = $totalProductos + $consulta->tipoConsulta->precio;
 
-
-        $pago = Pago::create([
-            'dueno_id' => $consulta->mascota->dueno->id,
-            'consulta_id' => $consulta->id,
-            'monto' => $total,
-            'pagado' => false,
-            'cuotas' => false,
-            'estado' => 'pendiente',
-            'owner_id' => $this->ownerId(),
-        ]);
-        
         Caja::create([
             'consulta_id' => $consultaId,
-            'dueno_id' => $consulta->mascota->dueno->id,
-            'mascota_id' => $consulta->mascota->id,
-            'pago_estado' => $pago->estado,
-            'monto_total' => $total,
+            'dueno_id' => $consulta->mascota->dueno_id,
+            'mascota_id' => $consulta->mascota_id,
             'owner_id' => $this->ownerId(),
-            'producto_consulta_id' => $productoConsulta ? $productoConsulta->id : null,
+            'pago_estado' => 'Pendiente',
+            'monto_total' => $total,
+            'productos' => $productos,
         ]);
-        $consulta->update([
-            'estado' => 'Pendiente'
-        ]);
-        // session(['caja' => $caja]);
-        
-        return redirect()->back()->with('caja_creada', 'Se ha creado una nueva caja.');
+        return back()->with('success', 'Caja creada con éxito');
     }
 
     public function ownerId(): mixed{

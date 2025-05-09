@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\Helper;
+use App\Models\Caja;
 use App\Models\Pago;
 use App\Models\ConsultaProducto;
 use App\Models\TipoConsulta;
@@ -16,12 +17,13 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On; 
+use Livewire\Attributes\On;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 #[Title('Consultas')]
-class Consultas extends Component {
+class Consultas extends Component
+{
     public $search = '';
     public $mascotas;
     public $veterinarios;
@@ -71,38 +73,42 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function ownerId(){
-        if(Auth::user()){
+    public function ownerId()
+    {
+        if (Auth::user()) {
             $requestUserId = Auth::user()->id;
             $user = User::find($requestUserId);
-            if($user->admin){
+            if ($user->admin) {
                 $admin_id = $user->id;
-            }else{
+            } else {
                 $admin_id = $user->admin_id;
             }
-            if($admin_id == null){
+            if ($admin_id == null) {
                 return back()->with('error', 'No tienes permisos para agregar una mascota');
-            } 
+            }
             return $admin_id;
         }
     }
     /** 
      * 
-     */     
-    public function mascotasBusquedaTrue(): void {
+     */
+    public function mascotasBusquedaTrue(): void
+    {
         $this->mascotaResultado = Mascota::where('nombre', 'like', "%$this->mascotaSearch%")
-                                        ->where('owner_id', $this->ownerId())
-                                        ->get();
+            ->where('owner_id', $this->ownerId())
+            ->get();
         $this->mascotasBusqueda = true;
     }
-    public function mascotasBusquedaFalse(): void {
+    public function mascotasBusquedaFalse(): void
+    {
         $this->mascotasBusqueda = false;
     }
 
     /**
      * 
      */
-    public function selectMascota($mascotaId): void {
+    public function selectMascota($mascotaId): void
+    {
         $this->mascota_id = $mascotaId;
         $this->mascotasBusqueda = false;
         $this->mascotaSearch = '';
@@ -112,46 +118,49 @@ class Consultas extends Component {
     /**
      * function para la busqueda
      */
-    public function busqueda(): void {
+    public function busqueda(): void
+    {
         if (empty($this->search)) {
             $this->consultas = Consulta::orderBy('id', 'desc')
-                                        ->where('owner_id', $this->ownerId())
-                                        ->take(12)
-                                        ->get();
+                ->where('owner_id', $this->ownerId())
+                ->take(12)
+                ->get();
         } else {
             $mascotas = Mascota::whereLike('nombre', "%$this->search%")
-                                ->where('owner_id', $this->ownerId())
-                                ->pluck('id');
+                ->where('owner_id', $this->ownerId())
+                ->pluck('id');
             $this->consultas = Consulta::whereIn('mascota_id', $mascotas)
-                                        ->orWhereLike('codigo', "%$this->search%")
-                                        ->where('owner_id', $this->ownerId())
-                                        ->get();
+                ->orWhereLike('codigo', "%$this->search%")
+                ->where('owner_id', $this->ownerId())
+                ->get();
         }
     }
-    public function flagC(): void {
+    public function flagC(): void
+    {
         $this->search = '';
         $this->consultas = Consulta::orderBy('id', 'desc')
-                                    ->where('owner_id', $this->ownerId())
-                                    ->take(12)->get();
+            ->where('owner_id', $this->ownerId())
+            ->take(12)->get();
     }
 
     /**
      * function para elimiar un veterinario del grupo
      */
-    public function eliminarVetGrupo($vetId): RedirectResponse {
+    public function eliminarVetGrupo($vetId)
+    {
         try {
             ConsultaVeterinario::find($vetId)?->delete();
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
-
-        return redirect()->route('consultas')->with('eliminado', 'Veterinario eliminado del grupo');
+        $this->dispatch('success', 'Veterinario eliminado del grupo');
     }
 
     /**
      * 
      */
-    public function vaciarVariables(): void {
+    public function vaciarVariables(): void
+    {
         $this->mascota_id = null;
         $this->veterinario_id = null;
         $this->fecha = null;
@@ -167,18 +176,21 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function openProductoConsulta($cpId): void {
+    public function openProductoConsulta($cpId): void
+    {
         $this->cpId = $cpId;
         $this->modalProductoConsulta = true;
     }
-    public function closeProductoConsulta(): void {
+    public function closeProductoConsulta(): void
+    {
         $this->modalProductoConsulta = false;
     }
 
     /**
      * comprueba que hay ningun array vacio 
      */
-    public function comprobarSession(): void {
+    public function comprobarSession(): void
+    {
         $sessionConsumo = session('consumo', []);
 
         // Filtrar los valores vacíos
@@ -195,17 +207,20 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function openProductoConsumido() :void {
+    public function openProductoConsumido(): void
+    {
         $this->productoConsumido = true;
     }
-    public function closeProductoConsumido() :void {
+    public function closeProductoConsumido(): void
+    {
         $this->productoConsumido = false;
     }
 
     /**
      * 
      */
-    public function filtrarProductos(): void {
+    public function filtrarProductos(): void
+    {
         $this->openProductoConsumido();
         if (empty($this->q)) {
             $this->productos = Producto::take(0)->get();
@@ -214,22 +229,24 @@ class Consultas extends Component {
             $this->productos = Producto::whereLike('nombre', "%$this->q%")
                 ->where('owner_id', $this->ownerId())
                 ->where('stock_actual', '>', 1)
-                ->where('precio_interno','!=',null)
+                ->where('precio_interno', '!=', null)
                 ->get();
         }
     }
 
-    public function flag(): void {
+    public function flag(): void
+    {
         $this->q = '';
     }
 
     /**
      * creacion de la sesion de productos
      */
-    public function addProducto($productoId, $consultaId)  {
+    public function addProducto($productoId, $consultaId)
+    {
         $producto = Producto::where('id', $productoId)
-                            ->where('owner_id', $this->ownerId())
-                            ->first();
+            ->where('owner_id', $this->ownerId())
+            ->first();
         if (!$producto) {
             return redirect()->route('consultas')->with('error', 'Hubo un error al procesar el producto');
         }
@@ -240,7 +257,7 @@ class Consultas extends Component {
         $contador = 0;
         foreach ($consumo[$consultaId] as &$item) {
             if ($item['productoId'] == $producto->id) {
-                if ($item['productoCompleto']['precio_interno'] == $item['precio']) {                    
+                if ($item['productoCompleto']['precio_interno'] == $item['precio']) {
                     $item['cantidad']++;
                     $contador++;
                     break;
@@ -257,16 +274,24 @@ class Consultas extends Component {
                 'nombre' => $producto->nombre,
                 'foto' => $producto->foto,
                 'productoCompleto' => $producto,
-                'cantidad' => 1 // Agregar clave 'cantidad'
+                'cantidad' => 1
             ];
         }
+
+        // Caja::update([
+        //     'producto_consulta_id' 
+        // ]);
         session(['consumo' => $consumo]);
+        if (count(session('consumo')) == 0) {
+            $this->dispatch('success', 'Producto agregado a la consulta');
+        }
     }
 
     /**
      * function que quita una unidad de la session consumos
      */
-    public function quitarProducto($index, $consultaId) {
+    public function quitarProducto($index, $consultaId)
+    {
         $consumo = session('consumo', []);
 
         if (!isset($consumo[$consultaId][$index])) {
@@ -287,33 +312,40 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function openTablaDeProducto(): void {
+    public function openTablaDeProducto(): void
+    {
         $this->tablaDeProductos = true;
     }
-    public function closeTablaDeProductos(): void {
+    public function closeTablaDeProductos(): void
+    {
         $this->tablaDeProductos = false;
     }
 
     /**
      * 
      */
-    public function openTablaTipoConsulta(): void {
+    public function openTablaTipoConsulta(): void
+    {
         $this->tablaTipoConsulta = true;
     }
-    public function closeTablaTipoConsulta(): void {
+    public function closeTablaTipoConsulta(): void
+    {
         $this->tablaTipoConsulta = false;
     }
 
     /**
      * 
      */
-    public function openTipoConsulta() {
+    public function openTipoConsulta()
+    {
         $this->tipoConsulta = true;
     }
-    public function closeTipoConsulta() {
+    public function closeTipoConsulta()
+    {
         $this->tipoConsulta = false;
     }
-    public function crearTipoConsulta() {
+    public function crearTipoConsulta()
+    {
         $this->validate([
             'nombre' => 'required',
             'descripcion' => 'nullable',
@@ -321,14 +353,14 @@ class Consultas extends Component {
         ]);
         $requestUserId = Auth::user()->id;
         $user = User::find($requestUserId);
-        if($user->admin){
+        if ($user->admin) {
             $admin_id = $user->id;
-        }else{
+        } else {
             $admin_id = $user->admin_id;
         }
-        if($admin_id == null){
+        if ($admin_id == null) {
             return back()->with('error', 'No tienes permisos para agregar una mascota');
-        }                                  
+        }
         try {
             TipoConsulta::create([
                 'nombre' => $this->nombre,
@@ -346,20 +378,25 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function openCambiarVet(): void {
+    public function openCambiarVet(): void
+    {
         $this->cambiarVet = true;
     }
-    public function closeCambiarVet(): void {
+    public function closeCambiarVet(): void
+    {
         $this->vetChanged = '';
         $this->cambiarVet = false;
     }
-    public function setVetChanged($vetId): void {
+    public function setVetChanged($vetId): void
+    {
         $this->vetChanged = $vetId;
     }
-    public function showMessage(): void {
+    public function showMessage(): void
+    {
         $this->message = true;
     }
-    public function closeMessage(): void {
+    public function closeMessage(): void
+    {
         $this->message = false;
     }
 
@@ -367,8 +404,9 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function openModalConfig($consultaId) {
-        $this->consultaToEdit = Consulta::where('id',$consultaId)->where('owner_id', $this->ownerId())->first();
+    public function openModalConfig($consultaId)
+    {
+        $this->consultaToEdit = Consulta::where('id', $consultaId)->where('owner_id', $this->ownerId())->first();
         $this->horaN = $this->consultaToEdit->hora;
         $this->fechaN = $this->consultaToEdit->fecha;
         $this->tipo = $this->consultaToEdit->tipo_id;
@@ -377,20 +415,27 @@ class Consultas extends Component {
         $this->diagnostico = $this->consultaToEdit->diagnostico;
         $this->tratamiento = $this->consultaToEdit->tratamiento;
         $this->consultasProductos = ConsultaProducto::where('consulta_id', $consultaId)
-                                                    ->where('owner_id', $this->ownerId())
-                                                    ->get();
+            ->where('owner_id', $this->ownerId())
+            ->get();
         $this->modalConfig = true;
     }
-
-    public function closeModalConfig() {
+    public function closeModalConfig()
+    {
         Session::forget('consumo');
         $this->flag();
         $this->vetChanged = '';
         $this->consultaToEdit = null;
         $this->modalConfig = false;
     }
-
-    private function codigo($length) {
+    #[On('success')]
+    public function success(): void
+    {
+        if($this->consultaToEdit->id != null){
+            $this->openModalConfig($this->consultaToEdit->id);
+        }
+    }
+    private function codigo($length)
+    {
         $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         $randomString = '';
 
@@ -404,7 +449,8 @@ class Consultas extends Component {
     /**
      * funcion que crea las consultas
      */
-    public function crearConsulta() {
+    public function crearConsulta()
+    {
         $this->validate([
             'mascota_id' => 'required',
             'veterinario_id' => 'required',
@@ -435,7 +481,7 @@ class Consultas extends Component {
             if ($this->fecha != now()->format('Y-m-d') or $this->hora != now()->format('H:i')) {
                 $this->estado = 'Agendado';
             }
-        
+
             $consulta = Consulta::create([
                 'mascota_id' => $this->mascota_id,
                 'veterinario_id' => $this->veterinario_id,
@@ -459,10 +505,12 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function opneAddConsulta(): void {
+    public function opneAddConsulta(): void
+    {
         $this->addConsulta = true;
     }
-    public function closeAddConsulta(): void {
+    public function closeAddConsulta(): void
+    {
         $this->vetChanged = '';
         $this->addConsulta = false;
     }
@@ -470,7 +518,8 @@ class Consultas extends Component {
     /**
      * function que actualiza el estado desde la vista principal de las consultas, <select>
      */
-    public function updateEstado($consultaID, $estadoNuevo) {
+    public function updateEstado($consultaID, $estadoNuevo)
+    {
         $cambiar = true;
         try {
             $consulta = Consulta::find($consultaID);
@@ -511,23 +560,24 @@ class Consultas extends Component {
     /**
      * function para cambiar veterinario
      */
-    public function updateVet() {
+    public function updateVet()
+    {
         $this->validate([
             'cambiarVetId' => 'sometimes',
         ]);
 
         try {
-            $consulta = Consulta::find($this->consultaToEdit->id);            
+            $consulta = Consulta::find($this->consultaToEdit->id);
             $consulta->update([
                 'veterinario_id' => $this->cambiarVetId,
             ]);
             $consulta->save();
 
             ConsultaVeterinario::where('consulta_id', $consulta->id)
-                                ->where('owner_id', $this->ownerId())
-                                ->update([
-                                    'veterinario_id' => $this->cambiarVetId,
-                                ]);
+                ->where('owner_id', $this->ownerId())
+                ->update([
+                    'veterinario_id' => $this->cambiarVetId,
+                ]);
 
             $this->openModalConfig($consulta->id);
             //dd($this->consultaToEdit);
@@ -540,44 +590,43 @@ class Consultas extends Component {
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta()  {
+    public function updateConsulta()
+    {
         //esta parte agrega los productos a la consulta
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
-            try {
-                $admin_id = $this->ownerId();
-                foreach ($consumo[$this->consultaToEdit->id] as $item) {
-                    $consultaProducto = ConsultaProducto::where('producto_id', $item['productoId'])
-                                                        ->where('consulta_id', $item['consultaId'])
-                                                        ->where('owner_id', $admin_id)
-                                                        ->first();
-                    if($consultaProducto){
-                        $consultaProducto->cantidad += $item['cantidad'];
-                        $consultaProducto->save();
-                    }else{
-                        ConsultaProducto::create([
-                            'producto_id' => $item['productoId'],
-                            'consulta_id' => $item['consultaId'],
-                            'cantidad' => $item['cantidad'],
-                            'descripcion' => null,
-                            'owner_id' => $admin_id
-                        ]);
-                    }                    
+            foreach ($consumo[$this->consultaToEdit->id] as $item) {
+                $consultaProducto = ConsultaProducto::where('producto_id', $item['productoId'])
+                                                    ->where('consulta_id', $item['consultaId'])
+                                                    ->where('owner_id', $this->ownerId())
+                                                    ->first();
+
+                if ($consultaProducto) {
+                    $consultaProducto->update([
+                        'cantidad' => $consultaProducto->cantidad + $item['cantidad'],
+                    ]);
+                } else {
+                    ConsultaProducto::create([
+                        'producto_id' => $item['productoId'],
+                        'consulta_id' => $this->consultaToEdit->id,
+                        'cantidad' => $item['cantidad'],
+                        'descripcion' => null,
+                        'owner_id' => $this->ownerId(),
+                    ]);
                 }
-            } catch (\Exception $e) {
-                return redirect()->route('consultas')->with('error', 'Error al agregar productos a la consulta');
             }
         }
 
+        //dd('ni if ni else');
         $consulta = Consulta::where('id', $this->consultaToEdit->id)->where('owner_id', $this->ownerId())->first();
         $getEstado = gettype(Helper::updateEstado($this->consultaToEdit->id, $this->estado));
         // if ($getEstado == 'object') {
         //     $this->dispatch('Error', 'No puedes cambiar el estado de una consulta que ya fue finalizada');
         // }
         $estadoNuevo = '';
-        if($getEstado == 'object') { 
+        if ($getEstado == 'object') {
             $estadoNuevo = $consulta->estado;
-        }else{ 
+        } else {
             $estadoNuevo = Helper::updateEstado($this->consultaToEdit->id, $this->estado);
         }
         $consulta->update([
@@ -588,7 +637,8 @@ class Consultas extends Component {
             'tratamiento' => $this->flagTratamiento ? null : $this->tratamiento,
             'notas' => $this->flagNotas ? null : $this->notas,
             'hora' => $this->horaN ?? $consulta->hora,
-            'estado' => $estadoNuevo,
+            'estado' => $estadoNuevo ?? $consulta->estado,
+
         ]);
 
         if (!empty($this->veterinariosAgg)) {
@@ -597,23 +647,24 @@ class Consultas extends Component {
                     'consulta_id' => $consulta->id,
                     'veterinario_id' => $vetId,
                     'owner_id' => $this->ownerId(),
-                    
+
                 ]);
             }
         }
 
         Session::forget('consumo');
-        return redirect()->route('consultas')->with('editado', 'Consulta Actualizada');
+        $this->dispatch('success', 'Consulta Actualizada');
     }
 
     /**
      * function para eliminar una consultaProdcutos     
      */
-    public function EliminarProductoConsulta($cpId) {
+    public function EliminarProductoConsulta($cpId)
+    {
         try {
             ConsultaProducto::where('id', $cpId)
-                            ->where('owner_id', $this->ownerId())
-                            ?->delete();
+                ->where('owner_id', $this->ownerId())
+                ?->delete();
         } catch (\Exception $e) {
             return redirect()->route('consultas')->with('error', $e->getMessage());
         }
@@ -624,7 +675,8 @@ class Consultas extends Component {
     /**
      * 
      */
-    public function filtarPorEstados(): void {
+    public function filtarPorEstados(): void
+    {
         if ($this->estadofiltrado == 1) {
             $this->consultas = Consulta::orderByRaw("
                             CASE 
@@ -634,78 +686,85 @@ class Consultas extends Component {
                                 WHEN estado = 'Agendado' THEN 4
                                 ELSE 5
                             END")
-            ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
-            ->where('owner_id', $this->ownerId())
-            ->take(12)
-            ->get();
+                ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
+                ->where('owner_id', $this->ownerId())
+                ->take(12)
+                ->get();
         } else {
             $this->consultas = Consulta::where('estado', $this->estadofiltrado)
-                                        ->where('owner_id', $this->ownerId())
-                                        ->get();
+                ->where('owner_id', $this->ownerId())
+                ->get();
         }
     }
 
     /**
      * 
      */
-   
-    public function disminuirCantidad($consultaId){
-        $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
-                                    ->where('owner_id', $this->ownerId())
-                                    ->get();
 
-        if($consultaProducto->isEmpty()){
+    public function disminuirCantidad($consultaId)
+    {
+        $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
+                                            ->where('owner_id', $this->ownerId())
+                                            ->get();
+        if ($consultaProducto->isEmpty()) {
             return redirect()->route('consultas')->with('error', 'No hay productos en la consulta');
         }
         foreach ($consultaProducto as $producto) {
-            if($producto->cantidad == 1){
+            if ($producto->cantidad == 1) {
                 $producto->delete();
-            }else{
-                $producto->cantidad = $producto->cantidad - 1;
-                $producto->save();
-            }            
-            $this->dispatch('disminuirCantidad');
+                $this->dispatch('success', 'Cantidad de productos disminuida');
+                break;
+            } else {
+                $producto->update([
+                    'cantidad' => $producto->cantidad - 1,
+                ]);
+                $this->dispatch('success', 'Cantidad de productos disminuida');
+                break;
+            }
         }
     }
+    
 
-    public function eliminarTipoConsulta($tipoConsultaId){
+    public function eliminarTipoConsulta($tipoConsultaId)
+    {
         TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
         return redirect()->route('consultas')->with('eliminado', 'Tipo de consulta eliminado correctamente');
     }
 
     #[On('disminuirCantidad')]
-    public function refresh(){
-    }
+    public function refresh() {}
 
     #[On('tipoconsulta-add')]
-    public function tipoconsultaAdd(){
+    public function tipoconsultaAdd()
+    {
         $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
     }
 
-    public function mount() {
-        Helper::check();                      
+    public function mount()
+    {
+        Helper::check();
         //devuelve la lista de veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereLike('name', "%Vet%")
-                    ->where('owner_id', $this->ownerId() )
-                    ->first();
+            ->where('owner_id', $this->ownerId())
+            ->first();
         $vetId = $rol->id ?? null;
         $this->veterinarios = User::where('rol_id', $vetId)
-                                    ->where('admin_id', $this->ownerId())
-                                    ->get();        
+            ->where('admin_id', $this->ownerId())
+            ->get();
         //dd($this->veterinarios);
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereNotLike('name', "%vet%")
-                    ->whereNotLike('name', "%user%")
-                    ->whereNotLike('name', "%admin%")
-                    ->WhereLike('name', "%pelu%")
-                    ->orWhereLike('name', "%este%")
-                    ->orWhereLike('name', "%tica%")            
-                    ->where('owner_id', $this->ownerId())
-                    ->first();
+            ->whereNotLike('name', "%user%")
+            ->whereNotLike('name', "%admin%")
+            ->WhereLike('name', "%pelu%")
+            ->orWhereLike('name', "%este%")
+            ->orWhereLike('name', "%tica%")
+            ->where('owner_id', $this->ownerId())
+            ->first();
         $userId = $rol->id ?? null;
         $this->users = User::where('rol_id', $userId)
-                            ->where('admin_id', $this->ownerId())
-                            ->get();
+            ->where('admin_id', $this->ownerId())
+            ->get();
 
         $this->vaciarVariables();
 
@@ -741,7 +800,8 @@ class Consultas extends Component {
             return redirect('/');
         }
     }
-    public function render(): View {
+    public function render(): View
+    {
         return view('livewire.consultas');
     }
 }
