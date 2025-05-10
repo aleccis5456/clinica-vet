@@ -36,8 +36,9 @@ class Helper
         }
         return $total;
     }
-    public static function crearCajas(){
-        if(Auth::check()){
+    public static function crearCajas()
+    {
+        if (Auth::check()) {
             $requestUserId = Auth::user()->id;
             $user = User::find($requestUserId);
             if ($user->admin) {
@@ -46,29 +47,36 @@ class Helper
                 $admin_id = $user->admin_id;
             }
 
-            $cajasDB = Caja::where('pago_estado', '!=' , 'pagado')
-                        ->where('owner_id', $admin_id)
-                        ->get();
+            $cajasDB = Caja::where('pago_estado', '!=', 'pagado')
+                ->where('owner_id', $admin_id)
+                ->get();
+
             $caja = session('caja', []);
             $cortar = false;
-            if($cajasDB->count() == 0){
+            if ($cajasDB->count() == 0) {
+                dd('fs');
                 return;
             }
-            foreach($cajasDB as $item2){
-                foreach($caja as $item){
-                    $item['consultaId'] = $item2->consulta_id ? $cortar = true : $cortar = false;
-                }
-            }
 
-            foreach($cajasDB as $cajadb){
-                $consultaProductos = ConsultaProducto::where('consulta_id', $cajadb->consulta_id)
-                                                    ->where('owner_id', $admin_id)
-                                                    ->get();
-                $productos = [];
-                if($consultaProductos->count() == 0){
+
+            foreach ($cajasDB as $cajadb) {
+                foreach ($caja as $item) {
+                    if ($item['consultaId'] == $cajadb->consulta_id) {
+                        $cortar = true;
+                    }
+                }
+
+                if ($cortar) {
                     continue;
                 }
-                foreach($consultaProductos as $cProducto){
+                $consultaProductos = ConsultaProducto::where('consulta_id', $cajadb->consulta_id)
+                    ->where('owner_id', $admin_id)
+                    ->get();
+                $productos = [];
+                // if($consultaProductos->count() == 0){
+                //     continue;
+                // }
+                foreach ($consultaProductos as $cProducto) {
                     $producto = Producto::where('id', $cProducto->producto_id)
                         ->where('owner_id', $admin_id)->first();
                     $productos[] = [
@@ -78,13 +86,32 @@ class Helper
                         "precio" => $producto->precio_interno,
                         "owner_id" => $admin_id
                     ];
-                }                
-                //dd($productos);
+                    
+                }
+                $consultadb = Consulta::where('id', $cajadb->consulta_id)
+                                        ->where('owner_id', $admin_id)
+                                        ->first();
+                //dd($consultadb); 
+                $pago = Pago::where('pagado', false)
+                    ->where('owner_id', $admin_id)
+                    ->first();
+                $caja[] = [
+                    'consultaId' => $consultadb->id,
+                    'cliente' => $cProducto->consulta->mascota->dueno,
+                    'mascota' => $cProducto->consulta->mascota,
+                    'productos' => $productos,
+                    'consulta' => $consultadb,
+                    'pagoEstado' => $pago->estado,
+                    'montoTotal' => $cajadb->monto_total,
+                    'ownerId' => $admin_id,
+                ];
             }
+            session(['caja' => $caja]);
         }
     }
 
-    public static function crearCajas2(){
+    public static function crearCajas2()
+    {
         // Verificar si el usuario es admin y obtener su id
         // Si no es admin, obtener el id del admin al que pertenece
         if (Auth::check()) {
@@ -105,8 +132,8 @@ class Helper
                 if ($pago->pagado == true) {
                     $conteo[] = $pago;
                     continue;
-                }           
-                
+                }
+
                 // Verificar si el admin tiene una caja abierta
                 $cajaDB = Caja::where('owner_id', $admin_id)
                     ->where('pago_estado', 'pendiente')
@@ -125,7 +152,7 @@ class Helper
                     $productos = [];
                     foreach ($consultaProductos as $cProducto) {
                         $producto = Producto::where('id', $cProducto->producto_id)
-                            ->where('owner_id', $admin_id)->first();                            
+                            ->where('owner_id', $admin_id)->first();
                         $productos[] = [
                             "productoId" => $producto->id ?? null,
                             "producto" => $producto->nombre ?? null,
@@ -136,7 +163,7 @@ class Helper
                     }
                     foreach ($cajaDB as $cajaItem) {
                         if ($cajaItem->owner_id == $admin_id) {
-                            
+
                             $consultaProductos = ConsultaProducto::where('consulta_id', $cajaItem->consulta_id)
                                 ->where('owner_id', $admin_id)
                                 ->get();
@@ -173,14 +200,13 @@ class Helper
                                 'pagoEstado' => $pago->estado,
                                 'montoTotal' => $pagoSumar,
                                 'ownerId' => $admin_id,
-                            ];                            
+                            ];
                         }
                     }
                     session(['caja' => $caja]);
-                    
                 }
             }
-           // dd($conteo);
+            // dd($conteo);
         }
     }
     public static function check()
@@ -239,7 +265,8 @@ class Helper
     /**
      * 
      */
-    public static function updateEstado($consultaID, $estadoNuevo) {
+    public static function updateEstado($consultaID, $estadoNuevo)
+    {
         $consultas = Consulta::all();
         try {
             $consulta = Consulta::find($consultaID);
@@ -272,7 +299,6 @@ class Helper
             })
             ->where('pago_estado', 'pendiente')
             ->first();
-
     }
     /**
      * 
@@ -291,5 +317,4 @@ class Helper
         }
         return $admin_id;
     }
-
 }

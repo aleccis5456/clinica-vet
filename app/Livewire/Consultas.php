@@ -616,13 +616,35 @@ class Consultas extends Component
                 }
             }
         }
+        $productos = [];
+        $nuevoMonto = 0;
+        dd($consumo);
+        foreach($consumo[$this->consultaToEdit->id] as $item){
+            $productos[] = $item['productoId'];
 
-        //dd('ni if ni else');
+        }
+        if(session('caja')){
+            foreach(session('caja') as $caja){
+                if($caja['consultaId'] == $this->consultaToEdit->id){
+                    //update caja session
+                    $caja['productos'] = $productos;
+                    $caja['monto_total'] ;
+                    $cajadb = Caja::where('consulta_id', $caja['consultaId'])
+                                    ->where('owner_id', $this->ownerId())
+                                    ->first();
+                    //update caja model
+                    $cajadb->update([
+                        'productos' => $productos,
+                    ]);
+                }
+            }
+        }
+        
+        Session::forget('caja');
+        Helper::crearCajas();
         $consulta = Consulta::where('id', $this->consultaToEdit->id)->where('owner_id', $this->ownerId())->first();
         $getEstado = gettype(Helper::updateEstado($this->consultaToEdit->id, $this->estado));
-        // if ($getEstado == 'object') {
-        //     $this->dispatch('Error', 'No puedes cambiar el estado de una consulta que ya fue finalizada');
-        // }
+
         $estadoNuevo = '';
         if ($getEstado == 'object') {
             $estadoNuevo = $consulta->estado;
@@ -712,6 +734,7 @@ class Consultas extends Component
         foreach ($consultaProducto as $producto) {
             if ($producto->cantidad == 1) {
                 $producto->delete();
+                Session::forget('caja');
                 $this->dispatch('success', 'Cantidad de productos disminuida');
                 break;
             } else {
@@ -719,9 +742,11 @@ class Consultas extends Component
                     'cantidad' => $producto->cantidad - 1,
                 ]);
                 $this->dispatch('success', 'Cantidad de productos disminuida');
+                Session::forget('caja');
                 break;
             }
         }
+        Helper::crearCajas();
     }
     
 

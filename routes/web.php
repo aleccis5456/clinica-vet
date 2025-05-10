@@ -77,11 +77,11 @@ Route::get('borrar-session/{session}', function ($session) {
 });
 
 Route::get('ver-sessiones/{session}', function ($session) {
-    dd(session($session), Auth::user());
+    dd(session($session));
 });
 
 Route::get('ver-sessiones/all', function () {
-    dd(session()->all(), Auth::user());
+    dd(session()->all());
 });
 
 Route::get('ver-caja', function () {
