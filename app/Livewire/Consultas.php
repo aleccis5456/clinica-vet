@@ -618,17 +618,24 @@ class Consultas extends Component
         }
         $productos = [];
         $nuevoMonto = 0;
-        dd($consumo);
+        //dd(session('caja'));
         foreach($consumo[$this->consultaToEdit->id] as $item){
             $productos[] = $item['productoId'];
-
+            $productoPrecio = Producto::where('id', $item['productoId'])
+                                ->where('owner_id', $this->ownerId())
+                                ->pluck('precio_interno');                                
+            foreach($productoPrecio as $precio){
+                $nuevoMonto += $precio * $item['cantidad'];
+            }
+         
         }
+        
         if(session('caja')){
             foreach(session('caja') as $caja){
                 if($caja['consultaId'] == $this->consultaToEdit->id){
                     //update caja session
                     $caja['productos'] = $productos;
-                    $caja['monto_total'] ;
+                    $caja['montoTotal'] = $nuevoMonto + $caja['montoTotal'];
                     $cajadb = Caja::where('consulta_id', $caja['consultaId'])
                                     ->where('owner_id', $this->ownerId())
                                     ->first();
@@ -638,6 +645,8 @@ class Consultas extends Component
                     ]);
                 }
             }
+
+
         }
         
         Session::forget('caja');
@@ -723,8 +732,7 @@ class Consultas extends Component
      * 
      */
 
-    public function disminuirCantidad($consultaId)
-    {
+    public function disminuirCantidad($consultaId) {
         $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
                                             ->where('owner_id', $this->ownerId())
                                             ->get();
@@ -733,6 +741,19 @@ class Consultas extends Component
         }
         foreach ($consultaProducto as $producto) {
             if ($producto->cantidad == 1) {
+                $caja = Caja::where('consulta_id', $this->consultaToEdit->id)
+                            ->where('owner_id', $this->ownerId())
+                            ->first();
+        
+                $productos = array_filter($caja->productos, function($item) use ($producto) {  
+                    return $item != $producto->producto_id;
+                });
+                $caja->productos = [];
+                $caja->save();       
+                $caja->update([
+                    'productos' => $productos,
+                ]);
+                    
                 $producto->delete();
                 Session::forget('caja');
                 $this->dispatch('success', 'Cantidad de productos disminuida');
@@ -747,6 +768,7 @@ class Consultas extends Component
             }
         }
         Helper::crearCajas();
+        
     }
     
 
