@@ -97,8 +97,8 @@ class Helper
                     ->first();
                 $caja[] = [
                     'consultaId' => $consultadb->id,
-                    'cliente' => $cProducto->consulta->mascota->dueno,
-                    'mascota' => $cProducto->consulta->mascota,
+                    'cliente' => $cajadb->consulta->mascota->dueno,
+                    'mascota' => $cajadb->consulta->mascota,
                     'productos' => $productos,
                     'consulta' => $consultadb,
                     'pagoEstado' => $pago->estado,

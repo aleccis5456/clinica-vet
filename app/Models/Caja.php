@@ -23,6 +23,9 @@ class Caja extends Model
         'productos',
     ];
 
+    public function productos(){
+        return $this->hasMany(Producto::class, 'id');
+    }
     public function consulta() {
         return $this->belongsTo(Consulta::class);
     }
