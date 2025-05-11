@@ -596,12 +596,12 @@ class Consultas extends Component
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             foreach ($consumo as $item) {
-                foreach($item as $value){
+                foreach ($item as $value) {
                     $consultaProducto = ConsultaProducto::where('producto_id', $value['productoId'])
-                    ->where('consulta_id', $value['consultaId'])
-                    ->where('owner_id', $this->ownerId())
-                    ->first();
-                    
+                        ->where('consulta_id', $value['consultaId'])
+                        ->where('owner_id', $this->ownerId())
+                        ->first();
+
                     if ($consultaProducto) {
                         $consultaProducto->update([
                             'cantidad' => $consultaProducto->cantidad + $value['cantidad'],
@@ -623,38 +623,36 @@ class Consultas extends Component
         foreach ($consumo[$this->consultaToEdit->id] as $item) { //<- no tocar este foreach
             $productos[] = $item['productoId'];
         }
+
         if (session('caja')) {
-            //foreach (session('caja') as $caja) {
-                $consultaProductos = ConsultaProducto::where('consulta_id', $this->consultaToEdit->id)
-                                                        ->where('owner_id', $this->ownerId())
-                                                        ->get();
-              // dd($consultaProductos);
-              
-                $totalProductos = 0;
-                foreach ($consultaProductos as $cProducto) {
-                    $producto = Producto::where('id', $cProducto->producto_id)
-                        ->where('owner_id', $this->ownerId())
-                        ->first();
-                    $totalProductos += $cProducto->cantidad * (int)$producto->precio_interno;
-                }
-                $total = $totalProductos + $cProducto->consulta->tipoConsulta->precio;
-                $total = $totalProductos + $cProducto->consulta->tipoConsulta->precio;
-                $cajadb = Caja::where('consulta_id', $this->consultaToEdit->id)
-                            ->where('owner_id', $this->ownerId())
-                            ->where('pago_estado', 'Pendiente')
-                            ->first();
-                $cajadb->update([                    
-                    'monto_total' => 0,
-                ]);
-                $cajadb->update([
-                    'productos' => $productos,
-                    'monto_total' => $total,
-                ]);
-            //}
+            $consultaProductos = ConsultaProducto::where('consulta_id', $this->consultaToEdit->id)
+                ->where('owner_id', $this->ownerId())
+                ->get();
+
+            $totalProductos = 0;
+            foreach ($consultaProductos as $cProducto) {
+                $producto = Producto::where('id', $cProducto->producto_id)
+                    ->where('owner_id', $this->ownerId())
+                    ->first();
+                $totalProductos += $cProducto->cantidad * (int)$producto->precio_interno;
+            }
+            $total = $totalProductos + $cProducto->consulta->tipoConsulta->precio;
+            $cajadb = Caja::where('consulta_id', $this->consultaToEdit->id)
+                ->where('owner_id', $this->ownerId())
+                ->where('pago_estado', 'Pendiente')
+                ->first();
+            $cajadb->update([
+                'monto_total' => 0,
+            ]);
+            $cajadb->update([
+                'productos' => $productos,
+                'monto_total' => $total,
+            ]);
+            Session::forget('caja');
+            Helper::crearCajas();
         }
 
-        Session::forget('caja');
-        Helper::crearCajas();
+
         $consulta = Consulta::where('id', $this->consultaToEdit->id)->where('owner_id', $this->ownerId())->first();
         $getEstado = gettype(Helper::updateEstado($this->consultaToEdit->id, $this->estado));
 
@@ -721,7 +719,7 @@ class Consultas extends Component
                                 WHEN estado = 'Agendado' THEN 4
                                 ELSE 5
                             END")
-                ->orderBy('estado', 'desc') // Si necesitas un segundo ordenamiento por 'estado'
+                ->orderBy('estado', 'desc') 
                 ->where('owner_id', $this->ownerId())
                 ->take(12)
                 ->get();
@@ -733,9 +731,9 @@ class Consultas extends Component
     }
 
     /**
-     * 
+     * function para disminuir la cantidad de productos en la consulta
+     * @param int $consultaId
      */
-
     public function disminuirCantidad($consultaId)
     {
         $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
@@ -761,6 +759,7 @@ class Consultas extends Component
 
                 $producto->delete();
                 Session::forget('caja');
+                Helper::crearCajas();
                 $this->dispatch('success', 'Cantidad de productos disminuida');
                 break;
             } else {
@@ -769,15 +768,46 @@ class Consultas extends Component
                 ]);
                 $this->dispatch('success', 'Cantidad de productos disminuida');
                 Session::forget('caja');
+                Helper::crearCajas();
                 break;
             }
         }
-        
-        Session::forget('caja');
-        Helper::crearCajas();
+
+        if (session('caja')) {
+            $consultaProductos = ConsultaProducto::where('consulta_id', $this->consultaToEdit->id)
+                ->where('owner_id', $this->ownerId())
+                ->get();
+
+            $totalProductos = 0;
+            foreach ($consultaProductos as $cProducto) {
+                $producto = Producto::where('id', $cProducto->producto_id)
+                    ->where('owner_id', $this->ownerId())
+                    ->first();
+                $totalProductos += $cProducto->cantidad * (int)$producto->precio_interno;
+            }
+            //dd($cProducto);
+            $total = $totalProductos + $producto->consulta->tipoConsulta->precio;
+            $cajadb = Caja::where('consulta_id', $this->consultaToEdit->id)
+                ->where('owner_id', $this->ownerId())
+                ->where('pago_estado', 'Pendiente')
+                ->first();
+            $cajadb->update([
+                'monto_total' => 0,
+            ]);
+            $cajadb->update([
+                'monto_total' => $total,
+            ]);
+            Session::forget('caja');
+            Helper::crearCajas();
+        }
     }
 
-
+    /**
+     * Eliminar un tipo de consulta
+     *
+     * @param int $tipoConsultaId
+     * @return RedirectResponse
+     */
     public function eliminarTipoConsulta($tipoConsultaId)
     {
         TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
