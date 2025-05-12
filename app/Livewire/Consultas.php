@@ -69,6 +69,7 @@ class Consultas extends Component
     public string $mascotaSearch = '';
     public ?object $mascotaResultado;
     public ?object $mascotaSelect;
+    public ?object $cajas = null;
 
     /**
      * 
@@ -834,7 +835,6 @@ class Consultas extends Component
         $this->veterinarios = User::where('rol_id', $vetId)
             ->where('admin_id', $this->ownerId())
             ->get();
-        //dd($this->veterinarios);
         //devuelve la lista de usuarios que no son veterinarios. se muestra en la creacion de la consulta
         $rol = Rol::whereNotLike('name', "%vet%")
             ->whereNotLike('name', "%user%")
@@ -872,13 +872,12 @@ class Consultas extends Component
 
         $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
         $this->grupoVet = ConsultaVeterinario::where('owner_id', $this->ownerId())->get();
-        $this->pagos = Pago::all();
         $this->hora = now()->addHour()->addMinutes(2)->format('H:i');
-
+        $this->cajas = Caja::where('owner_id', $this->ownerId())
+                            ->get();
         $this->comprobarSession();
         Session::forget('caja');
         Helper::crearCajas();
-
         if (empty(session('modulos')['consulta'])) {
             return redirect('/');
         }

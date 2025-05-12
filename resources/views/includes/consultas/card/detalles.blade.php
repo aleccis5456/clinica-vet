@@ -1,4 +1,3 @@
-{{-- {{ $consulta->fecha < now()->format('Y-m-d') ? 'bg-red-500' : ($consulta->hora < now()->format('H:i:s') ? 'bg-red-500' : 'bg-blue-400') }} --}}
 <div
     class="group absolute rounded-full top-10 left-2 z-10 cursor-pointer text-sm                                             
         {{ $consulta->fecha > now()->format('Y-m-d') ? 'bg-blue-400' : ($consulta->fecha == now()->format('Y-m-d') && $consulta->fecha > now()->format('H:i:s') ? 'bg-blue-400' :'bg-red-500') }}

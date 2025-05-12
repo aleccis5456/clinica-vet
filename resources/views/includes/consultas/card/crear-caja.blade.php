@@ -1,20 +1,21 @@
 @php
     $pagoEstados = [
-        'pendiente' => 'bg-orange-400',
+        'Pendiente' => 'bg-orange-400',
         'parcial' => 'bg-yellow-400',
         'pagado' => 'bg-green-500',
         'cancelado' => 'bg-red-500',
     ];
 
-    $pago = $pagos->where('consulta_id', $consulta->id)->first();
+    //$pago = $pagos->where('consulta_id', $consulta->id)->first();
+    $caja = $cajas->where('consulta_id', $consulta->id)->first();
 @endphp
-@if ($pago)
+@if ($caja)
     @foreach ($pagoEstados as $estado => $bg)
         <!-- icono de pagado (el verde) -->
         <div class="group">
-            <a @if ($pago->estado == 'pagado') href="" @else href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}" @endif
-                class="{{ $estado == $pago->estado ? "$bg" : '' }} cursor-pointer absolute top-12 right-2 z-10 p-1 rounded-full ">
-                @if ($pago->estado == 'pagado')
+            <a @if ($caja->pago_estado == 'pagado') href="" @else href="{{ route('caja.store', ['consultaId' => $consulta->id]) }}" @endif
+                class="{{ $estado == $caja->pago_estado ? "$bg" : '' }} cursor-pointer absolute top-12 right-2 z-10 p-1 rounded-full ">
+                @if ($caja->pago_estado == 'pagado')
                     <svg class="w-6 h-6 text-white transition duration-300 group-hover:scale-140" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
