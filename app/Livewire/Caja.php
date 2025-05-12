@@ -381,12 +381,15 @@ class Caja extends Component
                 }                                                
             }
             $cajaDB = Helper::caja($this->ownerId(), $consultaId);
-            $cajaDB->pago_estado = 'pagado';
-            $cajaDB->save();
+            if($cajaDB){
+                $cajaDB->pago_estado = 'pagado';
+                $cajaDB->save();
+            }
             if($consultaId){
                 $consulta = Consulta::where('id', $consultaId)
                                     ->where('owner_id', $this->ownerId())
                                     ->first();
+                
                 $consulta->update([
                                 'estado' => 'Finalizado'
                             ]);

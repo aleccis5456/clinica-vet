@@ -101,7 +101,7 @@ class Helper
                     'mascota' => $cajadb->consulta->mascota,
                     'productos' => $productos,
                     'consulta' => $consultadb,
-                    'pagoEstado' => $pago->estado,
+                    'pagoEstado' => $pago->estado ?? null,
                     'montoTotal' => $cajadb->monto_total,
                     'ownerId' => $admin_id,
                 ];
@@ -293,11 +293,9 @@ class Helper
      */
     public static function caja($ownerId, $consultaId)
     {
-        return $caja = Caja::where('owner_id', $ownerId)
-            ->when($consultaId, function ($query) use ($consultaId) {
-                return $query->where('consulta_id', $consultaId);
-            })
-            ->where('pago_estado', 'pendiente')
+        return Caja::where('owner_id', $ownerId)
+            ->where('consulta_id', $consultaId)
+            ->where('pago_estado', 'Pendiente')
             ->first();
     }
     /**
