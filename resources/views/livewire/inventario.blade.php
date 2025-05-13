@@ -116,11 +116,11 @@
                                         Detalles
                                     </button>
                                     <button wire:click="editarTrue({{ $producto->id }})" type="button"
-                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        class="border border-gray-200 cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300  focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
                                     </button>
                                     <button wire:click='alertaTrue({{ $producto->id }})' type="button"
-                                        class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
+                                        class="cursor-pointer ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                         Eliminar
                                     </button>
                                 </td>
@@ -130,7 +130,6 @@
                 </table>
             </div>
         </div>
-        {{-- <livewire:alertas-events /> --}}
     </main>
 
     @if ($modalAgregar)

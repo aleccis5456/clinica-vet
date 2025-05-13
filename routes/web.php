@@ -21,6 +21,7 @@ use App\Livewire\HistorialCompleto;
 use App\Livewire\Inventario;
 use App\Livewire\Reportes;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cache;
 
 
 Route::get('/registro', [AuthController::class, 'registerForm'])->name('auth.registerform');
@@ -56,18 +57,9 @@ Route::middleware(Login::class)->group(function () {
 });
 
 
-Route::get('/redis', function () {
-    $redis = new Redis();
-
-    try {
-        $redis->connect('127.0.0.1', 6379);
-        echo "✅ Conectado a Redis\n";
-
-        $redis->set('clave_prueba', 'Hola Redis');
-        echo "Valor almacenado: " . $redis->get('clave_prueba');
-    } catch (Exception $e) {
-        echo "❌ Error: " . $e->getMessage();
-    }
+Route::get('/test-redis', function () {
+    Cache::store('redis')->put('saludo', 'hola redis', 60);
+    return Cache::store('redis')->get('saludo');
 });
 
 
