@@ -31,6 +31,7 @@ class CajaController extends Controller {
                         ->where('pago_estado', 'Pendiente')
                         ->first();
         if($cajadb){
+            
             return back()->with('error', 'Ya existe una caja pendiente para esta consulta');
         }
         $productos = [];
