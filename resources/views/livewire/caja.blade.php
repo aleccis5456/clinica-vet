@@ -90,7 +90,7 @@
                                                     </p>
                                                 </div>
                                             </div>
-
+                                            
                                             <!-- Botón de cobro (aparece al pasar el mouse) -->
                                             @if (!session('activo'))
                                                 <div

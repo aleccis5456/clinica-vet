@@ -760,14 +760,13 @@ class Consultas extends Component
                 'cantidad' => $consultaProducto->cantidad - 1,
             ]);
             $this->dispatch('success', 'Cantidad disminuida');
-        }elseif($consultaProducto->cantidad == 1){
+        }else if($consultaProducto->cantidad == 1){
             $consultaProducto->delete();            
             $cajadb->update([
                 'productos' => array_diff($productos, $productoaDisminuir),
             ]);
             $this->dispatch('success', 'Cantidad disminuida');
-        }
-                
+        }                
 
         //para calcular el total de la consulta
         if (session('caja')) {
@@ -805,8 +804,7 @@ class Consultas extends Component
      * @param int $tipoConsultaId
      * @return RedirectResponse
      */
-    public function eliminarTipoConsulta($tipoConsultaId)
-    {
+    public function eliminarTipoConsulta($tipoConsultaId) {
         TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
         return redirect()->route('consultas')->with('eliminado', 'Tipo de consulta eliminado correctamente');
     }

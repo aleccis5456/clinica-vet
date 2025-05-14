@@ -140,7 +140,7 @@
                             <div
                                 class="relative group bg-gray-100 shadow-lg rounded-md border border-gray-100 hover:border-red-400 transition-all">
                                 <!-- Botón de eliminación -->
-                                <button type="button" wire:click='disminuirCantidad({{ $consultaToEdit->id }})' 
+                                <button type="button" wire:click='disminuirCantidad({{ $consultaToEdit->id }}, {{ $cproducto->producto_id }})' 
                                     class="absolute hidden group-hover:flex items-center justify-center inset-0 bg-white/50 cursor-pointer">
                                     <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">

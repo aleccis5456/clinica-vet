@@ -15,6 +15,9 @@ return new class extends Migration
             $table->string('unidad_medida')->nullable();
             $table->integer('cantidad')->nullable();
             $table->float('precio_interno')->nullable();
+            $table->string('unidad_capacidad')->nullable();
+            $table->integer('cantidad_capacidad')->nullable();
+            $table->integer('sobrante')->nullable();
         });
     }
 

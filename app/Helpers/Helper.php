@@ -27,16 +27,14 @@ class Helper
                 $admin_id = $user->admin_id;
             }
 
-            $cajasDB = Cache::remember('CajasDB', 60, function() use ($admin_id) {
-                return Caja::where('owner_id', $admin_id)
+            $cajasDB = Caja::where('owner_id', $admin_id)
                     ->where('pago_estado', '!=', 'pagado')
                     ->get();
-            });
+            
        
             $caja = session('caja', []);
             $cortar = false;
             if ($cajasDB->count() == 0) {
-                dd('fs');
                 return;
             }
 
@@ -50,19 +48,16 @@ class Helper
                 if ($cortar) {
                     continue;
                 }
-                $consultaProductos = Cache::remember('consultaProductos', 60, function() use($cajadb, $admin_id) {
-                    return ConsultaProducto::where('consulta_id', $cajadb->consulta_id)
+                $consultaProductos = ConsultaProducto::where('consulta_id', $cajadb->consulta_id)
                         ->where('owner_id', $admin_id)
                         ->get();                    
-                });
+                
             
                 $productos = [];
                
                 foreach ($consultaProductos as $cProducto) {
-                    $producto = Cache::remember('producto' , 60, function() use($cProducto, $admin_id) {
-                        return Producto::where('id', $cProducto->producto_id)
-                            ->where('owner_id', $admin_id)->first();
-                    });
+                    $producto = Producto::where('id', $cProducto->producto_id)
+                            ->where('owner_id', $admin_id)->first();                
 
                     $productos[] = [
                         "productoId" => $producto->id,
@@ -72,16 +67,14 @@ class Helper
                         "owner_id" => $admin_id
                     ];
                 }
-                $consultadb = Cache::remember('consulta', 60, function() use($cajadb, $admin_id) {
-                    return Consulta::where('id', $cajadb->consulta_id)
+                $consultadb = Consulta::where('id', $cajadb->consulta_id)
                         ->where('owner_id', $admin_id)
                         ->first();
-                });
-                $pago = Cache::remember('pago', 60, function() use($cajadb, $admin_id) {
-                    return Pago::where('consulta_id', $cajadb->consulta_id)
+                
+                $pago = Pago::where('consulta_id', $cajadb->consulta_id)
                         ->where('owner_id', $admin_id)
                         ->first();
-                });
+                
                 $caja[] = [
                     'consultaId' => $consultadb->id,
                     'cliente' => $cajadb->consulta->mascota->dueno,

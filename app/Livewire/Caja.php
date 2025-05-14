@@ -409,9 +409,10 @@ class Caja extends Component
      * funcion para cobrar las consultas que están en las alertas
      */
     public function cobrarConsulta($consultaId) {
+        //dd('fds');
         $activo = session('activo', false);
         if($activo){
-            return redirect()->route('caja')->with('error', 'Ya se agrego esta consulta');
+            $this->dispatch('error', 'Ya se agrego esta consulta');
         }
         $caja = session('caja', []);
         $cobro = session('cobro', []);                
