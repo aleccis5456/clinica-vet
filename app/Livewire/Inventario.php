@@ -267,13 +267,16 @@ class Inventario extends Component
     public function deleteProducto()
     {
         try {
-            Producto::where('id', $this->productoId)
+            $producto = Producto::where('id', $this->productoId)
                 ->where('owner_id', $this->ownerId())
-                ->delete();
+                ->first();
+            unlink(public_path('uploads/productos/' . $producto->foto));
+            $producto->delete();
         } catch (\Exception $e) {
             DB::commit();
             $this->dispatch('producto-noborrado');
         }
+        
         $this->alertaFalse();
         $this->dispatch('producto-borrado');
         $this->productos = Producto::where('owner_id', $this->ownerId())->get();
