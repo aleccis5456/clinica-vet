@@ -61,7 +61,7 @@
 
         <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Último Uso:</span>
-            <span class="text-gray-500 text-sm">{{ $detalleProducto->usoInterno->created_at->format('d/m/Y H:i') }}</span>
+            <span class="text-gray-500 text-sm">{{ isset($detalleProducto->usoInterno->created_at) ? $detalleProducto->usoInterno->created_at->format('d/m/Y H:i') : '' }}</span>
         </div>
 
          <div class="flex justify-between">
