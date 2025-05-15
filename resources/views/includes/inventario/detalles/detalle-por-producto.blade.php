@@ -27,10 +27,32 @@
         </div>
 
         <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Precio de uso interno, en {{ $detalleProducto->unidad_medida }}:</span>
+            <span class="text-gray-800 font-semibold text-lg">
+                {{ App\Helpers\Helper::formatearMonto($detalleProducto->precio_interno) }} Gs.
+            </span>
+        </div>
+
+          <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Cantidad por caja, en {{ $detalleProducto->unidad_capacidad }}:</span>
+            <span class="text-gray-800">{{ $detalleProducto->cantidad_capacidad }}</span>
+        </div>
+
+        
+        <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Stock disponible:</span>
             <span class="text-gray-800">{{ $detalleProducto->stock_actual }}</span>
         </div>
         
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Stock en uso:</span>
+            <span class="text-gray-800">{{ $detalleProducto->usoInterno->cantidad ?? ''}}</span>
+        </div>
+
+        <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Stock Total:</span>
+            <span class="text-gray-800">{{ isset($detalleProducto->usoInterno->cantidad)  ?  + $detalleProducto->usoInterno->cantidad +  $detalleProducto->stock_actual  : $detalleProducto->stock_actual}}</span>
+        </div>
 
         <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
             <span class="text-gray-600 font-medium">Creado:</span>
@@ -38,8 +60,13 @@
         </div>
 
         <div class="flex justify-between">
-            <span class="text-gray-600 font-medium">Última actualización:</span>
-            <span class="text-gray-500 text-sm">{{ $detalleProducto->updated_at->format('d/m/Y H:i') }}</span>
+            <span class="text-gray-600 font-medium">Último Uso:</span>
+            <span class="text-gray-500 text-sm">{{ $detalleProducto->usoInterno->created_at->format('d/m/Y H:i') }}</span>
+        </div>
+
+         <div class="flex justify-between">
+            <span class="text-gray-600 font-medium">Sobrante:</span>
+            <span class="text-gray-500 text-sm">{{ $detalleProducto->sobrante }}</span>
         </div>
     </div>
 </div>

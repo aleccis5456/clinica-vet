@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Models\UsoInterno;
 use App\Helpers\Helper;
 use App\Models\Caja;
 use App\Models\Pago;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 #[Title('Consultas')]
 class Consultas extends Component
@@ -433,7 +435,7 @@ class Consultas extends Component
     #[On('success')]
     public function success(): void
     {
-        if ($this->consultaToEdit->id != null) {
+        if ($this->consultaToEdit != null) {
             $this->openModalConfig($this->consultaToEdit->id);
         }
     }
@@ -593,13 +595,31 @@ class Consultas extends Component
     /**
      * formulario para editar la consulta (productos, tratamiento, síntomas, etc)
      */
-    public function updateConsulta()
+    public function updateConsulta(): void
     {
+
         //esta parte agrega los productos a la consulta
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             foreach ($consumo as $item) {
                 foreach ($item as $value) {
+                    $producto = Producto::where('id', $value['productoId'])
+                        ->where('owner_id', $this->ownerId())
+                        ->first();
+                    if (!$producto) {
+                        $this->dispatch('error', 'Hubo un error al procesar el producto: ' . $value['nombre']);
+                        return;
+                    }
+                    if ($producto->cantidad_capacidad < $value['cantidad']) {
+                        $this->dispatch('error', 'No hay stock suficiente para el producto: ' . $producto->nombre);
+                        return;
+                    }
+
+                    if ($producto->stock_actual == 0 or $producto->stock_actual < $value['cantidad']) {
+                        $this->dispatch('error', 'No hay stock suficiente para el producto: ' . $producto->nombre);
+                        return;
+                    }
+
                     $consultaProducto = ConsultaProducto::where('producto_id', $value['productoId'])
                         ->where('consulta_id', $value['consultaId'])
                         ->where('owner_id', $this->ownerId())
@@ -617,6 +637,55 @@ class Consultas extends Component
                             'descripcion' => null,
                             'owner_id' => $this->ownerId(),
                         ]);
+                    }
+                    $usoInterno = UsoInterno::where('producto_id', $value['productoId'])
+                        ->where('consulta_id', $this->consultaToEdit->id)
+                        ->where('cantidad', 1)
+                        //->where('owner_id', $this->ownerId())
+                        ->first();
+
+                    if ($producto->stock_actual < $value['cantidad']) {
+                        $this->dispatch('error', 'No hay stock suficiente para el producto: ' . $producto->nombre);
+                        return;
+                    }
+
+                    if ($usoInterno) {
+                        if ($producto->sobrante == $value['cantidad']) {                            
+                            $producto->update([
+                                'sobrante' => $producto->cantidad_capacidad
+                            ]);
+                            $usoInterno->update([
+                                'cantidad' => 0,
+                            ]);
+                        } else {
+                            $producto->update([
+                                'sobrante' => $producto->sobrante - $value['cantidad'],
+                            ]);
+                        }
+                    } else {
+                        if ($producto->cantidad_capacidad == $value['cantidad']) {
+                            $producto->update([
+                                'stock_actual' => $producto->stock_actual - $value['cantidad'],
+                                'sobrante' => $producto->sobrante - $value['cantidad'],
+                            ]);
+
+
+                            UsoInterno::create([
+                                'producto_id' => $value['productoId'],
+                                'consulta_id' => $this->consultaToEdit->id,
+                                'cantidad' => 0,
+                            ]);
+                        } else {
+                            $producto->update([
+                                'stock_actual' => $producto->stock_actual - $value['cantidad'],
+                                'sobrante' => $producto->sobrante - $value['cantidad'],
+                            ]);
+                            UsoInterno::create([
+                                'producto_id' => $value['productoId'],
+                                'consulta_id' => $this->consultaToEdit->id,
+                                'cantidad' => 1,
+                            ]);
+                        }
                     }
                 }
             }
@@ -695,8 +764,7 @@ class Consultas extends Component
     /**
      * function para eliminar una consultaProdcutos     
      */
-    public function EliminarProductoConsulta($cpId)
-    {
+    public function EliminarProductoConsulta($cpId) {
         try {
             ConsultaProducto::where('id', $cpId)
                 ->where('owner_id', $this->ownerId())
@@ -711,8 +779,7 @@ class Consultas extends Component
     /**
      * 
      */
-    public function filtarPorEstados(): void
-    {
+    public function filtarPorEstados(): void {
         if ($this->estadofiltrado == 1) {
             $this->consultas = Consulta::orderByRaw("
                             CASE 
@@ -738,35 +805,39 @@ class Consultas extends Component
      * @param int $consultaId, int $productoId
      * @return void
      */
-    public function disminuirCantidad(int $consultaId, int $productoId) :void{
+    public function disminuirCantidad(int $consultaId, int $productoId): void {
         $cajadb = Caja::where('consulta_id', $consultaId)
             ->where('owner_id', $this->ownerId())
             ->where('pago_estado', 'Pendiente')
             ->first();
 
-        $productos = $cajadb->productos;
+        if ($cajadb) {
+            $productos = $cajadb->productos;
 
-        $productoaDisminuir = array_filter($productos, function ($producto) use ($productoId) {
-            return $producto == $productoId;
-        });
-        
+            $productoaDisminuir = array_filter($productos, function ($producto) use ($productoId) {
+                return $producto == $productoId;
+            });
+        }
+
         $consultaProducto = ConsultaProducto::where('consulta_id', $consultaId)
             ->where('producto_id', $productoId)
             ->where('owner_id', $this->ownerId())
             ->first();
-        
-        if($consultaProducto->cantidad > 1){
+
+        if ($consultaProducto->cantidad > 1) {
             $consultaProducto->update([
                 'cantidad' => $consultaProducto->cantidad - 1,
             ]);
             $this->dispatch('success', 'Cantidad disminuida');
-        }else if($consultaProducto->cantidad == 1){
-            $consultaProducto->delete();            
-            $cajadb->update([
-                'productos' => array_diff($productos, $productoaDisminuir),
-            ]);
+        } else if ($consultaProducto->cantidad == 1) {
+            $consultaProducto->delete();
+            if ($cajadb) {
+                $cajadb->update([
+                    'productos' => array_diff($productos, $productoaDisminuir),
+                ]);
+            }
             $this->dispatch('success', 'Cantidad disminuida');
-        }                
+        }
 
         //para calcular el total de la consulta
         if (session('caja')) {
@@ -783,16 +854,19 @@ class Consultas extends Component
                 $total = $totalProductos + $cProducto->consulta->tipoConsulta->precio;
             }
             //dd($total);
-            $cajadb = Caja::where('consulta_id', $this->consultaToEdit->id)
-                ->where('owner_id', $this->ownerId())
-                ->where('pago_estado', 'Pendiente')
-                ->first();
-            $cajadb->update([
-                'monto_total' => 0,
-            ]);
-            $cajadb->update([
-                'monto_total' => $total,
-            ]);
+            if ($cajadb) {
+
+                $cajadb = Caja::where('consulta_id', $this->consultaToEdit->id)
+                    ->where('owner_id', $this->ownerId())
+                    ->where('pago_estado', 'Pendiente')
+                    ->first();
+                $cajadb->update([
+                    'monto_total' => 0,
+                ]);
+                $cajadb->update([
+                    'monto_total' => $total,
+                ]);
+            }
             Session::forget('caja');
             Helper::crearCajas();
         }
@@ -804,7 +878,8 @@ class Consultas extends Component
      * @param int $tipoConsultaId
      * @return RedirectResponse
      */
-    public function eliminarTipoConsulta($tipoConsultaId) {
+    public function eliminarTipoConsulta($tipoConsultaId)
+    {
         TipoConsulta::where('id', $tipoConsultaId)->where('owner_id', $this->ownerId())->delete();
         return redirect()->route('consultas')->with('eliminado', 'Tipo de consulta eliminado correctamente');
     }

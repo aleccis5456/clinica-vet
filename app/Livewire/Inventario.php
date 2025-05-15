@@ -273,6 +273,7 @@ class Inventario extends Component
             }
             $producto->delete();
         } catch (\Exception $e) {
+            
             DB::commit();
             $this->dispatch('producto-noborrado');
         }
@@ -307,8 +308,7 @@ class Inventario extends Component
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
-    {
+    public function store():void {
         $this->validate([
             'nombre' => 'required',
             'proveedor_id' => 'nullable|exists:proveedores,id',
@@ -331,10 +331,25 @@ class Inventario extends Component
             'foto.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif, svg, webp.',
             'foto.max' => 'La imagen no debe pesar más de 2MB.',
         ]);
+
+        if($this->precio_interno != null){
+            $this->validate([
+                'unidades' => 'required',
+                'cantidad' => 'required',
+                'capacidad' => 'required',
+                'cantidadCapacidad' => 'required',                
+            ], [
+                'unidad_medida.required' => 'El campo unidad de medida es obligatorio.',
+                'cantidad.required' => 'El campo cantidad es obligatorio.',
+                'capacidad.required' => 'El campo capacidad es obligatorio.',                
+            ]);   
+
+        }
         if ($this->foto) {
             $imageName = time() . '.' . $this->foto->getClientOriginalExtension();
             $this->foto->storeAs('uploads/productos', $imageName, 'public_path');
         }
+        
         //dd($this->unidades, $this->cantidad, $this->capacidad);
         $producto = Producto::create([
             'nombre' => $this->nombre,
@@ -395,6 +410,10 @@ class Inventario extends Component
     {
         $this->productos = Producto::where('owner_id', $this->ownerId())->get();
         //$this->productos = Cache::get('productos_todos');
+    }
+
+    #[On('producto-borrado')]
+    public function r(){
     }
     private function codigo($length): string
     {

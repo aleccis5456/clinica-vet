@@ -20,6 +20,6 @@ class UsoInterno extends Model
     }
     public function consulta()
     {
-        return $this->belongsTo(Consulta::class);
+        return $this->belongsTo(Consulta::class, 'consulta_id');
     }
 }

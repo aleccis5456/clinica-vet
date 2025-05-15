@@ -46,4 +46,8 @@ class Producto extends Model
     public function proveedor() : belongsTo {
         return $this->belongsTo(Proveedor::class, 'proveedor_id');
     }
+
+    public function usoInterno()  {
+        return $this->hasOne(UsoInterno::class);
+    }
 }

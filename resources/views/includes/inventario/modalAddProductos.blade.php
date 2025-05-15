@@ -169,14 +169,19 @@
                         class="py-2 px-2 w-16 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
 
                     <div class="relative">
-                        <input class="z-30 py-2 px-3 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                                type="number" wire:model="precio_interno">
+                        <input
+                            class="z-30 py-2 px-3 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
+                            type="number" wire:model="precio_interno">
                         <i class="absolute top-2.5 right-8 z-40 border-l pl-2">
                             Gs.
                         </i>
                     </div>
                 </div>
-
+                @error('unidades')
+                    <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-md px-3 py-2 mt-1">
+                        Campos obligatorios
+                    </div>
+                @enderror
                 <!-- opciones de cantidad -->
                 <p class="block text-gray-800 font-medium mb-2">Opciones de cantidad:</p>
                 <div class="flex items-center mb-4 gap-2">
@@ -192,6 +197,16 @@
                     <input value="1" type="number" wire:model="cantidadCapacidad"
                         class="py-2 px-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 </div>
+                @error('capacidad')
+                    <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-md px-3 py-2 mt-1">
+                        Campos obligatorios
+                    </div>
+                @enderror
+                @error('cantidadCapacidad')
+                    <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-md px-3 py-2 mt-1">
+                        Campos obligatorios
+                    </div>
+                @enderror
             </div>
             <!-- Botón de enviar -->
             <button type="submit"

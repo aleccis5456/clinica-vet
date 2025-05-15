@@ -225,6 +225,12 @@
                         @endforeach
                     </div>
                 </div>
+
+                <div class="items-center justify-center mt-6">
+                    <button type="button" wire:click='updateConsulta' class="cursor-pointer items-center px-4 py-2 bg-gray-800 text-white font-medium rounded-md hover:bg-gray-700 transition duration-300">
+                        Guardar
+                    </button>
+                </div>
             @endif
 
             <!-- FORMULARIO DE BUSCA DE PRODUCTOS -->

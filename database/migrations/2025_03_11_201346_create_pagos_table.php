@@ -16,15 +16,15 @@ return new class extends Migration
             $table->foreignId('dueno_id')->nullable()->constrained('duenos');
             $table->foreignId('consulta_id')->nullable()->constrained('consultas');
             $table->integer('monto')->nullable();
-            $table->enum('forma_pago', ['efectivo', 'tarjeta', 'transferencia', 'otro'])->nullable();
+            $table->string('forma_pago')->nullable();
             $table->string('notas')->nullable();
             $table->boolean('pagado')->default(false);
             $table->boolean('cuotas')->default(false);
             $table->integer('cantidad_pagos')->nullable();            
             $table->date('fecha_pago')->nullable();
-            $table->date('fecha_vencimiento')->nullable(); // Nuevo campo
+            $table->date('fecha_vencimiento')->nullable(); 
             $table->enum('estado', ['pendiente', 'parcial', 'pagado', 'cancelado'])->default('pendiente');
-            $table->string('comprobante')->nullable(); // Para transferencias
+            $table->string('comprobante')->nullable(); 
             $table->timestamps();
         });
         

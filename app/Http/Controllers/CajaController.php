@@ -45,24 +45,13 @@ class CajaController extends Controller {
         }
         $total = $totalProductos + $consulta->tipoConsulta->precio;
 
-        
-
-        Pago::create([
-            'dueno_id' => $consulta->mascota->dueno_id, 	
-            'consulta_id' => $consultaId, 	
-            'monto' => $total, 	
-            'forma_pago' => null, 	
-            'notas' => null, 	
-            'pagado' => false, 	
-            'cuotas' => null, 	
-            'cantidad_pagos' => null, 	
-            'fecha_pago' => null, 	
-            'fecha_vencimiento' => null,  	
-            'estado' => 'Pendiente', 	
-            'comprobante' => null,
-            'cliente_id' ,
-            'owner_id'
-        ]);
+        // Pago::create([
+        //     'dueno_id' => $consulta->mascota->dueno_id, 	
+        //     'consulta_id' => $consultaId, 	
+        //     'monto' => $total, 	  	
+        //     'estado' => 'Pendiente', 	
+        //     'owner_id' => $this->ownerId(),
+        // ]);
         Caja::create([
             'consulta_id' => $consultaId,
             'dueno_id' => $consulta->mascota->dueno_id,
