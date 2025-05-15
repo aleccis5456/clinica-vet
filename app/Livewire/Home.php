@@ -2,12 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Models\Permiso;
+use App\Models\User;
 use App\Helpers\Helper;
-use App\Models\Producto;
-use App\Models\ConsultaProducto;
-use App\Models\Pago;
-use App\Models\Consulta;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Auth;
@@ -49,9 +45,23 @@ class Home extends Component
         $this->redirect('/');
     }
 
+    public function ownerId(): mixed{
+        $requestUserId = Auth::user()->id;
+        $user = User::find($requestUserId);
+        if($user->admin){
+            $admin_id = $user->id;
+        }else{
+            $admin_id = $user->admin_id;
+        }
+        if($admin_id == null){
+            return back()->with('error', 'No tienes permisos para agregar una mascota');
+        } 
+        return $admin_id;
+    }
+
     public function mount(){                           
         if(Auth::user()){
-            Helper::checkRol(Auth::user()->rol_id);
+            Helper::checkRol(Auth::user()->rol_id, $this->ownerId());
             Helper::checkPermisos();
         }
         

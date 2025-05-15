@@ -25,7 +25,10 @@ class Producto extends Model
         'owner_id',
         'unidad_medida',
         'cantidad',	
-        'precio_interno'	
+        'precio_interno',
+        'unidad_capacidad',
+        'cantidad_capacidad',
+        'sobrante'
     ];
 
     public function movimientos() : BelongsToMany {

@@ -123,7 +123,6 @@
                     <div class="text-sm text-red-600 bg-red-100 border border-red-300 rounded-md px-3 py-2 mt-1">
                         {{ $message }}
                     </div>
-                    
                 @enderror
             </div>
 
@@ -137,22 +136,23 @@
                         {{ $message }}
                     </div>
                 @enderror
+                <!-- preview image -->
                 @if ($imagePreview)
-                <div class="mt-2 relative w-36 h-36">
-                    <button wire:click="removeImage" 
-                            type="button"
-                            class="absolute top-0 -right-8 mt-2 mr-2 text-gray-400 text-2xl cursor-pointer hover:text-gray-900">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                          </svg>
-                          
-                    </button>
-                    <img class="w-36 h-36 rounded-md object-cover" 
-                        src="{{ $imagePreview }}" alt="Vista previa">
-                </div>
-            @endif
+                    <div class="mt-2 relative w-36 h-36">
+                        <button wire:click="removeImage" type="button"
+                            class="absolute top-0 right-0 mt-2 mr-2 px-1 py-0.5 backdrop-blur-md rounded-full text-gray-400 text-sm cursor-pointer hover:text-gray-900 hover:bg-white/50">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <img class="w-36 h-36 rounded-md object-cover" 
+                            src="{{ $imagePreview }}" alt="Vista previa">
+                    </div>
+                @endif
             </div>
 
+            <!-- opciones de uso interno -->
             <div class=" my-4 pt-5">
                 <p class="text-2xl font-semibold text-center text-gray-800 mb-2 block">Opciones para uso interno</p>
                 <p class="block text-gray-800 font-medium mb-2">Precios de uso interno:</p>
@@ -165,8 +165,8 @@
                         <option value="gr">gr</option>
                     </select>
 
-                    <input value="1" type="number" wire:model="cantidad" 
-                            class="py-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                    <input value="1" type="number" wire:model="cantidad"
+                        class="py-2 px-1 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                     <input
                         class="py-2 px-3 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
                         type="number" wire:model="precio_interno" id="">
@@ -174,16 +174,16 @@
 
                 <p class="block text-gray-800 font-medium mb-2">Opciones de cantidad:</p>
                 <div class="flex gap-4">
-                         <select wire:model="capacidad" id="capacidad"
-                        class="w-1/5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                        <option value="cu">u</option>
+                    <select wire:model="capacidad" id="capacidad"
+                        class="w-1/4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                        <option value="u">u</option>
                         <option value="ml">ml</option>
                         <option value="mg">mg</option>
                         <option value="gr">gr</option>
                     </select>
 
-                    <input value="1" type="number" wire:model="cantidadTotal" 
-                            class="py-2 px-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                    <input value="1" type="number" wire:model="cantidadCapacidad"
+                        class="py-2 px-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 </div>
             </div>
             <!-- Botón de enviar -->

@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use Illuminate\Support\Facades\Redis;
 use Livewire\Attributes\On;
 use App\Models\Proveedor;
 use App\Models\MovimientoProduct;
@@ -62,6 +61,8 @@ class Inventario extends Component
     public $foto;
     public $imagePreview;
     public $precio_interno;
+    public $capacidad;
+    public $cantidadCapacidad;
 
     /**
      * 
@@ -276,6 +277,8 @@ class Inventario extends Component
         $this->alertaFalse();
         $this->dispatch('producto-borrado');
         $this->productos = Producto::where('owner_id', $this->ownerId())->get();
+        $this->forgetProductos();
+        $this->productos = $this->getProductos();
     }
 
     public function eliminarCategoria($categoriaId)
@@ -294,7 +297,7 @@ class Inventario extends Component
     public function updatedFoto()
     {
         if ($this->foto) {
-            $this->imagePreview = $this->foto->temporaryUrl(); // Genera una URL temporal
+            $this->imagePreview = $this->foto->temporaryUrl();
         }
     }
 
@@ -329,7 +332,8 @@ class Inventario extends Component
             $imageName = time() . '.' . $this->foto->getClientOriginalExtension();
             $this->foto->storeAs('uploads/productos', $imageName, 'public_path');
         }
-
+        $this->capacidad == null ? $this->capacidad = 'u' : null;
+        //dd($this->capacidad);
         $producto = Producto::create([
             'nombre' => $this->nombre,
             'codigo' => $this->flagCodigo ? $this->codigo(6) : ($this->codigo ?? null),
@@ -344,6 +348,9 @@ class Inventario extends Component
             'unidad_medida' => $this->unidades ?? null,
             'cantidad' => $this->cantidad ?? null,
             'precio_interno' => $this->precio_interno ?? null,
+            'unidad_capacidad' => $this->capacidad ?? null,
+            'cantidad_capacidad' => $this->cantidadCapacidad ?? null,
+            'sobrante' => $this->cantidadCapacidad ?? null,
         ]);
 
         if (!$producto) {
@@ -373,6 +380,9 @@ class Inventario extends Component
         $this->foto = null;
         $this->imagePreview = null;
         $this->precio_interno = null;
+        $this->capacidad = null;
+        $this->cantidadCapacidad = null;
+
     }
 
     /**
