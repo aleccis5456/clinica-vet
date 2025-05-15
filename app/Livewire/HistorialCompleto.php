@@ -56,8 +56,12 @@ class HistorialCompleto extends Component
                                     ->get();        
         $this->consulta = Consulta::where('id',$consultaId)
                                     ->where('owner_id', $this->ownerId())
-                                    ->get();        
-        $this->consultas = $this->consultas ? collect([$this->consultas]) : collect();        
+                                    ->first();        
+        //$this->consultas = $this->consultas ? collect([$this->consultas]) : collect();     
+        
+        // foreach($this->consultas as $consulta){
+        //    dd($consulta->veterinario->name);
+        // }
     }    
 
     public function mount($id){        

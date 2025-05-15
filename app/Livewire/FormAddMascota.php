@@ -199,7 +199,6 @@ class FormAddMascota extends Component {
         return redirect('/registrar/mascota')->with('eliminado', 'Mascota eliminado');
     }
 
-
     /**
      * 
      */

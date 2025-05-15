@@ -13,7 +13,7 @@
                         src="{{ asset('uploads/mascotas/' . $mascota->foto) }}" 
                         alt="Foto de {{ $mascota->nombre }}"
                         class="w-full h-48 object-cover transition-transform hover:scale-105"
-                        onerror="this.src='{{ asset('img/pet-placeholder.png') }}'"
+                        
                     >
                 </div>
             

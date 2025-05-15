@@ -59,7 +59,7 @@
                             <th class="py-3 px-4 text-left text-semibold">Raza</th>
                             <th class="py-3 px-4 text-left text-semibold">Cumpleaños</th>
                             <th class="py-3 px-4 text-left text-semibold">Humano</th>
-                            <th class="py-3 px-4 text-left text-semibold">Acciones</th>
+                            <th class="py-3 px-4 text-center  text-semibold">Acciones</th>
                         </tr>
                     </thead>
 
@@ -79,6 +79,14 @@
                                     <button wire:click="openModalEdit({{ $mascota->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Editar
+                                    </button>
+                                    <button wire:click=""
+                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        Ver Consultas   
+                                    </button>
+                                    <button wire:click=""
+                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        Tarjeta de Vacunacion
                                     </button>
                                     <button wire:click='openModalEliminar({{ $mascota->id }})' type="button"
                                         class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-black rounded-md px-3 py-1 text-sm">
@@ -126,6 +134,7 @@
                                 class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 border border-gray-400 hover:border-gray-600 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                 Editar
                             </button>
+                            
                             <button type="button"
                                 class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-red-300 rounded-md px-3 py-1 text-sm">
                                 Eliminar
