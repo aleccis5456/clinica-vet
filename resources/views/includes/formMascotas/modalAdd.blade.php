@@ -23,8 +23,8 @@
                 <div class="flex relative gap-2">
                     <input type="text" wire:model='dueno' wire:keydown.enter="searchDueno"
                         class="transition duration-300 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        placeholder="Buscar Dueño">
-
+                        placeholder="Buscar Dueño" value="{{ $duenoSeleccionado }}">
+                    
                     <button type="button" wire:click="searchDueno"
                         class="absolute right-17 top-[3px] bg-gray-300 hover:bg-gray-400 transition p-2 rounded-lg">
                         <svg class="w-5 h-5 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +33,7 @@
                                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </button>
+
                     <button wire:click='mostrarDuenoTrue' type="button"
                         class="bg-gray-800 px-3 py-1 rounded-lg cursor-pointer text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -45,15 +46,15 @@
                             <span class="text-red-700 underline">{{ $message }}</span>
                         @enderror
                     </p>
-                    
+
                 </div>
                 <div>
 
                     <select wire:model='dueno_id' name="dueno_id"
-                        class="transition opa duration-300 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                        class="transition  duration-300 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                         <option value="">-Elegir-</option>
                         @foreach ($duenos as $dueno)
-                        <option value="{{ $dueno->id }}">{{ $dueno->nombre }} | {{ $dueno->email }}</option>
+                            <option value="{{ $dueno->id }}">{{ $dueno->nombre }} | {{ $dueno->email }}</option>
                         @endforeach
                     </select>
                 </div>

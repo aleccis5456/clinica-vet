@@ -146,8 +146,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        <img class="w-36 h-36 rounded-md object-cover" 
-                            src="{{ $imagePreview }}" alt="Vista previa">
+                        <img class="w-36 h-36 rounded-md object-cover" src="{{ $imagePreview }}" alt="Vista previa">
                     </div>
                 @endif
             </div>
@@ -158,28 +157,36 @@
                 <p class="block text-gray-800 font-medium mb-2">Precios de uso interno:</p>
                 <div class="flex items-center mb-4 gap-2">
                     <select wire:model="unidades" id="unidades"
-                        class="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                        <option value="cu">c/u</option>
-                        <option value="ml">ml</option>
-                        <option value="mg">mg</option>
-                        <option value="gr">gr</option>
+                        class="w-24 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+                        <option value="" selected disabled>-- Elegir unidad --</option>
+                        <option value="cu">Unidad</option>
+                        <option value="ml">Mililitro (ml)</option>
+                        <option value="mg">Miligramo (mg)</option>
+                        <option value="gr">Gramo (gr)</option>
                     </select>
 
                     <input value="1" type="number" wire:model="cantidad"
-                        class="py-2 px-1 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                    <input
-                        class="py-2 px-3 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
-                        type="number" wire:model="precio_interno" id="">
+                        class="py-2 px-2 w-16 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
+
+                    <div class="relative">
+                        <input class="z-30 py-2 px-3 w-full border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100"
+                                type="number" wire:model="precio_interno">
+                        <i class="absolute top-2.5 right-8 z-40 border-l pl-2">
+                            Gs.
+                        </i>
+                    </div>
                 </div>
 
+                <!-- opciones de cantidad -->
                 <p class="block text-gray-800 font-medium mb-2">Opciones de cantidad:</p>
-                <div class="flex gap-4">
+                <div class="flex items-center mb-4 gap-2">
                     <select wire:model="capacidad" id="capacidad"
                         class="w-1/4 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                        <option value="u">u</option>
-                        <option value="ml">ml</option>
-                        <option value="mg">mg</option>
-                        <option value="gr">gr</option>
+                        <option value="" selected>-- Elegir unidad --</option>
+                        <option value="u">Unidad</option>
+                        <option value="ml">Mililitro (ml)</option>
+                        <option value="mg">Miligramo (mg)</option>
+                        <option value="gr">Gramo (gr)</option>
                     </select>
 
                     <input value="1" type="number" wire:model="cantidadCapacidad"

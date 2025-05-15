@@ -30,6 +30,7 @@
             <span class="text-gray-600 font-medium">Stock disponible:</span>
             <span class="text-gray-800">{{ $detalleProducto->stock_actual }}</span>
         </div>
+        
 
         <div class="flex justify-between border-t border-gray-200 pt-2 mt-2">
             <span class="text-gray-600 font-medium">Creado:</span>

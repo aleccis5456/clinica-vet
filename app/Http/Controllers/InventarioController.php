@@ -22,7 +22,9 @@ class InventarioController extends Controller {
                 'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',            
             ]);
 
-            $producto = Producto::find($productoId);
+            $producto = Producto::where('id', $productoId)
+                ->where('owner_id', Helper::ownerId())
+                ->firstOrFail();
 
             if ($request->hasFile('foto')) {
                 $image_path = $request->file('foto');
@@ -39,16 +41,18 @@ class InventarioController extends Controller {
             }            
 
             $producto->update([
-                'nombre' => $request->nombre,
-                'descripcion' => $request->descripcion,
-                'categoria_id' => $request->categoria,
-                'precio' => $request->precio,
-                'precio_compra' => $request->precio_compra,
-                'stock_actual' => $request->stock_actual,
+                'nombre' => $request->nombre ?? $producto->nombre,
+                'descripcion' => $request->descripcion ?? $producto->descripcion,
+                'categoria_id' => $request->categoria ?? $producto->categoria_id,
+                'precio' => $request->precio ?? $producto->precio,
+                'precio_compra' => $request->precio_compra ?? $producto->precio_compra,
+                'stock_actual' => $request->stock_actual ?? $producto->stock_actual,
                 'foto' => $imageName ?? (isset($request->deleteFoto) ? null : $producto->foto), 
-                'unidad_medida' => $request->unidades ?? null,
-                'cantidad' => $request->cantidad ?? null,
-                'precio_interno' => $request->precio_interno ?? null,
+                'unidad_medida' => $request->unidades ?? $producto->unidad_medida,
+                'cantidad' => $request->cantidad ?? $producto->cantidad,
+                'precio_interno' => $request->precio_interno ?? $producto->precio_interno,
+                'unidad_capacidad' => $request->capacidad ?? $producto->unidad_capacidad,
+                'cantidad_capacidad' => $request->cantidadCapacidad ?? $producto->cantidad_capacidad,
             ]);
             $ownerId = Helper::ownerId();
             Helper::forgetProductos();

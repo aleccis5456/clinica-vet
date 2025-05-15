@@ -47,7 +47,7 @@ class FormAddMascota extends Component {
     public bool $modalEdit = false;
     public string $search = '';    
     public bool $buscarDueno = false;
-    public string $dueno = '';
+    public ?string $dueno;
     public ?object $duenosEcontrados;
 
     //variables para duenos
@@ -100,6 +100,7 @@ class FormAddMascota extends Component {
             'email' => $this->emaildueno,
             'owner_id' => $this->ownerId()
         ]);
+        $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->dispatch('dueno-add');
     }
 
@@ -127,6 +128,10 @@ class FormAddMascota extends Component {
      */
     public function selectDueno(int $duenoId){
         $this->dueno_id = $duenoId;
+        $this->duenoSeleccionado = Dueno::where('id', $this->dueno_id)
+                                        ->where('owner_id', $this->ownerId())
+                                        ->pluck('nombre')
+                                        ->first();
         $this->buscarDuenoFalse();
         $this->dueno = '';
         $this->duenosEcontrados = null;

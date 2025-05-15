@@ -249,8 +249,7 @@ class Inventario extends Component
     /**
      * 
      */
-    public function agregarCategoria()
-    {
+    public function agregarCategoria() {
         $this->validate([
             'categoria' => 'required'
         ]);
@@ -264,13 +263,14 @@ class Inventario extends Component
         return redirect()->route('inventario')->with('agregado', 'Categoria agregada correctamente');
     }
 
-    public function deleteProducto()
-    {
+    public function deleteProducto() :void {
         try {
             $producto = Producto::where('id', $this->productoId)
                 ->where('owner_id', $this->ownerId())
                 ->first();
-            unlink(public_path('uploads/productos/' . $producto->foto));
+            if($producto->foto){
+                unlink(public_path('uploads/productos/' . $producto->foto));
+            }
             $producto->delete();
         } catch (\Exception $e) {
             DB::commit();
@@ -335,8 +335,7 @@ class Inventario extends Component
             $imageName = time() . '.' . $this->foto->getClientOriginalExtension();
             $this->foto->storeAs('uploads/productos', $imageName, 'public_path');
         }
-        $this->capacidad == null ? $this->capacidad = 'u' : null;
-        //dd($this->capacidad);
+        //dd($this->unidades, $this->cantidad, $this->capacidad);
         $producto = Producto::create([
             'nombre' => $this->nombre,
             'codigo' => $this->flagCodigo ? $this->codigo(6) : ($this->codigo ?? null),

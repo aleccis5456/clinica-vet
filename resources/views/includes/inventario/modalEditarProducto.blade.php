@@ -94,10 +94,10 @@
                 <div class="flex items-center mb-4 gap-2">
                     <select wire:model="unidades" id="unidades"
                         class="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                            <option value="cu" {{ $productoToEdit->unidad_medida == 'cu' ? 'selected' : '' }}>c/u</option>
-                            <option value="ml" {{ $productoToEdit->unidad_medida == 'ml' ? 'selected' : '' }}>ml</option>
-                            <option value="mg" {{ $productoToEdit->unidad_medida == 'mg' ? 'selected' : '' }}>mg</option>
-                            <option value="gr" {{ $productoToEdit->unidad_medida == 'gr' ? 'selected' : '' }}>gr</option>
+                            <option value="cu" {{ $productoToEdit->unidad_medida == 'cu' ? 'selected' : '' }}>Unidad</option>
+                            <option value="ml" {{ $productoToEdit->unidad_medida == 'ml' ? 'selected' : '' }}>Mililitro (ml)</option>
+                            <option value="mg" {{ $productoToEdit->unidad_medida == 'mg' ? 'selected' : '' }}>Miligramo (mg)</option>
+                            <option value="gr" {{ $productoToEdit->unidad_medida == 'gr' ? 'selected' : '' }}>Gramo (gr)</option>
                     </select>
 
                     <input type="number" value="{{ $productoToEdit->cantidad }}"
@@ -109,15 +109,15 @@
 
                 <p class="block text-gray-800 font-medium mb-2">Opciones de cantidad:</p>
                 <div class="flex gap-4">
-                    <select wire:model="capacidad" id="capacidad"
+                    <select name="capacidad" id="capacidad"
                         class="w-1/5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                        <option value="u" {{ $productoToEdit->unidad_capacidad == 'cu' ? 'selected' : '' }}>u</option>
-                        <option value="ml" {{ $productoToEdit->unidad_capacidad == 'ml' ? 'selected' : '' }} >ml</option>
-                        <option value="mg" {{ $productoToEdit->unidad_capacidad == 'mg' ? 'selected' : '' }} >mg</option>
-                        <option value="gr" {{ $productoToEdit->unidad_capacidad == 'gr' ? 'selected' : '' }} >gr</option>
+                        <option value="u" {{ $productoToEdit->unidad_capacidad == 'cu' ? 'selected' : '' }}>Unidad</option>
+                        <option value="ml" {{ $productoToEdit->unidad_capacidad == 'ml' ? 'selected' : '' }} >Mililitro (ml)</option>
+                        <option value="mg" {{ $productoToEdit->unidad_capacidad == 'mg' ? 'selected' : '' }} >Miligramo (mg)</option>
+                        <option value="gr" {{ $productoToEdit->unidad_capacidad == 'gr' ? 'selected' : '' }} >Gramo (gr)</option>
                     </select>
 
-                    <input type="number" value="{{ $productoToEdit->cantidad_capacidad }}"
+                    <input type="number" name="cantidadCapacidad" value="{{ $productoToEdit->cantidad_capacidad }}"
                         class="py-2 px-2 w-1/4 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                 </div>
             </div>
