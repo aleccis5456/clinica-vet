@@ -44,8 +44,8 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
                         <option value="">Selecciona un tipo</option>
                         @foreach ($tipoConsultas as $tipoConsulta)
-                            <option value="{{ $tipoConsulta->id }}">{{ $tipoConsulta->nombre }} |
-                                {{ App\Helpers\Helper::formatearMonto($tipoConsulta->precio) }}Gs.</option>
+                            <option value="{{ $tipoConsulta->id }}">{{ $tipoConsulta->nombre }} 
+                                 {{ $tipoConsulta->precio > 0 ? " - ". App\Helpers\Helper::formatearMonto($tipoConsulta->precio) . " Gs." : ''}}</option>
                         @endforeach
                     </select>
                     <button wire:click='openTipoConsulta'
