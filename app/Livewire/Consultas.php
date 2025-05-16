@@ -7,7 +7,7 @@ namespace App\Livewire;
 use App\Models\UsoInterno;
 use App\Helpers\Helper;
 use App\Models\Caja;
-use App\Models\Pago;
+use App\Models\Vacunacion;
 use App\Models\ConsultaProducto;
 use App\Models\TipoConsulta;
 use App\Models\Producto;
@@ -597,8 +597,6 @@ class Consultas extends Component
      */
     public function updateConsulta(): void
     {
-
-        //esta parte agrega los productos a la consulta
         $consumo = session('consumo', []);
         if (!empty($consumo)) {
             foreach ($consumo as $item) {
@@ -649,8 +647,19 @@ class Consultas extends Component
                         return;
                     }
 
+                    if ($this->consultaToEdit->tipoConsulta->nombre == 'Vacunación') {
+
+                        Vacunacion::create([
+                            'consulta_id' => $this->consultaToEdit->id,
+                            'mascota_id' => $this->consultaToEdit->mascota_id,
+                            'producto_id' => $value['productoId'],
+                            'fecha_vacunacion' => now()->format('Y-m-d'),
+                            'owner_id' => $this->ownerId(),
+                        ]);
+                    }
+
                     if ($usoInterno) {
-                        if ($producto->sobrante == $value['cantidad']) {                            
+                        if ($producto->sobrante == $value['cantidad']) {
                             $producto->update([
                                 'sobrante' => $producto->cantidad_capacidad
                             ]);
@@ -668,7 +677,6 @@ class Consultas extends Component
                                 'stock_actual' => $producto->stock_actual - $value['cantidad'],
                                 'sobrante' => $producto->sobrante - $value['cantidad'],
                             ]);
-
 
                             UsoInterno::create([
                                 'producto_id' => $value['productoId'],
@@ -688,6 +696,11 @@ class Consultas extends Component
                                 'cantidad' => 1,
                             ]);
                         }
+                    }
+                    if ($producto->sobrante <= 0) {
+                        $producto->update([
+                            'sobrante' => $producto->cantidad_capacidad,
+                        ]);
                     }
                 }
             }
@@ -766,7 +779,8 @@ class Consultas extends Component
     /**
      * function para eliminar una consultaProdcutos     
      */
-    public function EliminarProductoConsulta($cpId) {
+    public function EliminarProductoConsulta($cpId)
+    {
         try {
             ConsultaProducto::where('id', $cpId)
                 ->where('owner_id', $this->ownerId())
@@ -781,7 +795,8 @@ class Consultas extends Component
     /**
      * 
      */
-    public function filtarPorEstados(): void {
+    public function filtarPorEstados(): void
+    {
         if ($this->estadofiltrado == 1) {
             $this->consultas = Consulta::orderByRaw("
                             CASE 
@@ -807,7 +822,8 @@ class Consultas extends Component
      * @param int $consultaId, int $productoId
      * @return void
      */
-    public function disminuirCantidad(int $consultaId, int $productoId): void {
+    public function disminuirCantidad(int $consultaId, int $productoId): void
+    {
         $cajadb = Caja::where('consulta_id', $consultaId)
             ->where('owner_id', $this->ownerId())
             ->where('pago_estado', 'Pendiente')
