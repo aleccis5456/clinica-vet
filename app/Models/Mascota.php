@@ -40,4 +40,7 @@ class Mascota extends Model
     public function cajas(){
         return $this->hasMany(Caja::class);
     }
+    public function vacunas(){
+        return $this->hasMany(Vacunacion::class);
+    }
 }
