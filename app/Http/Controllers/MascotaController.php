@@ -91,6 +91,11 @@ class MascotaController extends Controller {
                 'foto' => $request->flagElimiarFoto == true ? null : ($request->hasFile('foto') ? $imageName : $mascota->foto),
                 'especie_id' => $request->especie_id ?? $mascota->especie_id
             ]);
+
+            if($request->flagElimiarFoto == true){
+                $destinationPath = public_path('uploads/mascotas');
+                unlink($destinationPath . '/' . $mascota->foto);
+            }
             $mascota->save();
         }catch(\Exception $e){
             throw new Exception($e->getMessage());
