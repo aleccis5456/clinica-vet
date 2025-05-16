@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TipoConsulta;
+use App\Models\Categoria;
 use App\Models\User;
 use App\Models\PermisoRol;
 use App\Models\Permiso;
@@ -66,7 +68,18 @@ class AuthController extends Controller {
                 'rol_id' => $rolVetId,
                 'admin' => false,
                 'admin_id' => $user->id,
-            ]);        
+            ]);     
+            
+            Categoria::create([
+                'nombre' => 'Vacunas',
+                'owner_id' => $user->id,
+            ]);
+
+            TipoConsulta::create([
+                'nombre' => 'Vacunación',
+                'owner_id' => $user->id,
+                'precio' => 0,
+            ]);
             
         }catch(\Exception $e){                           
             return redirect('/registro')->with('error', $e->getMessage());

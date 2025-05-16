@@ -13,7 +13,7 @@ class Mascota extends Model
     protected $fillable = [
         'dueno_id', 	
         'nombre', 	
-        'especie', 	
+        
         'raza', 	
         'nacimiento', 	
         'genero', 	

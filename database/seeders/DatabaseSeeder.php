@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Rol;
+use App\Models\Categoria;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder {
             RolSeeder::class,
             UserSeeder::class,
             PermisoSeeder::class,
+            //CategoriasSeeder::class,
         ]);
     }
 }

@@ -26,7 +26,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full mt-6 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                        class="cursor-pointer w-full mt-6 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                         Iniciar sesión
                     </button>
                 </form>

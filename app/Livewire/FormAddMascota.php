@@ -61,6 +61,9 @@ class FormAddMascota extends Component {
     #[Rule('required', message: 'Ingrese un email')]
     public $emaildueno = '';
     public bool $modalDueno = false;
+    public bool $tarjeta = false;
+    public ?object $mascotaT;
+
 
       /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -81,6 +84,20 @@ class FormAddMascota extends Component {
                                 ->get();     
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
+    }
+
+    /**
+     * 
+     */
+    public function tarjetaTrue($mascotaId){
+        $this->mascotaT = Mascota::where('id', $mascotaId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->first();
+        //dd($this->mascota);
+        $this->tarjeta = true;
+    }
+    public function tarjetaFalse(){
+        $this->tarjeta = false;
     }
     /**
      * 

@@ -12,6 +12,7 @@ class UsoInterno extends Model
         'producto_id',
         'consulta_id',
         'cantidad',
+        'owner_id',  
     ];
 
     public function producto()

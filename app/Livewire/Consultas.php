@@ -641,7 +641,7 @@ class Consultas extends Component
                     $usoInterno = UsoInterno::where('producto_id', $value['productoId'])
                         ->where('consulta_id', $this->consultaToEdit->id)
                         ->where('cantidad', 1)
-                        //->where('owner_id', $this->ownerId())
+                        ->where('owner_id', $this->ownerId())
                         ->first();
 
                     if ($producto->stock_actual < $value['cantidad']) {
@@ -673,6 +673,7 @@ class Consultas extends Component
                             UsoInterno::create([
                                 'producto_id' => $value['productoId'],
                                 'consulta_id' => $this->consultaToEdit->id,
+                                'owner_id' => $this->ownerId(),
                                 'cantidad' => 0,
                             ]);
                         } else {
@@ -683,6 +684,7 @@ class Consultas extends Component
                             UsoInterno::create([
                                 'producto_id' => $value['productoId'],
                                 'consulta_id' => $this->consultaToEdit->id,
+                                'owner_id' => $this->ownerId(),
                                 'cantidad' => 1,
                             ]);
                         }
