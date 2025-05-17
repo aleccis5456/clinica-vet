@@ -185,6 +185,7 @@ class Caja extends Component
             if ($this->opcion == '1') {
                 $this->productos = Producto::whereLike('nombre', "%$this->search%")
                                            ->where('stock_actual', '>', 0)
+                                           ->where('solo_uso_interno', false)
                                            ->where('owner_id', $this->ownerId())
                                             ->get();
             } else {
