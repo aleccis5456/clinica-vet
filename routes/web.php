@@ -13,7 +13,6 @@ use App\Livewire\FormAddMascota;
 use App\Livewire\Home;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\Login;
-use App\Livewire\Agenda;
 use App\Livewire\Alertas;
 use App\Livewire\Caja;
 use App\Livewire\GestionRoles;
@@ -36,7 +35,7 @@ Route::middleware(Login::class)->group(function () {
     Route::get('/consultas', Consultas::class)->name('consultas');
     Route::get('/Gestion/usuario', GestionRoles::class)->name('gestion.roles');
     Route::get('/Inventario', Inventario::class)->name('inventario');
-    Route::get('/Historial-completo/{id}', HistorialCompleto::class)->name('historial.completo');
+    Route::get('/Historial-completo/{id}/{url?}', HistorialCompleto::class)->name('historial.completo');
 
     Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
     Route::post('/inventario/actualizar/{productoId}', [InventarioController::class, 'update'])->name('inventario.update');
