@@ -64,7 +64,10 @@ class HistorialCompleto extends Component
         // }
     }    
 
-    public function mount($id){        
+    public function mount($id, $url = null){      
+        if(!$this->consulta = Consulta::where('mascota_id', $id)->where('owner_id', $this->ownerId())->first()){
+            return redirect('/')->with('warnig', 'No se encontraron consultas para la mascota seleccionada');
+        }
         if(empty(session('modulos')['consulta'])){
             return redirect('/');
         }
@@ -72,7 +75,7 @@ class HistorialCompleto extends Component
         $this->consultaId = $id;
         $this->consulta = Consulta::where('mascota_id', $this->consultaId)->where('owner_id', $this->ownerId())->first();        
         $this->mascota = Mascota::where('id',$this->consulta->mascota_id)->where('owner_id', $this->ownerId())->first();                      
-        $this->consultas = Consulta::where('mascota_id', $this->mascota->id)->get();
+        $this->consultas = Consulta::where('mascota_id', $this->mascota->id)->where('owner_id', $this->ownerId())->get();
         $this->cantidad = Consulta::where('mascota_id', $this->mascota->id)->where('owner_id', $this->ownerId())->get();        
         $this->consultaVeterinario = ConsultaVeterinario::where('consulta_id', $this->consultaId)->where('owner_id', $this->ownerId())->get();        
         $this->fecha = Consulta::orderBy('id', 'desc')->where('owner_id', $this->ownerId())->first();        
