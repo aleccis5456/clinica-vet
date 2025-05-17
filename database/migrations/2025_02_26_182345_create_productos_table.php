@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('precio');
             $table->integer('stock_actual');            
             $table->timestamps();
+            $table->boolean('solo_uso_interno')->default(false);
             $table->softDeletes();
         });
     }

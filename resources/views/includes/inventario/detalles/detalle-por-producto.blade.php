@@ -66,7 +66,7 @@
 
          <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Sobrante:</span>
-            <span class="text-gray-500 text-sm">{{ $detalleProducto->sobrante }}</span>
+            <span class="text-gray-500 text-sm">{{ isset($detalleProducto->usoInterno) ? ($detalleProducto->usoInterno->cantidad == 1  ? $detalleProducto->sobrante : 'SIN USO') : 'SIN USO'}}</span>
         </div>
     </div>
 </div>

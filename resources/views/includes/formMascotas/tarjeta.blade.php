@@ -19,7 +19,7 @@
                     <!-- Imagen con efecto -->
                     <div class="relative h-66 overflow-hidden">
                         <img class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
-                            src="{{ asset("uploads/mascotas/$mascotaT->foto") }}" alt="Foto de {{ $mascotaT->nombre }}">
+                            src="{{ asset("uploads/mascotas/$mascotaT->foto") }}" alt="Foto de {{ $mascotaT->nombre}}">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <h2 class="absolute bottom-4 left-4 text-white text-2xl font-bold">{{ $mascotaT->nombre }}</h2>
                     </div>
@@ -80,107 +80,77 @@
                     </div>
                 </div>
 
-                <div class="w-2/3 bg-white mt-7 rounded-lg shadow-xl">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th
-                                    class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                    Fecha</th>
-                                <th
-                                    class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                                    Vacuna Aplicada</th>
-                                <th
-                                    class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider ">
-                                    Veterinario</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($mascotaT->vacunas as $vacuna)
+                <div class="flex flex-col gap-2 w-2/3 rounded-xl">
+                    <div class="bg-white mt-7 rounded-lg shadow-lg min-h-[68%] max-h-[68%] overflow-y-scroll">
+                        <table class="min-w-full divide-y divide-gray-200 rounded-xl">
+                            <thead class="bg-gray-100 rounded-xl">
+                                <tr>
+                                    <th
+                                        class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        Fecha</th>
+                                    <th
+                                        class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                                        Vacuna Aplicada</th>
+                                    <th
+                                        class="px-4 py-2 text-center text-xs font-medium text-gray-700 uppercase tracking-wider ">
+                                        Veterinario</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @php
+                                    $contador = 0;
+                                @endphp
+                                @forelse($vacunas as $vacuna)
+                                   @php
+                                    $contador++;
+                                @endphp                                
                                 <tr>
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         {{ App\Helpers\Helper::formatearFecha($vacuna->fecha_vacunacion) }}
                                     </td>
                                     <td class="px-4 py-2 whitespace-nowrap flex flex-col items-center">
-                                        @if ($vacuna->etiqueta == null)
-                                            <p class="font-semibold text-sm">{{ $vacuna->producto->nombre }}</p>
-                                            <div class="max-w-sm">
-                                                <form wire:submit.prevent="guardarEtiqueta({{ $vacuna->id }})"
-                                                    class="max-w-sm" enctype="multipart/form-data">
-                                                    <input wire:model='etiqueta' type="file" id="fileInput"
-                                                        class="hidden">
-                                                    @if ($preview && $vacunaId == $vacuna->id)
-                                                        <div class="w-36 h-36 relative bg-white m-12">
-                                                            <img class="w-auto h-auto object-cover  rounded-md  "
-                                                                src="{{ $preview }}" alt="">
-                                                            <button
-                                                                class=" cursor-pointer absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 hover:bg-gray-100 hover:text-black"
-                                                                wire:click="removeImage" type="button">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                    viewBox="0 0 24 24" stroke-width="1.5"
-                                                                    stroke="currentColor" class="w-4 h-4">
-                                                                    <path stroke-linecap="round"
-                                                                        stroke-linejoin="round"
-                                                                        d="M6 18L18 6M6 6l12 12" />
-                                                                </svg>
-                                                            </button>
-                                                            <button
-                                                                class="text-xs text-center mt-4 font-semibold text-gray-100 bg-gray-800 rounded-md px-2 py-1 cursor-pointer hover:bg-gray-700"
-                                                                type="submit">Guardar</button>
-                                                        </div>
-                                                    @else
-                                                        <label for="fileInput" class="cursor-pointer flex"
-                                                            wire:click="setVacunaId({{ $vacuna->id }})">
-                                                            <div class="bg-gray-200 rounded-md px-2 py-1 mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                    viewBox="0 0 24 24" stroke-width="1.5"
-                                                                    stroke="currentColor" class="size-6">
-                                                                    <path stroke-linecap="round"
-                                                                        stroke-linejoin="round"
-                                                                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                                                </svg>
-                                                            </div>
-                                                            <span
-                                                                class="text-xs mt-2 font-semibold text-gray-500">Agregar
-                                                                Etiqueta</span>
-                                                    @endif
-                                                    </label>
-                                                </form>
-                                            </div>
-                                        @else
-                                            <div class="relative flex gap-2 items-center">
-                                                <p class="text-sm font-semibold text-gray-700">
-                                                    {{ $vacuna->producto->nombre }}</p>
-                                                <div class="group">
-                                                    <img class=" w-12 h-12 transition-all duration-150 group-hover:scale-500 group-hover:mb-26"
-                                                        src="{{ asset("uploads/etiquetas/$vacuna->etiqueta") }}"
-                                                        alt="">
-
-                                                    <button wire:click="deleteImage({{ $vacuna->id }})"
-                                                        type="button"
-                                                        class="cursor-pointer opacity-0 transition-ease-in duration-500 group-hover:opacity-100 -z-10 group-hover:z-40 absolute -top-23 -right-22 bg-red-500 text-white rounded-full p-1 hover:bg-gray-100 hover:text-black">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5"
-                                                            stroke="currentColor" class="w-4 h-4">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M6 18L18 6M6 6l12 12" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        @endif
+                                        @include('includes.formMascotas.tarjeta-vacuna-aplicada', ['vacuna' => $vacuna])
+                                        
                                     </td>
                                     <td class="px-4 py-2 whitespace-nowrap">
                                     </td>
-                                </tr>
-                            @empty
+                                </tr>                  
+                                @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-2 text-center text-gray-500">No hay registros de
-                                        vacunas.</td>
+                                    <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+                                        No hay registros de vacunas.
+                                    </td>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                @endforelse
+                            </tbody>
+    
+                        </table>                        
+                    </div>
+
+                    <div class=" mt-4 flex gap-2">
+                        <div
+                            class="w-1/2 bg-white rounded-lg shadow-lg px-4 py-2 items-center justify-center text-center">
+                            <p class="text-center font-semibold text-gray-700 mt-2 mb-2">Agendar proxima vacuna</p>
+                            <button class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div
+                            class="w-1/2 bg-white rounded-lg shadow-lg px-4 py-2 items-center justify-center text-center">
+                            <p class="text-center  font-semibold text-gray-700 mt-2 mb-2">Agregar Notas</p>
+                            <button class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -154,21 +154,17 @@
             <!-- opciones de uso interno -->
             <div class=" my-4 pt-5">
                 <p class="text-2xl font-semibold text-center text-gray-800 mb-2 block">Opciones para uso interno</p>
-                <div class="py-6">
+                <div class="py-6 flex gap-1">
                     <p>Marcar solo para uso interno:</p>
-                    <label id="uso-interno" class="inline-flex items-center cursor-pointer">
-                        <input  type="checkbox" value="true" class="sr-only peer">
-                        <div
-                        class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
-                    </div>
-                    <span id="valor" class="ms-3 text-sm font-medium text-gray-900">No</span>
-                </label>
+                    <input wire:model='usoInterno'
+                        class="cursor-pointer p-3"
+                        type="checkbox" id="solo-uso-interno">
                 </div>
                 <p class="block text-gray-800 font-medium mb-2">Precios de uso interno:</p>
                 <div class="flex items-center mb-4 gap-2">
                     <select wire:model="unidades" id="unidades"
                         class="w-24 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-gray-800 focus:bg-gray-100">
-                        <option value="" selected disabled>-- Elegir unidad --</option>
+                        <option value="" selected >-- Elegir unidad --</option>
                         <option value="cu">Unidad</option>
                         <option value="ml">Mililitro (ml)</option>
                         <option value="mg">Miligramo (mg)</option>
@@ -225,20 +221,4 @@
             </button>
         </form>
     </div>
-
-
-    <script>
-        const usoInterno = document.getElementById('uso-interno');
-        const valor = document.getElementById('valor');
-
-        usoInterno.addEventListener('click', function(e) => {
-            console.log('das');
-            if (usoInterno.checked) {
-                console.log('checked');
-            } else {
-                
-             
-            }
-        });
-    </script>
 </div

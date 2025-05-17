@@ -63,6 +63,7 @@ class Inventario extends Component
     public $precio_interno;
     public $capacidad;
     public $cantidadCapacidad;
+    public $usoInterno;
 
     /**
      * 
@@ -273,9 +274,9 @@ class Inventario extends Component
             }
             $producto->delete();
         } catch (\Exception $e) {
-            
             DB::commit();
             $this->dispatch('producto-noborrado');
+            return;
         }
         
         $this->alertaFalse();
@@ -343,14 +344,12 @@ class Inventario extends Component
                 'cantidad.required' => 'El campo cantidad es obligatorio.',
                 'capacidad.required' => 'El campo capacidad es obligatorio.',                
             ]);   
-
         }
         if ($this->foto) {
             $imageName = time() . '.' . $this->foto->getClientOriginalExtension();
             $this->foto->storeAs('uploads/productos', $imageName, 'public_path');
         }
         
-        //dd($this->unidades, $this->cantidad, $this->capacidad);
         $producto = Producto::create([
             'nombre' => $this->nombre,
             'codigo' => $this->flagCodigo ? $this->codigo(6) : ($this->codigo ?? null),
@@ -368,6 +367,7 @@ class Inventario extends Component
             'unidad_capacidad' => $this->capacidad ?? null,
             'cantidad_capacidad' => $this->cantidadCapacidad ?? null,
             'sobrante' => $this->cantidadCapacidad ?? null,
+            'solo_uso_interno' => $this->usoInterno ?? false,
         ]);
 
         if (!$producto) {
@@ -399,9 +399,7 @@ class Inventario extends Component
         $this->precio_interno = null;
         $this->capacidad = null;
         $this->cantidadCapacidad = null;
-
     }
-
     /**
      * 
      */

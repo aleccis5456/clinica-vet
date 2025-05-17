@@ -14,12 +14,12 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
+use Livewire\WithPagination;    
 
 #[Title('Gestion Mascotas')]
 class FormAddMascota extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     #[Rule('nullable')]
     public string $dueno_id = '';
@@ -68,6 +68,7 @@ class FormAddMascota extends Component
     public $etiqueta;
     public  $preview;
     public $vacunaId;
+    public ?object $vacunas;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -99,7 +100,11 @@ class FormAddMascota extends Component
         $this->mascotaT = Mascota::where('id', $mascotaId)
             ->where('owner_id', $this->ownerId())
             ->first();
-        //dd($this->mascota);
+
+        $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
+            ->where('owner_id', $this->ownerId())
+            ->orderBy('id', 'desc')
+            ->get();            
         $this->tarjeta = true;
     }
     public function tarjetaFalse()
@@ -337,23 +342,24 @@ class FormAddMascota extends Component
     {
         if ($this->etiqueta) {
             $this->preview = $this->etiqueta->temporaryUrl();
-            
         }
     }
 
-    public function removeImage(){
+    public function removeImage()
+    {
         $this->etiqueta = null;
         $this->preview = null;
     }
 
-    public function guardarEtiqueta($vacunaId) {
+    public function guardarEtiqueta($vacunaId)
+    {
         $this->validate([
             'etiqueta' => 'required|image|max:2048',
         ]);
-        if($this->etiqueta){
+        if ($this->etiqueta) {
             $imageName = time() . '.' . $this->etiqueta->getClientOriginalExtension();
             $this->etiqueta->storeAs('uploads/etiquetas', $imageName, 'public_path');
-        }else{
+        } else {
             return;
         }
         $vacuna = Vacunacion::where('id', $vacunaId)->where('owner_id', $this->ownerId())->first();
@@ -365,15 +371,32 @@ class FormAddMascota extends Component
         $this->dispatch('success', 'Etiqueta guardada');
     }
 
-    public function deleteImage($vacunaId){
+    public function deleteImage($vacunaId)
+    {
         $vacuna = Vacunacion::where('id', $vacunaId)->where('owner_id', $this->ownerId())->first();
+        if (!$vacuna) {
+            $this->dispatch('error', 'No se encontro la vacuna');
+            return;
+        }
+        if ($vacuna->etiqueta) {
+            $path = public_path('uploads/etiquetas/' . $vacuna->etiqueta);
+            if (file_exists($path)) {
+                unlink($path);
+            }
+        }
         $vacuna->update([
             'etiqueta' => null
         ]);
         $this->dispatch('success', 'Etiqueta eliminada');
     }
-    public function setVacunaId($vacunaId){
+    public function setVacunaId($vacunaId)
+    {
         $this->vacunaId = $vacunaId;
+    }
+
+    #[On('success')]
+    public function refresh2(){
+
     }
     public function render()
     {

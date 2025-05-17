@@ -28,7 +28,8 @@ class Producto extends Model
         'precio_interno',
         'unidad_capacidad',
         'cantidad_capacidad',
-        'sobrante'
+        'sobrante',
+        'solo_uso_interno',
     ];
 
     public function movimientos() : BelongsToMany {
