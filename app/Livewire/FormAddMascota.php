@@ -66,8 +66,8 @@ class FormAddMascota extends Component
     public bool $tarjeta = false;
     public ?object $mascotaT;
     public $etiqueta;
-    public $preview;
-
+    public  $preview;
+    public $vacunaId;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -337,6 +337,7 @@ class FormAddMascota extends Component
     {
         if ($this->etiqueta) {
             $this->preview = $this->etiqueta->temporaryUrl();
+            
         }
     }
 
@@ -362,7 +363,17 @@ class FormAddMascota extends Component
         ]);
 
         $this->dispatch('success', 'Etiqueta guardada');
-        
+    }
+
+    public function deleteImage($vacunaId){
+        $vacuna = Vacunacion::where('id', $vacunaId)->where('owner_id', $this->ownerId())->first();
+        $vacuna->update([
+            'etiqueta' => null
+        ]);
+        $this->dispatch('success', 'Etiqueta eliminada');
+    }
+    public function setVacunaId($vacunaId){
+        $this->vacunaId = $vacunaId;
     }
     public function render()
     {
