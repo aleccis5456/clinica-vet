@@ -42,7 +42,7 @@
                             <div class="bg-gray-50 p-2 rounded-lg">
                                 <p class="text-sm text-gray-500">Nacimiento</p>
                                 <p class="font-medium">
-                                    {{ App\Helpers\Helper::formatearFecha($mascotaT->fechaNacimiento) }}</p>
+                                    {{ App\Helpers\Helper::formatearFecha($mascotaT->nacimiento) }}</p>
                             </div>
                         </div>
 
