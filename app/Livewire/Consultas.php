@@ -653,8 +653,12 @@ class Consultas extends Component
                             'consulta_id' => $this->consultaToEdit->id,
                             'mascota_id' => $this->consultaToEdit->mascota_id,
                             'producto_id' => $value['productoId'],
+                            'aplicada' => true,
+                            'proxima_vacunacion' => null,               
+                            'proxima_vacuna' => null,             
                             'fecha_vacunacion' => now()->format('Y-m-d'),
                             'owner_id' => $this->ownerId(),
+                            'aplicada' => true,
                         ]);
                     }
 
