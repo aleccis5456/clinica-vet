@@ -145,9 +145,7 @@
                                             {{ App\Helpers\Helper::formatearFecha($vacuna->fecha_vacunacion) }}
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap flex flex-col items-center">
-                                            @include('includes.formMascotas.tarjeta-vacuna-aplicada', [
-                                                'vacuna' => $vacuna,
-                                            ])
+                                            @include('includes.formMascotas.tarjeta-vacuna-aplicada', ['vacuna' => $vacuna])
 
                                         </td>
                                         <td class="px-4 py-2 whitespace-nowrap">
