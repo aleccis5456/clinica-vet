@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Models\Vacunacion;
@@ -14,7 +16,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
-use Livewire\WithPagination;    
+use Livewire\WithPagination;
 use Carbon\Carbon;
 
 #[Title('Gestion Mascotas')]
@@ -23,7 +25,7 @@ class FormAddMascota extends Component
     use WithFileUploads, WithPagination;
 
     #[Rule('nullable')]
-    public string $dueno_id = '';
+    public int $dueno_id;
     public string $genero = '';
     public string $nombre = '';
     public string $especie = '';
@@ -57,7 +59,7 @@ class FormAddMascota extends Component
     #[Rule('required', message: 'Ingrese un nombre')]
     public $nombredueno = '';
 
-    #[Rule('required', message: 'Ingrese un numero de telefono')]
+    #[Rule('required', message: 'Ingrese un numero de teléfono')]
     #[Rule('numeric', message: 'Ingrese un numero valido')]
     public $telefonodueno = '';
 
@@ -74,6 +76,10 @@ class FormAddMascota extends Component
     public string $desde;
     public string $hasta;
     public bool $vacunaq = false;
+    public bool $addNota = false;
+    public string $nota = '';
+    public string $notaEdit;
+    public ?object $vacuna;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -96,30 +102,71 @@ class FormAddMascota extends Component
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();
     }
+
+    /**
+     * 
+     */
+    public function addNotaTrue()
+    {
+        $this->addNota = true;
+    }
+    public function addNotaFalse()
+    {
+        $this->addNota = false;
+    }
+    public function guardarNota(int $vacunaId): void
+    {
+        $this->validate([
+            'nota' => 'required'
+        ]);
+        $vacuna = Vacunacion::where('id', $vacunaId)->where('owner_id', $this->ownerId())->first();
+        if (!$vacuna) {
+            return;
+        }
+        $vacuna->update([
+            'notas' => $this->nota
+        ]);
+        $this->dispatch('success', 'Nota guardada');
+        $this->addNotaFalse();
+    }
+    public function updateNota(int $vacunaId){
+        $this->validate([
+            'notaEdit' => 'required'
+        ]);
+        $vacuna = Vacunacion::where('id', $vacunaId)->where('owner_id', $this->ownerId())->first();
+        if (!$vacuna) {;
+            return;
+        }
+        $vacuna->update([
+            'notas' => $this->notaEdit
+        ]);
+        $this->dispatch('success', 'Nota guardada');
+    }
     /**
      * 
      */
     public function filtroTrue()
     {
         $this->filtro = true;
-       
     }
     public function filtroFalse()
     {
         $this->filtro = false;
     }
-    public function filtrarVacunas(){
-        $desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d') : Carbon::parse($this->desde)->format('Y-m-d'); 
+    public function filtrarVacunas()
+    {
+        $desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d') : Carbon::parse($this->desde)->format('Y-m-d');
         $hasta = empty($this->hasta) ? now()->endOfDay()->format('Y-m-d') :  Carbon::parse($this->hasta)->format('Y-m-d');
-            
+
         $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
             ->where('owner_id', $this->ownerId())
             ->where('fecha_vacunacion', '>=', $desde)
             ->where('fecha_vacunacion', '<=', $hasta)
             ->orderBy('id', 'desc')
-            ->get(); 
+            ->get();
         $this->vacunaq = true;
-        $this->filtroFalse();      
+
+        $this->filtroFalse();
     }
 
     /**
@@ -132,10 +179,18 @@ class FormAddMascota extends Component
             ->first();
 
         $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
-            ->where('owner_id', $this->ownerId())
+            ->where('owner_id', $this->ownerId())            
             ->orderBy('id', 'desc')
-            ->get();          
-        $this->vacunaq = false;  
+            ->get();
+
+        $this->vacuna = Vacunacion::where('mascota_id', $this->mascotaT->id)
+            ->where('owner_id', $this->ownerId())
+            ->where('notas', '!=', null)
+            ->first();
+        if ($this->vacuna) {
+        $this->notaEdit = $this->vacuna->notas;
+        }
+        $this->vacunaq = false;
         $this->tarjeta = true;
     }
     public function tarjetaFalse()
@@ -426,9 +481,7 @@ class FormAddMascota extends Component
     }
 
     #[On('success')]
-    public function refresh2(){
-
-    }
+    public function refresh2() {}
     public function render()
     {
         return view('livewire.form-add-mascota');
