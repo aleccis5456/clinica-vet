@@ -2,15 +2,28 @@
     class=" fixed top-0 right-0 left-0  z-40 flex justify-center items-center w-full h-full bg-black/50 outline-none overflow-x-hidden overflow-y-auto">
     <div class="relative p-4 w-lg md:w-5xl ">
 
-        <button type="button"
-            class="cursor-pointer m-2 absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
-            wire:click="tarjetaFalse">
-            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-            </svg>
-            <span class="sr-only">Cerrar</span>
-        </button>
+        <div class="flex justify-between">
+            <button type="button"
+                class="cursor-pointer m-2 absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+                wire:click="tarjetaFalse">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Cerrar</span>
+            </button>
+
+            <button type="button" id="filtro"
+                class="cursor-pointer m-2 absolute top-3 left-104 text-gray-800 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+                wire:click="filtroTrue">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+            </button>
+        </div>
 
         <div class="bg-gray-200 border border-gray-200 rounded-lg shadow-lg  max-w-5xl  h-auto">
             <div class="flex p-2 gap-2 justify-between">
@@ -19,7 +32,7 @@
                     <!-- Imagen con efecto -->
                     <div class="relative h-66 overflow-hidden">
                         <img class="w-full h-full object-cover transform transition-transform duration-500 hover:scale-110"
-                            src="{{ asset("uploads/mascotas/$mascotaT->foto") }}" alt="Foto de {{ $mascotaT->nombre}}">
+                            src="{{ asset("uploads/mascotas/$mascotaT->foto") }}" alt="Foto de {{ $mascotaT->nombre }}">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <h2 class="absolute bottom-4 left-4 text-white text-2xl font-bold">{{ $mascotaT->nombre }}</h2>
                     </div>
@@ -101,37 +114,40 @@
                                     $contador = 0;
                                 @endphp
                                 @forelse($vacunas as $vacuna)
-                                   @php
-                                    $contador++;
-                                @endphp                                
-                                <tr>
-                                    <td class="px-4 py-2 whitespace-nowrap">
-                                        {{ App\Helpers\Helper::formatearFecha($vacuna->fecha_vacunacion) }}
-                                    </td>
-                                    <td class="px-4 py-2 whitespace-nowrap flex flex-col items-center">
-                                        @include('includes.formMascotas.tarjeta-vacuna-aplicada', ['vacuna' => $vacuna])
-                                        
-                                    </td>
-                                    <td class="px-4 py-2 whitespace-nowrap">
-                                    </td>
-                                </tr>                  
+                                    @php
+                                        $contador++;
+                                    @endphp
+                                    <tr>
+                                        <td class="px-4 py-2 whitespace-nowrap">
+                                            {{ App\Helpers\Helper::formatearFecha($vacuna->fecha_vacunacion) }}
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap flex flex-col items-center">
+                                            @include('includes.formMascotas.tarjeta-vacuna-aplicada', [
+                                                'vacuna' => $vacuna,
+                                            ])
+
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap">
+                                        </td>
+                                    </tr>
                                 @empty
-                                <tr>
-                                    <td colspan="3" class="px-4 py-2 text-center text-gray-500">
-                                        No hay registros de vacunas.
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-2 text-center text-gray-500">
+                                            No hay registros de vacunas.
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
-    
-                        </table>                        
+
+                        </table>
                     </div>
 
                     <div class=" mt-4 flex gap-2">
                         <div
                             class="w-1/2 bg-white rounded-lg shadow-lg px-4 py-2 items-center justify-center text-center">
                             <p class="text-center font-semibold text-gray-700 mt-2 mb-2">Agendar proxima vacuna</p>
-                            <button class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
+                            <button
+                                class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -143,7 +159,8 @@
                         <div
                             class="w-1/2 bg-white rounded-lg shadow-lg px-4 py-2 items-center justify-center text-center">
                             <p class="text-center  font-semibold text-gray-700 mt-2 mb-2">Agregar Notas</p>
-                            <button class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
+                            <button
+                                class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -155,5 +172,7 @@
             </div>
         </div>
     </div>
-
+    @if ($filtro)
+        @include('includes.formMascotas.filtro-tarjeta')
+    @endif
 </div>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('etiqueta')->nullable();
             $table->string('notas')->nullable();
             $table->date('proxima_vacunacion')->nullable();
+            $table->foreignId('proxima_vacuna')->constrained('productos')->nullable();
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

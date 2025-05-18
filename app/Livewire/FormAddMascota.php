@@ -15,6 +15,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;    
+use Carbon\Carbon;
 
 #[Title('Gestion Mascotas')]
 class FormAddMascota extends Component
@@ -69,6 +70,9 @@ class FormAddMascota extends Component
     public  $preview;
     public $vacunaId;
     public ?object $vacunas;
+    public bool $filtro = false;
+    public $desde;
+    public $hasta;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -90,6 +94,30 @@ class FormAddMascota extends Component
             ->get();
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();
+    }
+    /**
+     * 
+     */
+    public function filtroTrue()
+    {
+        $this->filtro = true;
+       
+    }
+    public function filtroFalse()
+    {
+        $this->filtro = false;
+    }
+    public function filtrarVacunas(){
+        $desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d') : Carbon::parse($this->desde)->format('Y-m-d'); 
+        $hasta = empty($this->hasta) ? now()->endOfDay()->format('Y-m-d') :  Carbon::parse($this->hasta)->format('Y-m-d');
+            
+        $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
+            ->where('owner_id', $this->ownerId())
+            ->where('fecha_vacunacion', '>=', $desde)
+            ->where('fecha_vacunacion', '<=', $hasta)
+            ->orderBy('id', 'desc')
+            ->get(); 
+        $this->filtroFalse();      
     }
 
     /**
