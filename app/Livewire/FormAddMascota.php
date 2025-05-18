@@ -71,8 +71,9 @@ class FormAddMascota extends Component
     public $vacunaId;
     public ?object $vacunas;
     public bool $filtro = false;
-    public $desde;
-    public $hasta;
+    public string $desde;
+    public string $hasta;
+    public bool $vacunaq = false;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -117,6 +118,7 @@ class FormAddMascota extends Component
             ->where('fecha_vacunacion', '<=', $hasta)
             ->orderBy('id', 'desc')
             ->get(); 
+        $this->vacunaq = true;
         $this->filtroFalse();      
     }
 
@@ -132,7 +134,8 @@ class FormAddMascota extends Component
         $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
             ->where('owner_id', $this->ownerId())
             ->orderBy('id', 'desc')
-            ->get();            
+            ->get();          
+        $this->vacunaq = false;  
         $this->tarjeta = true;
     }
     public function tarjetaFalse()
