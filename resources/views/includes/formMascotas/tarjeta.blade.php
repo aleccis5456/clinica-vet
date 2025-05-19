@@ -93,6 +93,7 @@
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @php $contador = 0;@endphp
                                 @forelse($vacunas as $vacuna)
+                                    @if ($vacuna->aplicada == false) @continue @endif
                                     @php $contador++;@endphp
                                     <tr>
                                         <td class="px-4 py-2 whitespace-nowrap">
@@ -122,10 +123,10 @@
                     <div class=" mt-4 flex gap-2">
                         <!-- Agendar proxima vacuna -->
                         <div
-                            class="w-1/2 bg-white rounded-lg shadow-sm px-4 py-2 items-center justify-center text-center">
+                            class="{{ $vacuna != null ? 'w-1/2' : 'w-full' }} bg-white rounded-lg shadow-md px-4 py-2 items-center justify-center text-center">
                             <p class="text-center font-semibold text-gray-700 mt-2 mb-2">Agendar proxima vacuna</p>
-                            <button
-                                class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
+                            <button wire:click='agendarVacunaTrue'
+                                class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg hover:-translate-y-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,34 +136,36 @@
                         </div>
 
                         <!-- Agregar notas -->
-                        <div
-                            class="w-1/2 bg-white rounded-lg shadow-sm px-2 py-2 items-center justify-center text-center">
-                            @if ($vacuna != null)
-                                <div class="w-full h-full">
-                                    <form wire:submit.prevent="updateNota({{ $vacuna->id }})" class="w-full">
-                                        <div>                                
-                                            <textarea wire:model='notaEdit' id="nota" rows="4"
-                                                class="rounded-none p-2.5 w-full h-[60px] text-sm text-gray-900 bg-gray-50  border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>                                                                                       
-                                        </div>
-                                        <button type="submit"
-                                            class="cursor-pointer flex justify-end bg-gray-800 hover:bg-gray-700 text-white font-bold py-0.5 px-1 rounded mt-1 text-sm">
-                                            Guardar
-                                        </button>
-                                    </form>
-                                </div>
-                            @else
-                                <p class="text-center  font-semibold text-gray-700 mt-2 mb-2">Agregar Nota</p>
-                                <button wire:click="addNotaTrue" 
-                                    class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                </button>
-                            @endif
+                        @if ($vacuna != null)
+                            <div
+                                class="w-1/2 bg-white rounded-lg shadow-sm px-2 py-2 items-center justify-center text-center">
+                                @if ($vacuna->notas != '')
+                                    <div class="w-full h-full">
+                                        <form wire:submit.prevent="updateNota({{ $vacuna->id }})" class="w-full">
+                                            <div>
+                                                <textarea wire:model='notaEdit' id="nota" rows="4"
+                                                    class="rounded-none p-2.5 w-full h-[60px] text-sm text-gray-900 bg-gray-50  border border-gray-300 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                            </div>
+                                            <button type="submit"
+                                                class="cursor-pointer flex justify-end bg-gray-800 hover:bg-gray-700 text-white font-bold py-0.5 px-1 rounded mt-1 text-sm">
+                                                Guardar
+                                            </button>
+                                        </form>
+                                    </div>
+                                @else
+                                    <p class="text-center  font-semibold text-gray-700 mt-2 mb-2">Agregar Nota</p>
+                                    <button wire:click="addNotaTrue"
+                                        class="p-2 m-2 cursor-pointer transition-all duration-200 hover:bg-gray-300 rounded-lg hover:-translate-y-0.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                    </button>
+                                @endif
 
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -176,4 +179,7 @@
         @include('includes.formMascotas.tarjeta-add-notas')
     @endif
 
+    @if ($agendarVacuna)
+        @include('includes.formMascotas.agendar-vacunacion')
+    @endif
 </div>

@@ -18,7 +18,6 @@
     <div>
         @yield('content')        
     </div>    
-    @yield('javascript') 
 </body>
 
 </html>

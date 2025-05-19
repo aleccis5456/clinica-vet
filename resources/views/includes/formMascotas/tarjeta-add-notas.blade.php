@@ -1,5 +1,5 @@
 <div id="confirmarModal" tabindex="-1"
-    class=" fixed top-0 right-0 left-0  z-40 flex justify-center items-center w-full h-full bg-black/50 outline-none overflow-x-hidden overflow-y-auto">
+    class=" fixed top-0 right-0 left-0 z-40 flex justify-center items-center w-full h-full bg-black/50 outline-none overflow-x-hidden overflow-y-auto">
     <div class="relative p-4 w-lg md:w-md ">
 
         <button type="button"

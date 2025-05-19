@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Models\Producto;
 use App\Models\Vacunacion;
 use App\Helpers\Helper;
+use App\Models\Categoria;
 use App\Models\User;
 use App\Models\Dueno;
 use Livewire\Attributes\On;
@@ -80,6 +82,16 @@ class FormAddMascota extends Component
     public string $nota = '';
     public string $notaEdit;
     public ?object $vacuna;
+    public string $proximaVacunacion;
+    public int $proximaVacuna;
+    public bool $agendarVacuna = false;
+    public ?object $productos;
+    public object $categorias;
+    public bool $productosq = false; 
+    public string $producto = '';
+    public $proSelect; //producto seleccionado
+    public $response;
+    public bool $productosEncontrados = false;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -101,6 +113,91 @@ class FormAddMascota extends Component
             ->get();
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();
+    }
+    /**
+     * 
+     */
+    public function productosTrue()
+    {
+        $this->productosq = true;
+    }
+    public function productosFalse()
+    {
+        $this->productosq = false;
+    }
+    public function filtrarProductos(){
+        $this->response = Producto::select('id','nombre')->whereLike('nombre', "%$this->producto%")
+            ->where('owner_id', $this->ownerId())
+            ->orderBy('id', 'desc')
+            ->get();
+        $this->productosEncontradosTrue();  
+    }
+    
+    public function productosEncontradosTrue()
+    {
+        $this->productosEncontrados = true;
+    }
+    public function productosEncontradosFalse()
+    {
+        $this->productosEncontrados = false;
+    }
+    
+    public function setProducto(int $productoId)
+    {
+        $this->proSelect = $productoId;
+        $this->productosFalse();
+    }
+    /**
+     * habre el modal para agendar una vacunacion
+     */
+    public function agendarVacunaTrue() : void
+    {           
+        $this->productos = $this->getProductos();
+            
+        $this->agendarVacuna = true;
+    }
+    public function agendarVacunaFalse()
+    {
+        $this->agendarVacuna = false;
+    }
+
+    public function agendarVacunacion(){
+        $this->validate([
+            'proximaVacunacion' => 'required',
+            'proSelect' => 'required'
+        ], [
+            'proximaVacunacion.required' => 'Ingrese una fecha',
+            'proSelect.required' => 'Seleccione un producto',
+        ]);
+
+        try{
+            Vacunacion::create([
+                'mascota_id' => $this->mascotaT->id,
+                'producto_id' => $this->proSelect,
+                'proxima_vacuna' => $this->proSelect,
+                'proxima_vacunacion' => $this->proximaVacunacion,
+                'owner_id' => $this->ownerId(),
+                'aplicada' => false,
+            ]);
+            $this->dispatch('success', 'Vacunacion agendada');
+        }catch (\Exception $e) {
+            throw new \Exception($e->getMessage()); 
+            // $this->dispatch('error', 'Error al agendar la vacunacion');
+            // return;
+        }
+        
+    }
+
+    public function getProductos() : object {
+        $categoriaId = Categoria::select('id')
+                                ->where('nombre', 'Vacunas')
+                                ->where('owner_id', $this->ownerId())
+                                ->first();
+
+        return Producto::where('owner_id', $this->ownerId())
+                        ->where('categoria_id', $categoriaId->id)
+                        ->orderBy('id', 'desc')
+                        ->get();
     }
 
     /**
@@ -127,6 +224,7 @@ class FormAddMascota extends Component
             'notas' => $this->nota
         ]);
         $this->dispatch('success', 'Nota guardada');
+        $this->notaEdit = $vacuna->notas;
         $this->addNotaFalse();
     }
     public function updateNota(int $vacunaId){
@@ -179,6 +277,7 @@ class FormAddMascota extends Component
             ->first();
 
         $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
+            //->where('aplicada', true)
             ->where('owner_id', $this->ownerId())            
             ->orderBy('id', 'desc')
             ->get();
@@ -186,9 +285,11 @@ class FormAddMascota extends Component
         $this->vacuna = Vacunacion::where('mascota_id', $this->mascotaT->id)
             ->where('owner_id', $this->ownerId())
             ->where('notas', '!=', null)
+            ->orWhere('notas', null)
             ->first();
+            
         if ($this->vacuna) {
-        $this->notaEdit = $this->vacuna->notas;
+            $this->notaEdit = $this->vacuna->notas ?? '';
         }
         $this->vacunaq = false;
         $this->tarjeta = true;

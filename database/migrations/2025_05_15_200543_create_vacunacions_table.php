@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('vacunaciones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mascota_id')->constrained('mascotas')->onDelete('cascade');
-            $table->foreignId('producto_id')->constrained('productos')->onDelete('cascade');
-            $table->foreignId('consulta_id')->constrained('consultas')->onDelete('cascade')->nullable();
-            $table->date('fecha_vacunacion');
+            $table->foreignId('producto_id')->nullable()->constrained('productos')->onDelete('cascade');
+            $table->foreignId('consulta_id')->nullable()->constrained('consultas')->onDelete('cascade');
+            $table->date('fecha_vacunacion')->nullable();
             $table->string('etiqueta')->nullable();
             $table->string('notas')->nullable();
             $table->date('proxima_vacunacion')->nullable();
             $table->foreignId('proxima_vacuna')->constrained('productos')->nullable();
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
-            $table->boolean('aplicada')->default(false);
+            $table->boolean('aplicada')->default(false)->nullable();
             $table->timestamps();
         });
     }

@@ -100,10 +100,6 @@
             </div>
             <!-- Versión móvil -->
            @include('includes.formMascotas.version-mobil')
-            
-            {{-- <div class="p-4">
-                {{ $mascotas->links() }}
-            </div> --}}
         </div>
         <!-- modal para agregar mascota -->
         @if ($modalAdd)

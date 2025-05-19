@@ -15,6 +15,9 @@ class Vacunacion extends Model
         'etiqueta',
         'notas',
         'owner_id',
+        'proxima_vacunacion',
+        'proxima_vacuna',
+        'aplicada',
     ];
     
     public function mascota()
