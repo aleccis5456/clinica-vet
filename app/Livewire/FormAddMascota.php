@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Livewire;
 
+use App\Models\ConsultaProducto;
+use App\Models\TipoConsulta;
+use App\Models\Rol;
+use App\Models\Consulta;
 use App\Models\Producto;
 use App\Models\Vacunacion;
 use App\Helpers\Helper;
@@ -56,6 +60,7 @@ class FormAddMascota extends Component
     public bool $buscarDueno = false;
     public ?string $dueno;
     public ?object $duenosEcontrados;
+    public $icono;
 
     //variables para duenos
     #[Rule('required', message: 'Ingrese un nombre')]
@@ -83,7 +88,6 @@ class FormAddMascota extends Component
     public string $notaEdit;
     public ?object $vacuna;
     public string $proximaVacunacion;
-    public int $proximaVacuna;
     public bool $agendarVacuna = false;
     public ?object $productos;
     public object $categorias;
@@ -92,6 +96,8 @@ class FormAddMascota extends Component
     public $proSelect; //producto seleccionado
     public $response;
     public bool $productosEncontrados = false;
+    public object $vacunasAgendadas;
+    public bool $vacunasAgg = false;  
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -100,19 +106,73 @@ class FormAddMascota extends Component
     /**
      * 
      */
-    public function mount()
-    {
+    public function mount() {
         if (empty(session('modulos')['gestionPaciente'])) {
             return redirect('/');
         }
         Helper::check();
 
         $this->mascotas = Mascota::orderBy('id', 'desc')
-            ->where('owner_id', $this->ownerId())
-            ->take(10)
-            ->get();
+                                ->where('owner_id', $this->ownerId())
+                                ->take(10)
+                                ->get();
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
-        $this->especies = Especie::where('owner_id', $this->ownerId())->get();
+        $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
+    }
+    /**
+     * 
+     */
+    public function crearConsulta(int $productoId){
+        $consultas = Consulta::where('owner_id', $this->ownerId())
+                                ->where('mascota_id', $this->mascotaT->id)
+                                ->where('owner_id', $this->ownerId())
+                                ->get();
+
+        $veterinario = User::select('id', 'name')
+                    ->where('admin_id', $this->ownerId())
+                    ->where('name', 'Sin Definir')
+                    ->first();
+
+        $tipoConsultaId = TipoConsulta::select('id')->where('owner_id', $this->ownerId())
+                                        ->where('nombre', 'Vacunación')
+                                        ->first();
+        
+        $codigo = $this->codigo(6);
+    
+        $consulta = Helper::crearConsulta($consultas, $this->ownerId(), $this->mascotaT->id, now()->format('Y-m-d'), now()->addMinute(2)->format('H:i:s'), 'Pendiente', $veterinario->id, $codigo, $tipoConsultaId->id);
+
+        try{
+            $consultaProducto  = ConsultaProducto::create([
+                'producto_id' => $productoId, 	
+                'consulta_id' => $consulta->id, 	
+                'cantidad' => 1, 	
+                'descripcion' => null,
+                'owner_id' => $this->ownerId(),
+            ]);
+        }catch(\Exception $e){
+            throw new \Exception($e->getMessage());
+        }
+        return redirect()->route('consultas')->with('agregado', 'Consulta creada con éxito');
+    }
+    private function codigo($length): string {
+        $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $randomString = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+
+        return $randomString;
+    }
+
+    /**
+     * 
+     */
+    public function vacunasAggTrue() {
+        $this->vacunasAgg = true;
+    }
+    public function vacunasAggFalse() {
+        $this->vacunasAgg = false;
     }
     /**
      * 
@@ -132,6 +192,16 @@ class FormAddMascota extends Component
             ->get();
         $this->productosEncontradosTrue();  
     }
+
+    public function deleteProximaVacunacion(int $vacunacionId){
+        try{
+            Vacunacion::where('id', $vacunacionId)->where('owner_id', $this->ownerId())->delete();
+            $this->dispatch('success', 'Vacunación eliminada');
+        }catch(\Exception $e){
+            throw new \Exception($e->getMessage());
+        }
+    }
+    
     
     public function productosEncontradosTrue()
     {
@@ -179,11 +249,12 @@ class FormAddMascota extends Component
                 'owner_id' => $this->ownerId(),
                 'aplicada' => false,
             ]);
-            $this->dispatch('success', 'Vacunacion agendada');
+            $this->dispatch('success', 'Vacunación agendada');
+            $this->icono = true;
         }catch (\Exception $e) {
-            throw new \Exception($e->getMessage()); 
-            // $this->dispatch('error', 'Error al agendar la vacunacion');
-            // return;
+            //throw new \Exception($e->getMessage()); 
+            $this->dispatch('error', 'Error al agendar la vacunación');
+            return;
         }
         
     }
@@ -270,11 +341,9 @@ class FormAddMascota extends Component
     /**
      * 
      */
-    public function tarjetaTrue($mascotaId)
+    public function tarjetaTrue(int $mascotaId)
     {
-        $this->mascotaT = Mascota::where('id', $mascotaId)
-            ->where('owner_id', $this->ownerId())
-            ->first();
+        $this->mascotaT = $this->mascotaT($mascotaId);
 
         $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
             //->where('aplicada', true)
@@ -287,7 +356,9 @@ class FormAddMascota extends Component
             ->where('notas', '!=', null)
             ->orWhere('notas', null)
             ->first();
-            
+        
+        $this->vacunasAgendadas = $this->vacunasAgendadas($this->mascotaT->id);
+        
         if ($this->vacuna) {
             $this->notaEdit = $this->vacuna->notas ?? '';
         }
@@ -297,6 +368,20 @@ class FormAddMascota extends Component
     public function tarjetaFalse()
     {
         $this->tarjeta = false;
+    }
+
+    public function mascotaT(int $mascotaId){
+        return Mascota::where('id', $mascotaId)
+            ->where('owner_id', $this->ownerId())
+            ->first();
+    }
+
+    public function vacunasAgendadas(int $mascotaId){
+        return Vacunacion::where('mascota_id', $mascotaId)
+            ->where('owner_id', $this->ownerId())
+            ->where('aplicada', false)
+            ->orderBy('id', 'desc')
+            ->get();
     }
     /**
      * 
@@ -582,7 +667,13 @@ class FormAddMascota extends Component
     }
 
     #[On('success')]
-    public function refresh2() {}
+    public function refresh2() {
+        if($this->icono == true){
+            $this->tarjetaTrue($this->mascotaT->id);
+        }
+
+        $this->icono = false;
+    }
     public function render()
     {
         return view('livewire.form-add-mascota');

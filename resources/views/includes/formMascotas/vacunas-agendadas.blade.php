@@ -1,0 +1,49 @@
+<div class="fixed top-0 right-0 left-0 z-20 flex justify-center items-center w-full h-full bg-black/20">
+    <div class="relative p-4 w-full max-w-2xl">
+
+        <button type="button"
+            class="m-2 absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+            wire:click="vacunasAggFalse">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Cerrar</span>
+        </button>
+
+        <div class="w-full bg-white rounded-lg pt-12 pb-8 px-8">
+            <p class="text-center text-2xl font-bold text-gray-800 mb-4">Vacunas Agendadas</p>
+            <div>
+                <table class="w-full">
+                    <thead class="bg-gray-200 border-b-2 border-gray-300 ">
+                        <tr>
+                            <th class="py-3 px-4 text-center text-sm text-semibold">Vacuna</th>
+                            <th class="py-3 px-4 text-center text-sm text-semibold">Fecha</th>
+                            <th class="py-3 px-4 text-center text-sm text-semibold">Acción  </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($vacunasAgendadas as $vacuna)                            
+                        <tr class="items-center ">
+                            <td>{{ $vacuna->producto->nombre }}</td>
+                            <td>{{ $vacuna->proxima_vacunacion }}</td>
+                            <td> 
+                                <div class="flex gap-0.5 py-4 justify-end">
+                                    <button wire:click='crearConsulta({{ $vacuna->producto->id }})'
+                                            class="cursor-pointer text-gray-800 bg-gray-200 border font-semibold text-sm border-gray-800 px-2 py-1 rounded-md hover:bg-gray-300">
+                                        Crear Consulta
+                                    </button>
+                                    <button wire:click='deleteProximaVacunacion({{ $vacuna->id }})'
+                                            class="border border-gray-800 font-semibold text-sm text-white px-2 py-1 rounded-md bg-gray-800 cursor-pointer hover:bg-gray-700 hover:border-gray-700">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

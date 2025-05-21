@@ -307,13 +307,13 @@
                     </button>
                     <!-- Contenido -->
                     <div class="p-5 text-center">
-                        {{-- <svg class="mx-auto mb-4 text-gray-500 w-12 h-12" aria-hidden="true"
+                        <svg class="mx-auto mb-4 text-gray-500 w-12 h-12" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                             viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2" d="M9 12.75l3 3 6-6" />
                             <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="2" />
-                        </svg> --}}
+                        </svg>
                         <h3 class="mb-5 text-lg font-semibold text-gray-800">
                             Ocurrio un error
                         </h3>
@@ -328,7 +328,7 @@
                 </div>
             </div>
         </div>
-        {{-- <script>
+        <script>
             function closeAlert() {
                 const modal = document.getElementById('alerta');
                 if (modal) {
@@ -338,7 +338,7 @@
                 }
             }
             setTimeout(() => closeAlert(), 5000);
-        </script> --}}
+        </script>
     @endif
 </div>
 

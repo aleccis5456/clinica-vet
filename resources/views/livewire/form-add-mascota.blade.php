@@ -5,7 +5,7 @@
     </div>
 
     <main class="ml-0 md:ml-64 md:pl-20 md:pt-2 pt-16 pl-2 pr-4">
-        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Mascotas</p>        
+        <p class="pl-1 py-7 text-4xl font-semibold">Gestion de Mascotas</p>
         <div class="mb-4 border border-gray-100 rounded-lg">
             <div class="bg-gray-200 rounded-lg ">
                 <div class="p-4">
@@ -82,7 +82,7 @@
                                     </button>
                                     <a href="{{ route('historial.completo', ['id' => $mascota->id]) }}"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                        Ver Consultas   
+                                        Ver Consultas
                                     </a>
                                     <button wire:click="tarjetaTrue({{ $mascota->id }})"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
@@ -99,7 +99,7 @@
                 </table>
             </div>
             <!-- Versión móvil -->
-           @include('includes.formMascotas.version-mobil')
+            @include('includes.formMascotas.version-mobil')
         </div>
         <!-- modal para agregar mascota -->
         @if ($modalAdd)

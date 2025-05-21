@@ -32,9 +32,18 @@
                 </div>
             </form>
 
-            <div>
-                <p class="cursor-pointer bg-red-400 font-semibold  text-white py-2 px-4 rounded-md mt-4">Exportar
-                    tarjeta a PDF</p>
+            <div class="relative bg-red-100 hover:bg-red-500 flex justify-between pl-6  w-[80%] mx-auto mt-4 rounded-lg group transition-all duration-300">
+                <p class="cursor-pointer font-semibold  text-red-500 group-hover:text-red-100 px-2 py-2 transition-all duration-200">
+                    Exportar tarjeta a PDF
+                </p>
+
+                <button class="cursor-pointer bg-red-500 text-white rounded-md px-2 py-1  hover:bg-red-100  hover:text-red-500 transition-all duration-200">
+                    <svg class="w-8 h-8" aria-hidden="true" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 17v-5h1.5a1.5 1.5 0 1 1 0 3H5m12 2v-5h2m-2 3h2M5 10V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1v6M5 19v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1M10 3v4a1 1 0 0 1-1 1H5m6 4v5h1.375A1.627 1.627 0 0 0 14 15.375v-1.75A1.627 1.627 0 0 0 12.375 12H11Z" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>

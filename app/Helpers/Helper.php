@@ -170,29 +170,29 @@ class Helper
     /**
      * 
      */
-    public static function updateEstado($consultaID, $estadoNuevo)
-    {
-        $consultas = Consulta::all();
-        try {
-            $consulta = Consulta::find($consultaID);
-            $nombre = $consulta->mascota->nombre;
-            foreach ($consultas as $consultaC) {
-                if ($consultaC->mascota_id == $consulta->mascota_id) {
-                    if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
-                        if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
-                            if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
-                                return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
-                            }
-                            return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
-                        }
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            return redirect()->route('consultas')->with('error', 'Error al cambiar el estado de la consulta: ' . $e->getMessage());
-        }
-        return $estadoNuevo;
-    }
+     public static function updateEstado($consultaID, $estadoNuevo)
+     {
+         $consultas = Consulta::all();
+         try {
+             $consulta = Consulta::find($consultaID);
+             $nombre = $consulta->mascota->nombre;
+             foreach ($consultas as $consultaC) {
+                 if ($consultaC->mascota_id == $consulta->mascota_id) {
+                     if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
+                         if ($estadoNuevo != 'Finalizado' or $estadoNuevo != 'Cancelado' or $estadoNuevo != 'No asistió') {
+                             if ($consulta->estado == 'Finalizado' or $consulta->estdo == 'Cancelado' or $consulta->estdo == 'No asistió') {
+                                 return redirect()->route('consultas')->with('error', 'No se puede cambiar el estado de una consulta finalizada');
+                             }
+                             return redirect()->route('consultas')->with('error', 'Ya existe una consulta activa para: ' . "$nombre");
+                         }
+                     }
+                 }
+             }
+         } catch (\Exception $e) {
+             return redirect()->route('consultas')->with('error', 'Error al cambiar el estado de la consulta: ' . $e->getMessage());
+         }
+         return $estadoNuevo;
+     }
     /**
      * 
      */
@@ -226,5 +226,44 @@ class Helper
     }
     public static function forgetProductos() {
         Cache::forget('productos');
+    }
+
+    public static function crearConsulta($consultas, $ownerId, $mascotaId, $fecha, $hora, $estado, $veterinarioId, $codigo, $tipoId){
+        try {
+            foreach ($consultas as $consulta) {
+                if ($consulta->mascota_id == $mascotaId) {
+                    if ($consulta->estado != 'Finalizado' && $consulta->estado != 'Cancelado') {
+                        return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha" . " - " . "Codigo: $consulta->codigo");
+                    }
+                }
+            }
+            if ($fecha < now()->format('Y-m-d')) {
+                if ($hora < now()->format('H:i')) {
+                    return redirect()->route('consultas')->with('error', 'La fecha y hora de la consulta no puede ser menor a la fecha y hora actual');
+                }
+            }
+
+            if ($fecha != now()->format('Y-m-d') or $hora != now()->format('H:i')) {
+                $estado = 'Agendado';
+            }
+
+            $consulta = Consulta::create([
+                'mascota_id' => $mascotaId,
+                'veterinario_id' => $veterinarioId,
+                'fecha' => $fecha,
+                'tipo_id' => $tipoId,
+                'sintomas' => null,
+                'diagnostico' => null,
+                'tratamiento' => null,
+                'notas' => null,
+                'hora' => $hora,
+                'estado' => $estado ?? 'Pendiente',
+                'codigo' => $codigo,
+                'owner_id' => $ownerId,
+            ]);            
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+        return $consulta;
     }
 }
