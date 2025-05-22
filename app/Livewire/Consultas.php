@@ -646,7 +646,6 @@ class Consultas extends Component
                     }
 
                     if ($this->consultaToEdit->tipoConsulta->nombre == 'Vacunación') {
-
                         Vacunacion::create([
                             'consulta_id' => $this->consultaToEdit->id,
                             'mascota_id' => $this->consultaToEdit->mascota_id,

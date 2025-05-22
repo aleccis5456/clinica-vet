@@ -82,3 +82,5 @@ Route::get('ver-caja', function () {
         dd(Helper::caja($item['ownerId'], $item['consultaId']));
     }
 });
+
+Route::get('recordatorio', fn() => view('recordatorio'));

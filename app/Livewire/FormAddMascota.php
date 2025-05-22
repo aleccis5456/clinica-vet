@@ -6,7 +6,6 @@ namespace App\Livewire;
 
 use App\Models\ConsultaProducto;
 use App\Models\TipoConsulta;
-use App\Models\Rol;
 use App\Models\Consulta;
 use App\Models\Producto;
 use App\Models\Vacunacion;
@@ -17,8 +16,10 @@ use App\Models\Dueno;
 use Livewire\Attributes\On;
 use App\Models\Especie;
 use App\Models\Mascota;
+use App\Mail\Recordatorio;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Auth;
@@ -119,10 +120,29 @@ class FormAddMascota extends Component
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
     }
+
+    public function enviarRecordatorio(int $vacunacionId)
+    {
+        $vacunacion = Vacunacion::where('id', $vacunacionId)
+            ->where('owner_id', $this->ownerId())
+            ->first();
+        if (!$vacunacion) {
+            return;
+        }
+        
+        try{
+            $this->dispatch('success', 'Recordatorio enviado');
+            Mail::to($vacunacion->mascota->dueno->email)->send(new Recordatorio($vacunacion));
+        }catch(\Exception $e){
+            throw new \Exception($e->getMessage());
+        }
+
+    }
+
     /**
      * 
      */
-    public function crearConsulta(int $productoId){
+    public function crearConsulta(int $productoId, int $vacunacionId){
         $consultas = Consulta::where('owner_id', $this->ownerId())
                                 ->where('mascota_id', $this->mascotaT->id)
                                 ->where('owner_id', $this->ownerId())
@@ -138,20 +158,35 @@ class FormAddMascota extends Component
                                         ->first();
         
         $codigo = $this->codigo(6);
-    
+        
+        //DB::beginTransaction();
         $consulta = Helper::crearConsulta($consultas, $this->ownerId(), $this->mascotaT->id, now()->format('Y-m-d'), now()->addMinute(2)->format('H:i:s'), 'Pendiente', $veterinario->id, $codigo, $tipoConsultaId->id);
-
         try{
-            $consultaProducto  = ConsultaProducto::create([
+            ConsultaProducto::create([
                 'producto_id' => $productoId, 	
                 'consulta_id' => $consulta->id, 	
                 'cantidad' => 1, 	
                 'descripcion' => null,
                 'owner_id' => $this->ownerId(),
             ]);
+
+            $vacunacion = Vacunacion::where('id', $vacunacionId)
+                                    ->where('owner_id', $this->ownerId())
+                                    ->first();
+
+            $vacunacion->update([
+                'aplicada' => true,
+                'consulta_id' => $consulta->id,
+                'fecha_vacunacion' => now()->format('Y-m-d'),
+                'proxima_vacunacion' => null,
+                'proxima_vacuna' => null,
+            ]);
+
+            //dd($vacunacion);
         }catch(\Exception $e){
+            //DB::rollBack();
             throw new \Exception($e->getMessage());
-        }
+        }        
         return redirect()->route('consultas')->with('agregado', 'Consulta creada con éxito');
     }
     private function codigo($length): string {
