@@ -233,13 +233,13 @@ class Helper
             foreach ($consultas as $consulta) {
                 if ($consulta->mascota_id == $mascotaId) {
                     if ($consulta->estado != 'Finalizado' && $consulta->estado != 'Cancelado') {
-                        return redirect()->route('consultas')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha" . " - " . "Codigo: $consulta->codigo");
+                        return redirect()->route('add.mascota')->with('error', "Ya existe una consulta pendiente para esta mascota, Consulta Pendiente: $consulta->tipo" . " - " . "Fecha:  $consulta->fecha" . " - " . "Codigo: $consulta->codigo");
                     }
                 }
             }
             if ($fecha < now()->format('Y-m-d')) {
                 if ($hora < now()->format('H:i')) {
-                    return redirect()->route('consultas')->with('error', 'La fecha y hora de la consulta no puede ser menor a la fecha y hora actual');
+                    return redirect()->route('add.mascota')->with('error', 'La fecha y hora de la consulta no puede ser menor a la fecha y hora actual');
                 }
             }
 
@@ -260,7 +260,8 @@ class Helper
                 'estado' => $estado ?? 'Pendiente',
                 'codigo' => $codigo,
                 'owner_id' => $ownerId,
-            ]);            
+            ]);  
+            
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

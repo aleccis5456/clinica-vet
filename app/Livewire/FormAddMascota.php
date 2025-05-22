@@ -99,6 +99,7 @@ class FormAddMascota extends Component
     public bool $productosEncontrados = false;
     public object $vacunasAgendadas;
     public bool $vacunasAgg = false;  
+    public ?object $vacunasBtn;
 
     /***
      * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
@@ -117,6 +118,12 @@ class FormAddMascota extends Component
                                 ->where('owner_id', $this->ownerId())
                                 ->take(10)
                                 ->get();
+        $this->vacunasBtn = Vacunacion::where('owner_id', $this->ownerId())
+            ->where('aplicada', false)
+            ->where('proxima_vacunacion', '<=' ,now()->format('Y-m-d'))
+            ->orderBy('id', 'desc')
+            ->get();
+
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
     }
@@ -161,6 +168,11 @@ class FormAddMascota extends Component
         
         //DB::beginTransaction();
         $consulta = Helper::crearConsulta($consultas, $this->ownerId(), $this->mascotaT->id, now()->format('Y-m-d'), now()->addMinute(2)->format('H:i:s'), 'Pendiente', $veterinario->id, $codigo, $tipoConsultaId->id);
+
+        if(!$consulta instanceof Consulta){
+            return $consulta;
+        }
+        
         try{
             ConsultaProducto::create([
                 'producto_id' => $productoId, 	
@@ -709,8 +721,7 @@ class FormAddMascota extends Component
 
         $this->icono = false;
     }
-    public function render()
-    {
+    public function render() {
         return view('livewire.form-add-mascota');
     }
 }

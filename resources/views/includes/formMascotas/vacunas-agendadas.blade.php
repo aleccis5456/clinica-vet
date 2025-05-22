@@ -19,32 +19,43 @@
                         <tr>
                             <th class="py-3 px-4 text-center text-sm text-semibold">Vacuna</th>
                             <th class="py-3 px-4 text-center text-sm text-semibold">Fecha</th>
-                            <th class="py-3 px-4 text-center text-sm text-semibold">Acción  </th>
+                            <th class="py-3 px-4 text-center text-sm text-semibold">Acción </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($vacunasAgendadas as $vacuna)                            
-                        <tr class="items-center ">
-                            <td>{{ $vacuna->producto->nombre }}</td>
-                            <td>{{ $vacuna->proxima_vacunacion }}</td>
-                            <td> 
-                                <div class="flex flex-col gap-1 py-4 pl-12 justify-end items-center">
-                                    <button wire:click='enviarRecordatorio({{ $vacuna->id }})'
+                        @foreach ($vacunasAgendadas as $vacuna)
+                            <tr class="items-center ">
+                                <td>{{ $vacuna->producto->nombre }}</td>
+                                <td>
+                                    @if ($vacuna->proxima_vacunacion == now()->format('Y-m-d'))
+                                        <span
+                                            class="text-red-600 bg-red-200 hover:bg-red-200 rounded-lg font-semibold px-2 py-1">
+                                            {{ $vacuna->proxima_vacunacion }}
+                                        </span>
+                                    @else
+                                        {{ $vacuna->proxima_vacunacion }}
+                                    @endif
+
+                                </td>
+                                <td>
+                                    <div class="flex flex-col gap-1 py-4 pl-12 justify-end items-center">
+                                        <button wire:click='enviarRecordatorio({{ $vacuna->id }})'
                                             class="w-[150px] cursor-pointer text-gray-800 bg-gray-200 border font-semibold text-sm border-gray-200 px-2 py-1 rounded-md hover:bg-gray-300">
-                                        Enviar Recordatorio
-                                    </button>
-                                    <button wire:click='crearConsulta({{ $vacuna->producto->id}}, {{ $vacuna->id }})'
+                                            Enviar Recordatorio
+                                        </button>
+                                        <button
+                                            wire:click='crearConsulta({{ $vacuna->producto->id }}, {{ $vacuna->id }})'
                                             class="w-[150px] cursor-pointer text-gray-800 bg-gray-200 border font-semibold text-sm border-gray-800 px-2 py-1 rounded-md hover:bg-gray-300">
-                                        Crear Consulta
-                                    </button>
-                                    <button wire:click='deleteProximaVacunacion({{ $vacuna->id }})'
+                                            Crear Consulta
+                                        </button>
+                                        <button wire:click='deleteProximaVacunacion({{ $vacuna->id }})'
                                             class="w-[150px] border border-gray-800 font-semibold text-sm text-white px-2 py-1 rounded-md bg-gray-800 cursor-pointer hover:bg-gray-700 hover:border-gray-700">
-                                        Eliminar
-                                    </button>
-                                </div>
-                                
-                            </td>
-                        </tr>
+                                            Eliminar
+                                        </button>
+                                    </div>
+
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
