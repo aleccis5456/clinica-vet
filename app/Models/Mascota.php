@@ -43,4 +43,12 @@ class Mascota extends Model
     public function vacunas(){
         return $this->hasMany(Vacunacion::class);
     }
+
+    public function ultimaVacuna(){
+        return $this->hasOne(Vacunacion::class)->orderBy('proxima_vacunacion', 'asc');
+    }
+
+    public function vacunaVencida(){
+        return $this->hasMany(Vacunacion::class)->where('proxima_vacunacion', '<', now());
+    }
 }

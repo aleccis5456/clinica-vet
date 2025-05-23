@@ -83,23 +83,14 @@
                                     <a href="{{ route('historial.completo', ['id' => $mascota->id]) }}"
                                         class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
                                         Ver Consultas
-                                    </a>
-                                    @foreach ($vacunasBtn as $vacuna)
-                                    {{-- {{ json_encode($vacuna->proxima_vacunacion) }}                                     --}}
-                                        @if ($vacuna->mascota_id == $mascota->id and $vacuna->proxima_vacunacion == now()->format('Y-m-d'))
-                                            <button wire:click="tarjetaTrue({{ $mascota->id }})"
-                                                class="cursor-pointer text-red-600 bg-red-200 hover:bg-red-300 hover:text-red-700 focus:ring-2 focus:ring-red-400 rounded-md px-3 py-1 text-sm">
-                                                Tarjeta de Vacunación
-                                            </button>
-                                            @break
-                                        @else
-                                            <button wire:click="tarjetaTrue({{ $mascota->id }})"
-                                                class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                                Tarjeta de Vacunación
-                                            </button>
-                                            @break
-                                        @endif
-                                    @endforeach
+                                    </a>                                   
+                                    <button wire:click="tarjetaTrue({{ $mascota->id }})"
+                                        class=" {{ $mascota->ultimaVacuna ? ($mascota->ultimaVacuna->proxima_vacunacion <= now()->format('Y-m-d') ? 
+                                            'cursor-pointer text-red-500 bg-red-200 hover:bg-red-200 focus:ring-2 hover:text-red-700 focus:ring-red-500 rounded-md px-3 py-1 text-sm' : 
+                                            'cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm') : 
+                                            'cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm' }} ">
+                                        Tarjeta de Vacunación
+                                    </button>
 
                                     <button wire:click='openModalEliminar({{ $mascota->id }})' type="button"
                                         class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-black rounded-md px-3 py-1 text-sm">

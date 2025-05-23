@@ -122,15 +122,20 @@ class FormAddMascota extends Component
                                 ->where('owner_id', $this->ownerId())
                                 ->take(10)
                                 ->get();
+
         $this->vacunasBtn = Vacunacion::where('owner_id', $this->ownerId())
-            ->where('aplicada', false)
-            ->where('proxima_vacunacion', '<=' ,now()->format('Y-m-d'))
-            ->orderBy('id', 'desc')
-            ->get();
+                                    ->where('aplicada', false)
+                                    ->where('proxima_vacunacion', '<=' ,now()->format('Y-m-d'))                                    
+                                    ->orderBy('id', 'desc')
+                                    ->get();
+        
+
+        //dd($this->vacunasBtn);
 
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
     }
+
     public function serachvTrue()
     {
         $this->searchv = true;
