@@ -17,12 +17,12 @@
                 <div class="p-4">
                     <div class="mb-4">
                         <label for="fecha_desde" class="block text-sm font-medium text-gray-700">Desde</label>
-                        <input wire:model="desde" type="date" id="fecha_desde" name="fecha_desde"
+                        <input wire:model="desde" type="date" id="fecha_desde" name="fecha_desde" required
                             class="block p-3 w-full pl-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out" />
                     </div>
                     <div class="mb-4">
                         <label for="fecha_hasta" class="block text-sm font-medium text-gray-700">Hasta</label>
-                        <input wire:model='hasta' type="date" id="fecha_hasta" name="fecha_hasta"
+                        <input wire:model='hasta' type="date" id="fecha_hasta" name="fecha_hasta" required
                             class="block p-3 w-full pl-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-gray-500 focus:border-gray-500 transition duration-150 ease-in-out" />
                     </div>
                     <div class="w-full justify-center flex">

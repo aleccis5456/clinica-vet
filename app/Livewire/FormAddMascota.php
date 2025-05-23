@@ -100,9 +100,13 @@ class FormAddMascota extends Component
     public object $vacunasAgendadas;
     public bool $vacunasAgg = false;  
     public ?object $vacunasBtn;
+    public string $searchInput = '';
+    public bool $flag = false;
+    public bool $searchv = false;
 
     /***
-     * LA CREACION Y EDICION ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
+     * LA CREACIÓN Y EDICIÓN ESTA EN UN CONTROLADOR (para poder guardar la foto en public_path) 
+     * nota: ahora ya se como guardar la foto en el public_path desde aca, pero meeeeh
      */
 
     /**
@@ -127,23 +131,59 @@ class FormAddMascota extends Component
         $this->duenos = Dueno::where('owner_id', $this->ownerId())->get();
         $this->especies = Especie::where('owner_id', $this->ownerId())->get();        
     }
-
-    public function enviarRecordatorio(int $vacunacionId)
+    public function serachvTrue()
     {
-        $vacunacion = Vacunacion::where('id', $vacunacionId)
+        $this->searchv = true;
+    }
+    public function serachvFalse()
+    {
+        $this->searchv = false;
+    }
+
+    public function searchVacunas(){
+        
+        $this->validate([
+            'searchInput' => 'required'
+        ], [
+            'searchInput.required' => 'Ingrese un nombre',
+        ]);
+
+        $catId = TipoConsulta::select('id')
+            ->where('nombre', 'Vacunación')
             ->where('owner_id', $this->ownerId())
             ->first();
+        
+        $productoId = Producto::select('id')
+            ->where('nombre', 'ilike', "%$this->searchInput%")
+            ->where('owner_id', $this->ownerId())
+            ->where('categoria_id', $catId->id)
+            ->first();
+        
+        $this->vacunas = Vacunacion::where('mascota_id', $this->mascotaT->id)
+            ->where('owner_id', $this->ownerId())            
+            ->where('producto_id', $productoId->id)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $this->serachvFalse();
+        $this->searchInput = '';
+    }
+    
+
+    public function enviarRecordatorio(int $vacunacionId) :void{
+        $vacunacion = Vacunacion::where('id', $vacunacionId)
+                                ->where('owner_id', $this->ownerId())
+                                ->first();
         if (!$vacunacion) {
             return;
         }
         
         try{
             $this->dispatch('success', 'Recordatorio enviado');
-            Mail::to($vacunacion->mascota->dueno->email)->send(new Recordatorio($vacunacion));
+            Mail::to($vacunacion->mascota->dueno->email)->queue(new Recordatorio($vacunacion));
         }catch(\Exception $e){
             throw new \Exception($e->getMessage());
         }
-
     }
 
     /**
@@ -369,8 +409,7 @@ class FormAddMascota extends Component
     {
         $this->filtro = false;
     }
-    public function filtrarVacunas()
-    {
+    public function filtrarVacunas(){
         $desde = empty($this->desde) ? now()->startOfDay()->format('Y-m-d') : Carbon::parse($this->desde)->format('Y-m-d');
         $hasta = empty($this->hasta) ? now()->endOfDay()->format('Y-m-d') :  Carbon::parse($this->hasta)->format('Y-m-d');
 
@@ -380,9 +419,9 @@ class FormAddMascota extends Component
             ->where('fecha_vacunacion', '<=', $hasta)
             ->orderBy('id', 'desc')
             ->get();
-        $this->vacunaq = true;
 
-        $this->filtroFalse();
+        $this->vacunaq = true;
+        $this->filtro = false;
     }
 
     /**

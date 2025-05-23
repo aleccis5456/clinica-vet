@@ -1,5 +1,5 @@
 <button type="button"
-    class="cursor-pointer m-2 absolute top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+    class="cursor-pointer m-2 absolute transition-all duration-200 top-3 right-3 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
     wire:click="tarjetaFalse">
     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -8,8 +8,8 @@
     <span class="sr-only">Cerrar</span>
 </button>
 
-<button type="button" id="filtro"
-    class="cursor-pointer m-2 absolute top-3 left-104 text-gray-800 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+<button type="button" 
+    class="cursor-pointer transition-all duration-200 hover:-translate-y-0.5  m-2 absolute top-3 left-104 text-gray-800 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
     wire:click="filtroTrue">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="size-8">
@@ -18,12 +18,24 @@
     </svg>
 </button>
 
+@if (!$vacunaq)
+    <button type="button" id="filtro"
+        class="transition-all duration-200 hover:-translate-y-0.5 cursor-pointer m-2 absolute top-3 left-112 text-gray-800 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+        wire:click="serachvTrue">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="size-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+    </button>
+@endif
+
 @if (count($this->vacunasAgendadas) > 0)
     @foreach ($vacunasBtn as $vacuna)
         @if ($vacuna->mascota_id == $mascotaT->id && $vacuna->proxima_vacunacion == now()->format('Y-m-d'))
-             <button type="button" id="filtro"
-                class="cursor-pointer m-2 absolute top-3 {{ $vacunaq ? 'left-128' : 'left-112' }} text-red-600 bg-red-200 transition-all duration-200 hover:bg-red-200 hover:text-red-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center hover:-translate-y-0.5 items-center"
-                wire:click="vacunasAggTrue">                
+            <button type="button" id="filtro"
+                class="cursor-pointer m-2 absolute top-3 {{ $vacunaq ? 'left-128' : 'left-120' }} text-red-600 bg-red-200 transition-all duration-200 hover:bg-red-200 hover:text-red-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center hover:-translate-y-0.5 items-center"
+                wire:click="vacunasAggTrue">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -32,7 +44,7 @@
             </button>
         @else
             <button type="button" id="filtro"
-                class="cursor-pointer m-2 absolute top-3 {{ $vacunaq ? 'left-128' : 'left-112' }} text-gray-800 bg-transparent transition-all duration-200 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center hover:-translate-y-0.5 items-center"
+                class="cursor-pointer m-2 absolute top-3 {{ $vacunaq ? 'left-128' : 'left-120' }} text-gray-800 bg-transparent transition-all duration-200 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center hover:-translate-y-0.5 items-center"
                 wire:click="vacunasAggTrue">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -45,7 +57,7 @@
 @endif
 
 @if ($vacunaq)
-    <button type="button" id="pdf"
+    <button type="button" id=""
         class="cursor-pointer  m-2 absolute top-3 left-112 text-gray-800 bg-transparent transition-all duration-200 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center hover:-translate-y-0.5 items-center"
         wire:click="tarjetaTrue({{ $mascotaT->id }})">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -69,4 +81,8 @@
 
 @if ($vacunasAgg)
     @include('includes.formMascotas.vacunas-agendadas')
+@endif
+
+@if ($searchv)
+    @include('includes.formMascotas.search-vacunas')
 @endif
