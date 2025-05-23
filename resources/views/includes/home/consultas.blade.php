@@ -4,7 +4,7 @@ style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(
 <!-- Overlay con efecto de degradado -->
 <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-900/50 to-gray-900/80"></div>
 
-<div class="relative z-10 p-4 md:p-6">
+<div class="relative z-10 p-4 mt-12 md:p-6">
     <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Consultas</h2>
 
     <div class="space-y-4 mb-8">
