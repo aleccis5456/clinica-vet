@@ -26,11 +26,14 @@
                         @foreach ($vacunasAgendadas as $vacuna)
                             <tr class="items-center ">
                                 <td>{{ $vacuna->producto->nombre }}</td>
-                                <td>
-                                    @if ($vacuna->proxima_vacunacion == now()->format('Y-m-d'))
+                                <td class="flex flex-col items-center mt-8 gap-2">
+                                    @if ($vacuna->proxima_vacunacion <= now()->format('Y-m-d'))
                                         <span
                                             class="text-red-600 bg-red-200 hover:bg-red-200 rounded-lg font-semibold px-2 py-1">
                                             {{ $vacuna->proxima_vacunacion }}
+                                        </span>
+                                        <span class="text-xs text-blue-600 bg-blue-200 hover:bg-blue-200 rounded-lg font-semibold px-2 py-1">
+                                            Hoy: {{ now()->format('Y-m-d') }}
                                         </span>
                                     @else
                                         {{ $vacuna->proxima_vacunacion }}
