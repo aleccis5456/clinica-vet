@@ -112,10 +112,7 @@
                             <form wire:submit.prevent='filtrar'
                                 class=" relative h-12 flex items-center gap-2 bg-gray-100 p-2 rounded-md w-full md:w-1/3 border border-gray-300">
                                 <!-- Input de búsqueda -->
-                                <div>
-
-                                </div>
-                                <input wire:model='search' type="text"
+                             <input wire:model='search' wire:keydown.debounce.300ms="filtrar" type="text"
                                     class="w-full bg-transparent text-sm px-3 py-2 outline-none focus:ring-2 focus:ring-gray-400 rounded-sm"
                                     placeholder="Buscar producto o servicio">
 

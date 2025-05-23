@@ -24,7 +24,6 @@ class Inventario extends Component
     public $productoToEdit = '';
     public string $productoId = '';
     public string $categoria = '';
-    public string $search = '';
     public int $verTodo = 9;
     public string $nombreP = '';
     public ?int $telefonoP;
@@ -64,6 +63,7 @@ class Inventario extends Component
     public $capacidad;
     public $cantidadCapacidad;
     public $usoInterno;
+    public string $search = '';
 
     /**
      * 
@@ -86,6 +86,21 @@ class Inventario extends Component
 
     public function forgetProductos(){
         Cache::forget('productos');
+    }
+
+    public function filtrar(){
+        $this->productos = Producto::where('owner_id', $this->ownerId())
+            ->where(function ($query) {
+                $query->where('nombre', 'like', '%' . $this->search . '%')
+                    ->orWhere('codigo', 'like', '%' . $this->search . '%');
+            })
+            ->get();
+            $this->forgetProductos();
+    }
+
+    public function flag(){
+        $this->search = '';
+        $this->mount();
     }
     /**
      * 
