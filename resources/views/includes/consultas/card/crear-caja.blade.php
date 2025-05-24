@@ -28,13 +28,10 @@
                         clip-rule="evenodd" />
                 </svg>
 
-                <i
-                    class="absolute cursor-default opacity-0 transition-all min-w-[80px] duration-200 ease-in group-hover:opacity-100 group-hover:z-10 -top-2 right-9 -z-10 p-1 text-xs font-semibold text-orange-500 rounded-lg bg-orange-200">
-                    Caja Creada
-                </i>
+              
 
                 <i wire:click='eliminarCaja({{ $caja->id }})'
-                    class="absolute opacity-0 transition-all min-w-auto duration-200 ease-in group-hover:opacity-100 group-hover:z-10 top-5 right-9 -z-10 p-1 text-xs font-semibold text-red-500 rounded-lg bg-gray-200 hover:scale-110">
+                    class="absolute opacity-0 transition-all min-w-auto duration-200 ease-in group-hover:opacity-100 group-hover:z-10 top-0 right-9 -z-10 p-1 text-xs font-semibold text-red-500 rounded-lg bg-gray-200 hover:scale-110">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"

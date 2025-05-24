@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\Pago;
 use App\Models\ConsultaProducto;
 use App\Models\Producto;
 use App\Models\Consulta;
 use App\Models\Caja;
-use App\Models\CajaProductos;
 
 class CajaController extends Controller {
     public function store($consultaId) {
@@ -45,13 +43,9 @@ class CajaController extends Controller {
         }
         $total = $totalProductos + $consulta->tipoConsulta->precio;
 
-        // Pago::create([
-        //     'dueno_id' => $consulta->mascota->dueno_id, 	
-        //     'consulta_id' => $consultaId, 	
-        //     'monto' => $total, 	  	
-        //     'estado' => 'Pendiente', 	
-        //     'owner_id' => $this->ownerId(),
-        // ]);
+        $consulta->update([
+            'estado' => 'Pendiente',
+        ]);
         Caja::create([
             'consulta_id' => $consultaId,
             'dueno_id' => $consulta->mascota->dueno_id,

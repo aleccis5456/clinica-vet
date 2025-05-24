@@ -935,7 +935,6 @@ class Consultas extends Component
             throw new \Exception($e->getMessage());
         }
         $this->dispatch('success', 'Caja eliminada con éxito');
- 
     }
 
 
