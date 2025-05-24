@@ -1,10 +1,4 @@
 @php
-    // $pagoEstados = [
-    //     'Pendiente' => 'bg-orange-200',
-    //     'pagado' => 'bg-green-500',
-    // ];
-
-    // //$pago = $pagos->where('consulta_id', $consulta->id)->first();
     $caja = $cajas->where('consulta_id', $consulta->id)->first();
 @endphp
 @if ($caja)
@@ -13,7 +7,7 @@
             class="{{ $caja->pago_estado == 'pagado' ? 'bg-green-200' : 'bg-orange-200' }} cursor-pointer absolute top-12 right-2 z-10 p-1 rounded-full ">
             @if ($caja->pago_estado == 'pagado')
                 <!-- icono de pagado (el verde) -->
-                <svg class="w-6 h-6 text-white transition duration-300 group-hover:scale-115" aria-hidden="true"
+                <svg class="w-6 h-6 text-green-600 transition duration-300 group-hover:scale-115" aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 11.917 9.724 16.5 19 7.5" />

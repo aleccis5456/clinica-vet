@@ -19,7 +19,7 @@
             @if ($consulta->estado == 'Agendado')
                 @include('includes.consultas.card.detalles')
             @endif
-            
+
             <div class="flex flex-col">
                 <!-- Botón de actualizacion -->
                 <div class="group">
@@ -36,9 +36,11 @@
                 </div>
 
                 <!-- icono para enviar a caja-->
-                <div>                
-                    @include('includes.consultas.card.crear-caja')
-                </div>
+                @if ($consulta->estado != 'Cancelado' and $consulta->estado != 'No asistió')
+                    <div>
+                        @include('includes.consultas.card.crear-caja')
+                    </div>
+                @endif
                 <!-- end envió a caja -->
             </div>
 
@@ -60,5 +62,3 @@
         </div>
     @endforeach
 </div>
-
-

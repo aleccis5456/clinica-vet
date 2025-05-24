@@ -34,7 +34,7 @@
                     'Pendiente' => 'from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600',
                     'En recepción' => 'from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700',
                     'En consultorio' => 'from-green-500 to-green-600 hover:from-green-600 hover:to-green-700',
-                    'Finalizado' => 'from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800',
+                    'Finalizado' => 'from-gray-300 to-gray-400 hover:from-gray-400 hover:to-gray-500',
                     'No asistió' => 'from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600',
                     'Cancelado' => 'from-rose-500 to-rose-700 hover:from-rose-600 hover:to-rose-800',
                 ];

@@ -1,12 +1,15 @@
+@php
+    $bg = \Carbon\Carbon::parse($consulta->fecha)->format('Y-m-d') >= now()->format('Y-m-d') ? 'blue' : (\Carbon\Carbon::parse($consulta->fecha)->format('Y-m-d') == now()->format('Y-m-d') && \Carbon\Carbon::parse($consulta->hora)->format('Y-m-d') > now()->format('H:i:s') ? 'blue' : 'red')
+@endphp
 <div>
     <div
         class="group absolute rounded-full top-10 left-2 z-20 cursor-pointer text-sm                                             
-        {{ $consulta->fecha > now()->format('Y-m-d') ? 'bg-blue-400' : ($consulta->fecha == now()->format('Y-m-d') && $consulta->fecha > now()->format('H:i:s') ? 'bg-blue-400' : 'bg-red-200 text-red-600') }}
+        {{ \Carbon\Carbon::parse($consulta->fecha)->format('Y-m-d') > now()->format('Y-m-d') ? 'bg-blue-200 text-blue-600' : (\Carbon\Carbon::parse($consulta->fecha)->format('Y-m-d') == now()->format('Y-m-d') && \Carbon\Carbon::parse($consulta->hora)->format('H:i:s') > now()->format('H:i:s') ? 'bg-blue-200 text-blue-600' : 'bg-red-200 text-red-600') }}
         p-1 overflow-hidden transition-all duration-300 w-7 h-7 hover:w-36 hover:h-20 hover:rounded-md">
-
+    
         <div class="flex text-center object-center items-center justify-center">
             <p class="group-hover:hidden">
-                <svg class="w-5 h-5 text-red-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                <svg class="w-5 h-5 text-{{ $bg }}-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -15,7 +18,7 @@
         </div>
         <div class="flex">
             <p class="hidden group-hover:block text-xs text-center object-center justify-between">
-                <svg class="w-5 h-5 text-red-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                <svg class="w-5 h-5 text-{{$bg}}-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -30,8 +33,8 @@
             Hora: {{ \Carbon\Carbon::parse($consulta->hora)->format('H:i') }}
         </p>
     </div>
-
-    @if ($consulta->estado == 'Agendado' && $consulta->fecha <= now()->format('Y-m-d'))
+    
+    @if ($consulta->estado == 'Agendado' && \Carbon\Carbon::parse($consulta->fecha)->format('Y-m-d') <= now()->format('Y-m-d'))
         <div wire:click="enviarRecordatorio({{ $consulta->id }})" 
             class="group">
             <div class=" absolute rounded-full top-20 left-2 z-10 cursor-pointer text-sm bg-green-200          
