@@ -83,4 +83,4 @@ Route::get('ver-caja', function () {
     }
 });
 
-Route::get('recordatorio', fn() => view('recordatorio'));
+Route::get('recordatorio', fn() => view('recordatorio-consulta'));

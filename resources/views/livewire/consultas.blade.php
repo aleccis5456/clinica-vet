@@ -19,7 +19,6 @@
                         Agregar Tipo de Consulta <span>+</span>
                     </button>
                 </div>
-
                 <!-- alerta de consultas agendadas -->
                 <div class="px-4">
                     @livewire('alerta-agendados')

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('diagnostico')->nullable();
             $table->text('tratamiento')->nullable();
             $table->text('notas')->nullable();
+            $table->boolean('recordatorio')->default(false)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

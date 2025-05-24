@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignId('proxima_vacuna')->constrained('productos')->nullable();
             $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
             $table->boolean('aplicada')->default(false)->nullable();
+            $table->boolean('recordatorio')->default(false)->nullable();
             $table->timestamps();
         });
     }
