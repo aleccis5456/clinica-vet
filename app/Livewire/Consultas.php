@@ -16,6 +16,8 @@ use App\Models\Consulta;
 use App\Models\Rol;
 use App\Models\User;
 use App\Models\Mascota;
+use App\Mail\RecordatorioConsulta;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Illuminate\Support\Facades\Session;
@@ -23,7 +25,6 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
 
 #[Title('Consultas')]
 class Consultas extends Component
@@ -910,6 +911,15 @@ class Consultas extends Component
     public function tipoconsultaAdd()
     {
         $this->tipoConsultas = TipoConsulta::where('owner_id', $this->ownerId())->get();
+    }
+
+    public function enviarRecordatorio(int $consultaId){
+        $consulta = Consulta::where('id', $consultaId)
+            ->where('owner_id', $this->ownerId())
+            ->first();
+
+        Mail::to($consulta->mascota->dueno->email)->queue(new RecordatorioConsulta($consulta));
+        $this->dispatch('success', 'Recordatorio enviado con éxito');
     }
 
     public function mount()
