@@ -922,6 +922,23 @@ class Consultas extends Component
         $this->dispatch('success', 'Recordatorio enviado con éxito');
     }
 
+    /**
+     * 
+     */
+    public function eliminarCaja(int $cajaId)
+    {
+        try {
+            Caja::where('id', $cajaId)
+                ->where('owner_id', $this->ownerId())
+                ->delete();
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+        $this->dispatch('success', 'Caja eliminada con éxito');
+ 
+    }
+
+
     public function mount()
     {
         Helper::check();
