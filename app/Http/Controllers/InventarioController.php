@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class InventarioController extends Controller
 {
     public function update(Request $request, $productoId): RedirectResponse {
-        try {
-            dd($request->all());
+        try {            
             if (Auth::user()->plan_id == 1) {
                 if (
                     filled($request->unidad_medida) ||
