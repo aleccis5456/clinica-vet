@@ -237,27 +237,33 @@ class Helper
                     }
                 }
             }
-            if ($fecha < now()->format('Y-m-d')) {
-                if ($hora < now()->format('H:i')) {
-                    return redirect()->route('add.mascota')->with('error', 'La fecha y hora de la consulta no puede ser menor a la fecha y hora actual');
-                }
-            }
+            // if ($fecha < now()->format('Y-m-d')) {
+            //     if ($hora < now()->format('H:i')) {
+            //         return redirect()->route('add.mascota')->with('error', 'La fecha y hora de la consulta no puede ser menor a la fecha y hora actual');
+            //     }
+            // }
 
-            if ($fecha != now()->format('Y-m-d') or $hora != now()->format('H:i')) {
-                $estado = 'Agendado';
+            // if ($fecha != now()->format('Y-m-d') or $hora != now()->format('H:i')) {
+            //     $estado = 'Agendado';
+            // }
+            $consultas = Consulta::where('owner_id', $ownerId)
+                                 ->where('estado', 'En consultorio')
+                                ->get();                    
+            $estado = '';
+            if($consultas->count() > 0) {
+                $estdo = 'En recepcion';
             }
-
             $consulta = Consulta::create([
                 'mascota_id' => $mascotaId,
                 'veterinario_id' => $veterinarioId,
-                'fecha' => $fecha,
+                'fecha' => now()->format('Y-m-d'),
                 'tipo_id' => $tipoId,
                 'sintomas' => null,
                 'diagnostico' => null,
                 'tratamiento' => null,
                 'notas' => null,
-                'hora' => $hora,
-                'estado' => $estado ?? 'Pendiente',
+                'hora' => now()->format('H:i'),
+                'estado' => !empty($estdo) ? $estado : 'En consultorio',
                 'codigo' => $codigo,
                 'owner_id' => $ownerId,
             ]);  
