@@ -176,6 +176,10 @@ class FormAddMascota extends Component
     
 
     public function enviarRecordatorio(int $vacunacionId) :void{
+        if(Auth::user()->plan_id == 1 || Auth::user()->plan_id == 2 || Auth::user()->plan_id == 3){
+            return;
+        }
+
         $vacunacion = Vacunacion::where('id', $vacunacionId)
                                 ->where('owner_id', $this->ownerId())
                                 ->first();
