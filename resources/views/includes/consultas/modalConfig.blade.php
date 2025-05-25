@@ -444,10 +444,14 @@
                 </div>
 
                 <!-- Botón de envío -->
-                <div class="">
+                <div class="flex flex-col gap-2">
                     <button type="submit"
                         class="w-full px-6 py-2 bg-gray-800 text-white font-medium rounded-md hover:bg-gray-700 transition duration-300">
                         Guardar
+                    </button>
+                     <button type="button" wire:click='eliminarConsultaTrue'
+                        class="w-full px-6 py-2 bg-gray-800 text-white font-medium rounded-md hover:bg-gray-700 transition duration-300">
+                        Eliminar
                     </button>
                 </div>
             </form>

@@ -15,7 +15,7 @@
                 @endforeach
             </select>
 
-            <!-- detalles de consulta agendado -->
+            <!-- detalles de consulta agendado y recordatorio -->
             @if ($consulta->estado == 'Agendado')
                 @include('includes.consultas.card.detalles')
             @endif

@@ -29,10 +29,10 @@
 
                         <!-- Botón para limpiar el input -->
                         @if ($search)
-                        <button type="button" wire:click="flag"
-                            class="px-1.5 py-0.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200  transition">
-                            ✕
-                        </button>
+                            <button type="button" wire:click="flag"
+                                class="px-1.5 py-0.5 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-200  transition">
+                                ✕
+                            </button>
                         @endif
 
                         <!-- Botón de búsqueda -->
@@ -63,43 +63,45 @@
 
                     <tbody class="text-gray-800">
                         @foreach ($mascotas as $mascota)
-                        <tr wire:key='{{ $mascota->id }}'
-                            class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
-                            <td class="py-3 px-4">
-                                <img class="w-12 h-12 rounded-full" src="{{ asset(" uploads/mascotas/$mascota->foto")
-                                }}" alt="">
-                            </td>
-                            <td class="py-3 px-4">{{ $mascota->nombre }} ({{ $mascota->genero }})</td>
-                            <td class="py-3 px-4"> {{ $mascota->especieN->nombre }} </td>
-                            <td class="py-3 px-4"> {{ $mascota->raza }} </td>
-                            <td class="py-3 px-4"> {{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }}
-                            </td>
-                            <td class="py-3 px-4"> {{ $mascota->dueno->nombre }} </td>
-                            <td class="py-3 px-4 gap-2 flex font-semibold">
-                                <button wire:click="openModalEdit({{ $mascota->id }})"
-                                    class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                    Editar
-                                </button>
-                                <a href="{{ route('historial.completo', ['id' => $mascota->id]) }}"
-                                    class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
-                                    Ver Consultas
-                                </a>                                
-                                <button wire:click="tarjetaTrue({{ $mascota->id }})" class="cursor-pointer rounded-md px-3 py-1 text-sm
-                                @if ($mascota->ultimaVacuna && $mascota->ultimaVacuna->proxima_vacunacion && $mascota->ultimaVacuna->proxima_vacunacion <= now()->format('Y-m-d')) 
-                                    text-red-500 bg-red-200 hover:bg-red-200 focus:ring-2 hover:text-red-700 focus:ring-red-500
+                            <tr wire:key='{{ $mascota->id }}'
+                                class="border-t border-gray-200 hover:bg-gray-100 transition duration-300">
+                                <td class="py-3 px-4">
+                                    <img class="w-12 h-12 rounded-full"
+                                        src="{{ asset("uploads/mascotas/$mascota->foto") }}" alt="">
+                                </td>
+                                <td class="py-3 px-4">{{ $mascota->nombre }} ({{ $mascota->genero }})</td>
+                                <td class="py-3 px-4"> {{ $mascota->especieN->nombre }} </td>
+                                <td class="py-3 px-4"> {{ $mascota->raza }} </td>
+                                <td class="py-3 px-4"> {{ App\Helpers\Helper::formatearFecha($mascota->nacimiento) }}
+                                </td>
+                                <td class="py-3 px-4"> {{ $mascota->dueno->nombre }} </td>
+                                <td class="py-3 px-4 gap-2 flex font-semibold">
+                                    <button wire:click="openModalEdit({{ $mascota->id }})"
+                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        Editar
+                                    </button>
+                                    <a href="{{ route('historial.completo', ['id' => $mascota->id]) }}"
+                                        class="cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 rounded-md px-3 py-1 text-sm">
+                                        Ver Consultas
+                                    </a>
+                                    <button wire:click="tarjetaTrue({{ $mascota->id }})"
+                                        class="cursor-pointer rounded-md px-3 py-1 text-sm
+                                @if (
+                                    $mascota->ultimaVacuna &&
+                                        $mascota->ultimaVacuna->proxima_vacunacion &&
+                                        $mascota->ultimaVacuna->proxima_vacunacion <= now()->format('Y-m-d')) text-red-500 bg-red-200 hover:bg-red-200 focus:ring-2 hover:text-red-700 focus:ring-red-500
                                 @else
-                                    text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 
-                                @endif">
-                                    Tarjeta de Vacunación
-                                </button>
+                                    text-gray-800 bg-gray-200 hover:bg-gray-300 focus:ring-2 focus:ring-gray-400 @endif">
+                                        Tarjeta de Vacunación
+                                    </button>
 
 
-                                <button wire:click='openModalEliminar({{ $mascota->id }})' type="button"
-                                    class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-black rounded-md px-3 py-1 text-sm">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
+                                    <button wire:click='openModalEliminar({{ $mascota->id }})' type="button"
+                                        class="ml-2 text-white bg-gray-800 hover:bg-black focus:ring-2 focus:ring-black rounded-md px-3 py-1 text-sm">
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -109,28 +111,28 @@
         </div>
         <!-- modal para agregar mascota -->
         @if ($modalAdd)
-        @include('includes.formMascotas.modalAdd')
+            @include('includes.formMascotas.modalAdd')
         @endif
         <!-- modal para agregar especie -->
         @if ($modalEspecies)
-        @include('includes.formMascotas.modalEspecies')
+            @include('includes.formMascotas.modalEspecies')
         @endif
         <!-- modal para editar mascota -->
         @if ($modalEliminar)
-        @include('includes.formMascotas.modalEliminar')
+            @include('includes.formMascotas.modalEliminar')
         @endif
         <!-- modal alerta de eliminacion -->
         @if ($modalEdit)
-        @include('includes.formMascotas.modalEdit')
+            @include('includes.formMascotas.modalEdit')
         @endif
         @if ($buscarDueno)
-        @include('includes.formMascotas.duenos')
+            @include('includes.formMascotas.duenos')
         @endif
         @if ($modalDueno)
-        @include('includes.formMascotas.add-dueno')
+            @include('includes.formMascotas.add-dueno')
         @endif
         @if ($tarjeta)
-        @include('includes.formMascotas.tarjeta')
+            @include('includes.formMascotas.tarjeta')
         @endif
     </main>
 </div>
