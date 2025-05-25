@@ -918,6 +918,9 @@ class Consultas extends Component
             ->where('owner_id', $this->ownerId())
             ->first();
 
+        $consulta->update([
+            'recordatorio' => true,
+        ]);
         Mail::to($consulta->mascota->dueno->email)->queue(new RecordatorioConsulta($consulta));
         $this->dispatch('success', 'Recordatorio enviado con éxito');
     }

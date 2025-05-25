@@ -24,6 +24,7 @@ class Consulta extends Model
         'hora',
         'codigo',
         'owner_id',
+        'recordatorio',
     ];
 
     public function mascota(){

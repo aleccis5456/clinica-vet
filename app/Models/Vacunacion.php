@@ -18,6 +18,7 @@ class Vacunacion extends Model
         'proxima_vacunacion',
         'proxima_vacuna',
         'aplicada',
+        'recordatorio',
     ];
     
     public function mascota()

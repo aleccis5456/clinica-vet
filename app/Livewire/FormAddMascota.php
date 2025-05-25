@@ -184,6 +184,9 @@ class FormAddMascota extends Component
         }
         
         try{
+            $vacunacion->update([
+                'recordatorio' => true,
+            ]);
             $this->dispatch('success', 'Recordatorio enviado');
             Mail::to($vacunacion->mascota->dueno->email)->queue(new Recordatorio($vacunacion));
         }catch(\Exception $e){
