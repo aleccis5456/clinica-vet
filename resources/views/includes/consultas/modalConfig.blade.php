@@ -153,7 +153,7 @@
                             consulta y se descuentan automáticamente del stock.
                         </p>
                         <p class="mt-1">
-                            En el <span class="font-bold">plan gratuito</span>, debes escribir los productos manualmente
+                            En el <span class="font-bold">plan gratuito</span>, recomendamos escribir los productos usados en la consulta manualmente
                             en
                             el campo de <span class="italic">tratamientos</span>.
                         </p>
