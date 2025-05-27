@@ -34,7 +34,7 @@ class PlaneSeeder extends Seeder
         DB::table('planes')->insert([
             'nombre' => 'Estándar',
             'descripcion' => '',            
-            'precio' => 150000,
+            'precio' => 125000,
             'duracion' => 1, // Duración en meses
             'created_at' => now(),
             'updated_at' => now(),
@@ -43,7 +43,7 @@ class PlaneSeeder extends Seeder
         DB::table('planes')->insert([
             'nombre' => 'Profesional',
             'descripcion' => '',            
-            'precio' => 300000,
+            'precio' => 190000,
             'duracion' => 1, // Duración en meses
             'created_at' => now(),
             'updated_at' => now(),
@@ -52,7 +52,7 @@ class PlaneSeeder extends Seeder
         DB::table('planes')->insert([
             'nombre' => 'Avanzado',
             'descripcion' => '',            
-            'precio' => 300000,
+            'precio' => 210000,
             'duracion' => 1, // Duración en meses
             'created_at' => now(),
             'updated_at' => now(),
@@ -61,7 +61,7 @@ class PlaneSeeder extends Seeder
         DB::table('planes')->insert([
             'nombre' => 'Premium',
             'descripcion' => '',            
-            'precio' => 500000,
+            'precio' => 250000,
             'duracion' => 1, // Duración en meses
             'created_at' => now(),
             'updated_at' => now(),
