@@ -40,7 +40,7 @@
         </p>
     </div>
 
-    @if (!Auth::user()->plan_id == 1)
+    @if (Auth::user()->plan_id != 1 && Auth::user()->plan_id != 2)
         @if ($consulta->estado == 'Agendado' && \Carbon\Carbon::parse($consulta->fecha)->format('Y-m-d') <= now()->format('Y-m-d'))
             <div>
                 @if ($consulta->recordatorio)
