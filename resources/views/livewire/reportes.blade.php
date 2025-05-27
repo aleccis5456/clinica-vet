@@ -8,8 +8,8 @@
 
         @if (Auth::user()->plan_id == 1 || Auth::user()->plan_id == 2)
             <div class="grid grid-cols-2 gap-4 px-12">
-            @else
-                <div class="grid grid-cols-3 gap-4 px-12">
+        @else
+            <div class="grid grid-cols-3 gap-4 px-12">
         @endif
         @if (Auth::user()->plan_id == 1 || Auth::user()->plan_id == 2)
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md">

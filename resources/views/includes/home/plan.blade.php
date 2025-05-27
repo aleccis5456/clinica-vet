@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <a href="{{ route('reportes') }}"
+        <a href="{{ route('planes') }}"
             class="cursor-pointer inline-flex items-center px-6 py-3 bg-gray-300 hover:bg-gray-800 text-black hover:text-gray-100 font-medium rounded-lg transition duration-300 group">
             Acceder
             <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-hover:translate-x-1" fill="currentColor"
