@@ -89,7 +89,7 @@
             </div>
 
             <!-- uso interno -->
-            @if (!Auth::user()->plan_id == 1)                                
+            @if (Auth::user()->plan_id != 1)                                
                 <div class=" my-4 pt-5">
                     <p class="text-2xl font-semibold text-center text-gray-800 mb-2 block">Opciones para uso interno</p>
                     <p class="block text-gray-800 font-medium mb-2">Precios de uso interno:</p>

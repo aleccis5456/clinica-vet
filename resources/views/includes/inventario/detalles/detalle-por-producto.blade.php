@@ -25,8 +25,7 @@
                 {{ App\Helpers\Helper::formatearMonto($detalleProducto->precio) }} Gs.
             </span>
         </div>
-
-        @if (!Auth::user()->plan_id == 1)
+        @if (Auth::user()->plan_id != 1)
         <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Precio de uso interno, en {{ $detalleProducto->unidad_medida }}:</span>
             <span class="text-gray-800 font-semibold text-lg">
@@ -46,7 +45,7 @@
             <span class="text-gray-800">{{ $detalleProducto->stock_actual }}</span>
         </div>
         
-        @if (!Auth::user()->plan_id == 1)          
+        @if (Auth::user()->plan_id != 1)          
         <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Stock en uso:</span>
             <span class="text-gray-800">{{ $detalleProducto->usoInterno->cantidad ?? ''}}</span>
@@ -68,7 +67,7 @@
             <span class="text-gray-500 text-sm">{{ isset($detalleProducto->usoInterno->created_at) ? $detalleProducto->usoInterno->created_at->format('d/m/Y H:i') : '' }}</span>
         </div>
 
-        @if (!Auth::user()->plan_id == 1)     
+        @if (Auth::user()->plan_id != 1)     
          <div class="flex justify-between">
             <span class="text-gray-600 font-medium">Sobrante:</span>
             <span class="text-gray-500 text-sm">{{ isset($detalleProducto->usoInterno) ? ($detalleProducto->usoInterno->cantidad == 1  ? $detalleProducto->sobrante : 'SIN USO') : 'SIN USO'}}</span>
